@@ -4,7 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SubMenu extends Model
+class User extends Model
 {
-	
+	public $timestamps = false;
 }

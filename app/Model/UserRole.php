@@ -4,7 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SubMenu extends Model
+class UserRole extends Model
 {
 	
 }

@@ -1,5 +1,5 @@
  
-  @php
+  {{-- @php
    $hotMenus =App\Helper\MyFuncs::hotMenu(); 
   @endphp
   @foreach($hotMenus as $hotMenu)
@@ -8,7 +8,7 @@
        <a class="nav-link" href="{{ route(''.$hotMenu->url) }}">{{ $hotMenu->name }} </a>
       </li> 
    
-  @endforeach 
+  @endforeach  --}}
  
  
 

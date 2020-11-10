@@ -40,33 +40,8 @@ class ReportGenrate extends Command
      * @return mixed
      */
     public function handle()
-    {  Log::info('report generate');
-        $requestReports=ReportRequest::where('status',0)->get();
-        foreach ($requestReports as $requestReport) { 
-            if ($requestReport->report_wise==1) {
-                $students=Student::where('student_status_id',1)->orderBy('class_id','ASC')->get();
-            }
-            if ($requestReport->report_wise==3) {
-                $students=Student::where('class_id',$requestReport->class_id)->where('student_status_id',1)->orderBy('class_id','ASC')->get();
-            }
-            if ($requestReport->report_wise==4) {
-                $students=Student::where('class_id',$requestReport->class_id)->where('section_id',$requestReport->section_id)->where('student_status_id',1)->orderBy('class_id','ASC')->get();
-            }
-            foreach ($students as $student) { 
-                
-               $documentUrl = Storage_path() . '/app/student/document/certificate/fee_certificate/'.'/'.$student->classes->name.'/'.$student->sectionTypes->name;   
-               @mkdir($documentUrl, 0755, true); 
-                   
-                    $pdf = PDF::loadView('admin.certificate.tuitionfee.print',compact('student'))->save($documentUrl.'/'.$student->registration_no.'_fee_certificate.pdf'); 
-                
-                
-            
-        $requestReportStatus = ReportRequest::find($requestReport->id);
-        $requestReportStatus->status=1;
-        $requestReportStatus->save(); 
-        }
-
-      } 
+    {  
+     
     }    
    
 }

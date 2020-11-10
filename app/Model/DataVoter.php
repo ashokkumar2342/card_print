@@ -4,7 +4,8 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SubMenu extends Model
+class DataVoter extends Model
 {
 	
+    //
 }
