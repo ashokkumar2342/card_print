@@ -60,7 +60,10 @@
           </div>
         </div> 
         <div class="row"> 
-          <div class="col-12">
+          <div class="col-12 form-group">
+            <a href="{{ route('admin.loginWithOTP') }}" title="">Login With OTP</a>
+          </div>
+          <div class="col-12 form-group">
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
           <!-- /.col -->

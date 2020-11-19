@@ -92,6 +92,35 @@ class LoginController extends Controller
         
        
     }
+    public function loginWithOTP()
+    {
+      return view('admin.auth.login_with_otp'); 
+    }
+    public function sendOtp(Request $request)
+    { 
+       $otp = rand(100000, 999999);
+       $mobile_no=$request->mobile_no;
+       $users=User::where('mobile',$request->mobile_no)->first();
+       if (empty($users)) {
+       $user= new User();
+       $user->mobile=$request->mobile_no;
+       $user->otp=$otp;
+       $user->created_by=0;
+       $user->status=0;
+       $user->save();  
+       }
+       return view('admin.auth.otp_verify',compact('mobile_no')); 
+    }
+    public function otpVerify(Request $request)
+    {
+       $users=User::where('mobile',$request->mobile_no)->where('otp',$request->otp)->first();
+       if (empty($users)) {
+          return redirect()->back()->with(['message'=>'Invalid OTP','class'=>'danger']);
+       }else{
+          Auth::loginUsingId($users->id);
+          return redirect()->route('admin.dashboard');
+       }
+    }
      public function refreshCaptcha()
     {  
         return  captcha_img('math');
