@@ -56,24 +56,27 @@ class UserManagementController extends Controller
 
 
     //----------start---usersPermissions-usersPermissions-----------//
-    public function usersPermissions()
+    public function userApproval()
     {
-    	$users=User::orderBy('user_name','ASC')->get(); 
-      	return view('admin.UserManagement.users_permissions',compact('users'));
+    	  
+      	return view('admin.UserManagement.user_approval');
     }
-    public function usersWiseMenuTable(Request $request)
+    public function userApprovalList($value='')
     {
-    	$user_id = $request->user_id;
-        $mainMenus = MainMenu::all();
-        $subMenus = SubMenu::all();
-        $usersmenus = array_pluck(UsersPermission::where('user_id',$user_id)->where('status',1)->get(['sub_menu_id'])->toArray(), 'sub_menu_id'); 
-      	return view('admin.UserManagement.menu_table',compact('mainMenus','subMenus','user_id','usersmenus'));
+        $users=User::orderBy('user_name','ASC')->where('status',0)->get(); 
+        return view('admin.UserManagement.user_list',compact('users'));
     }
-    public function usersPermissionStore(Request $request)
+    public function userApprovalForm($op_id)
+    {
+    	$op_id = $op_id; 
+      	return view('admin.UserManagement.user_approval_form',compact('op_id'));
+    }
+    public function userApprovalStore(Request $request)
     {
     	$rules=[
-            'sub_menu' => 'required|max:1000',             
-            'user' => 'required',  
+            'op_id' => 'required',  
+            'charge_card' => 'required',  
+            'free_card' => 'required',  
         ]; 
         $validator = Validator::make($request->all(),$rules);
         if ($validator->fails()) {
@@ -82,11 +85,17 @@ class UserManagementController extends Controller
             $response["status"]=0;
             $response["msg"]=$errors[0];
             return response()->json($response);// response as json
-        }     
-        $menuId= implode(',',$request->sub_menu); 
-        DB::select(DB::raw("call up_setuserpermission ($request->user, '$menuId')")); 
-        $response['msg'] = 'Access Save Successfully';
-        $response['status'] = 1;
+        }
+        $user=Auth::guard('admin')->user();  
+        $message=DB::select(DB::raw("call up_approve_user ($user->id, '$request->op_id','$request->charge_card','$request->free_card')"));
+        if ($message[0]->result=='success') {
+        $response['msg'] =$message[0]->result;
+        $response['status'] = 1; 
+        }
+        else{
+        $response['msg'] =$message[0]->result;
+        $response['status'] = 0;   
+        } 
         return response()->json($response);
     }
     //----------End---usersPermissions-usersPermissions-----------// 

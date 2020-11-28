@@ -42,7 +42,7 @@ return [
         ],
          'admin' => [
             'driver' => 'session',
-            'provider' => 'admins',
+            'provider' => 'users',
         ], 
          'student' => [
             'driver' => 'session',
@@ -83,7 +83,7 @@ return [
         // ],
         'admins' => [
                     'driver' => 'eloquent',
-                    'model' => App\Admin::class,
+                    'model' => App\User::class,
                 ],
         'students' => [
                     'driver' => 'eloquent',
@@ -118,7 +118,7 @@ return [
             'expire' => 60,
         ],
         'admins' => [
-            'provider' => 'admins',
+            'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
         ],

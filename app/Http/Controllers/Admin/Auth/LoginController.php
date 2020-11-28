@@ -4,13 +4,15 @@ namespace App\Http\Controllers\Admin\Auth;
 
 use App\Helpers\MailHelper;
 use App\Http\Controllers\Controller;
+use App\Model\User;
 use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use App\Model\User;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 class LoginController extends Controller
 {
     /*
@@ -42,6 +44,7 @@ class LoginController extends Controller
 
     public function __construct()
     {
+
         $this->middleware('admin.guest')->except('logout');
     }
 
@@ -61,17 +64,14 @@ class LoginController extends Controller
               'password' => 'required',
               'captcha' => 'required|captcha' 
           ]);
-          $admins=User::where('email',$request->email)->first();
-          if (!empty($admins)) { 
-          $credentials = [
-                     'email' => $request['email'],
-                     'password' => $request['password'],
-                     'status' => 1,
-                 ]; 
-            if(auth()->guard()->attempt($credentials)) {
-                return redirect()->route('admin.dashboard');
-                }
-                   
+          $user=User::where('email',$request->email)->first();
+          if (!empty($user)) { 
+              if (password_verify($request->password,$user->password) && $user->status!=2) {
+                 auth()->guard('admin')->loginUsingId($user->id); 
+                  return redirect()->route('admin.dashboard');
+              }else{
+                 return Redirect()->back()->with(['message'=>'Invalid User or Password','class'=>'error']);
+              }
             } 
 
             // $student = Student::orWhere('username',$request->email)->first();
@@ -92,24 +92,37 @@ class LoginController extends Controller
         
        
     }
-    public function loginWithOTP()
+    public function register()
     {
-      return view('admin.auth.login_with_otp'); 
+      return view('admin.auth.register'); 
     }
-    public function sendOtp(Request $request)
-    { 
-       $otp = rand(100000, 999999);
-       $mobile_no=$request->mobile_no;
-       $users=User::where('mobile',$request->mobile_no)->first();
-       if (empty($users)) {
-       $user= new User();
-       $user->mobile=$request->mobile_no;
-       $user->otp=$otp;
-       $user->created_by=0;
-       $user->status=0;
-       $user->save();  
-       }
-       return view('admin.auth.otp_verify',compact('mobile_no')); 
+    public function registerStore(Request $request)
+    {  
+      $this->validate($request, [
+         'user_name' => 'required|string|min:3|max:50',             
+         'email' => 'required|email|unique:users|max:100', 
+         "mobile" => 'required|unique:users|numeric|digits:10',
+         "password" => 'required|min:6|max:15', 
+         "confirm_password" => 'required|min:6|max:15',
+      ]); 
+       
+        // $user=Auth::guard()->user(); 
+        $accounts = new User();
+        $accounts->user_name = $request->user_name;
+        $accounts->mobile = $request->mobile; 
+        $accounts->email = $request->email;
+        $accounts->password = bcrypt($request['password']); 
+        $accounts->password_plain=$request->password;          
+        $accounts->role_id =4;
+        $accounts->created_by=0;          
+        $accounts->status=0;          
+        
+        if ($accounts->save()) {
+          return redirect()->route('admin.login')->with(['message'=>'Registration Successfully','class'=>'success']); 
+        }else{
+          return Redirect()->back()->with(['message'=>'Something Went Wrong','class'=>'error']); 
+        }
+        
     }
     public function otpVerify(Request $request)
     {
@@ -133,9 +146,10 @@ class LoginController extends Controller
   
 
     // Logout method with guard logout for admin only
- public function logout()
-    {
-        $this->guard()->logout();
+    public function logout()
+    { 
+        // $this->guard()->logout();
+          Session::flush();
         return redirect()->route('admin.login');
     }
     

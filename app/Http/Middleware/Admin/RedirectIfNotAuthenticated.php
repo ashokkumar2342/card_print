@@ -14,14 +14,14 @@ class RedirectIfNotAuthenticated
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = '')
+    public function handle($request, Closure $next, $guard = 'admin')
     {  
         if (!Auth::guard($guard)->check()) {
             return redirect()->route('admin.login');
         }
-        if (MyFuncs::isPermission()!=true) { 
-           dd('User have not permission for this page access.');
-        }
+        // if (MyFuncs::isPermission()!=true) { 
+        //    dd('User have not permission for this page access.');
+        // }
         return $next($request);
     }
 }

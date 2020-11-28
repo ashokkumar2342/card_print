@@ -1,6 +1,5 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,27 +15,45 @@
   <link rel="stylesheet" href="{{ asset('admin_asset/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}"> 
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('admin_asset/dist/css/AdminLTE.min.css')}}"> 
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <!-- Google Font: Source Sans Pro -->
   {{-- <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> --}}
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
-<body class="hold-transition login-page">
-<div class="login-box">
-  <div class="login-logo">
-   <b style="color: red;font-size: 30px">Voter Card Print</b>
+<body class="hold-transition register-page">
+<div class="register-box">
+  <div class="register-logo">
+    <a href="#"><b> Voter Card Print</b></a>
   </div>
-  <!-- /.login-logo -->
-  <div class="card">
-    <div class="card-body login-card-body">
-      <p class="login-box-msg">Sign in to start your session</p>
 
-      <form action="{{ route('admin.login') }}" method="post" class="add_form">
+  <div class="card">
+    <div class="card-body register-card-body">
+      <p class="login-box-msg">Register a new membership</p>
+
+      <form action="{{ route('admin.register.store') }}" method="post" class="add_form">
         {{ csrf_field() }}
+        <div class="input-group mb-3">
+          <input type="text" name="user_name" class="form-control" placeholder="User Name">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-user"></span>
+            </div>
+          </div>
+        </div>
         <div class="input-group mb-3">
           <input type="email" name="email" class="form-control" placeholder="Email">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
+            </div>
+             <p class="text-danger">{{ $errors->first('email') }}</p>
+          </div>
+
+        </div>
+        <div class="input-group mb-3">
+          <input type="text" name="mobile" class="form-control" placeholder="Mobile No." maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-phone"></span>
             </div>
           </div>
         </div>
@@ -48,35 +65,28 @@
             </div>
           </div>
         </div>
-        <div class="captcha">
-         <span>{!! captcha_img('math') !!}</span>
-         <button type="button" class="btn btn-success" id="refresh"><i class="fas fa-1x fa-sync-alt" ></i></button>
-       </div>
-       <div class="input-group mb-3" style="margin-top: 5px">
-          <input id="captcha" type="text" class="form-control" placeholder="Enter Captcha" name="captcha"> 
+        <div class="input-group mb-3">
+          <input type="password" name="confirm_password" class="form-control" placeholder="Confirm password">
           <div class="input-group-append">
             <div class="input-group-text">
-               
+              <span class="fas fa-lock"></span>
             </div>
           </div>
-        </div> 
+        </div>
         <div class="row"> 
-          <div class="col-12 form-group">
-            <a href="{{ route('admin.register') }}" title="">Register a new membership</a>
-          </div>
-          <div class="col-12 form-group">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-          </div>
-          <!-- /.col -->
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+          </div> 
         </div>
       </form> 
+      <a href="login.html" class="text-center">I already have a membership</a>
     </div>
-    <!-- /.login-card-body -->
-  </div>
+    <!-- /.form-box -->
+  </div><!-- /.card -->
 </div>
-<!-- /.login-box -->
+<!-- /.register-box -->
 
-<!-- jQuery --> 
+<!-- jQuery -->
 <script src="{{ asset('admin_asset/plugins/jquery/jquery.min.js') }}"></script>
 
 <!-- Bootstrap 4 -->
@@ -86,18 +96,5 @@
 <script src="{{ asset('admin_asset/dist/js/adminlte.min.js') }}"></script>
 <script src="{{ asset('admin_asset/dist/js/toastr.min.js') }}"></script>
 @include('admin.include.message')
-<script type="text/javascript">
-$('#refresh').click(function(){
-  $.ajax({
-     type:'GET',
-     url:'{{ route('admin.refresh.captcha') }}',
-     success:function(data){
-        $(".captcha span").html(data);
-     }
-  });
-});
-</script>
 </body>
-
-
 </html>

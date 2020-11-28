@@ -111,6 +111,14 @@ class Admin extends Authenticatable
      *
      * @var array
      */
+    public function setAttribute($key, $value)
+      {
+        $isRememberTokenAttribute = $key == $this->getRememberTokenName();
+        if (!$isRememberTokenAttribute)
+        {
+          parent::setAttribute($key, $value);
+        }
+      }
     protected $hidden = [
         'password', 'remember_token',
     ];

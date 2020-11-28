@@ -17,6 +17,11 @@ class WalletController extends Controller
        $paymentModes=PaymentMode::all();	 
        return view('admin.wallet.payment_option',compact('paymentModes'));  
     }
+    public function paymentOptionChange(Request $request)
+    {
+       $paymentmodeid=$request->id;
+       return view('admin.wallet.payment_option_form',compact('paymentmodeid'));
+    }
     public function paymentOptionStore(Request $request)
     {   
     	$rules=[  

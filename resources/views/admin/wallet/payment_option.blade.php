@@ -16,38 +16,18 @@
                 <form action="{{ route('admin.wallet.payment.option.store') }}" method="post" class="add_form">
                 {{ csrf_field() }}
                 <div class="row"> 
-                    <div class="col-lg-4 form-group">
+                    <div class="col-lg-12 form-group">
                         <label>Payment Mode</label>
-                        <select name="payment_mode" class="form-control">
+                        <select name="payment_mode" class="form-control" onchange="callAjax(this,'{{ route('admin.wallet.payment.option.change') }}','payment_option_form')">
                             <option selected disabled>Select Payment Mode</option>
                             @foreach ($paymentModes as $paymentMode)
                              <option value="{{ $paymentMode->id }}">{{ $paymentMode->name }}</option>  
                             @endforeach
                          </select> 
-                    </div> 
-                    <div class="col-lg-4 form-group">
-                        <label>Account No.</label>
-                        <input type="text" name="account_no" class="form-control"> 
                     </div>
-                    <div class="col-lg-4 form-group">
-                        <label>Ifsc Code</label>
-                        <input type="text" name="ifsc_code" class="form-control"> 
-                    </div>
-                    <div class="col-lg-4 form-group">
-                        <label>Bank Name</label>
-                        <input type="text" name="bank_name" class="form-control"> 
-                    </div>
-                    <div class="col-lg-4 form-group">
-                        <label>Branch Name</label>
-                        <input type="text" name="branch_name" class="form-control">
-                    </div>
-                    <div class="col-lg-4 form-group">
-                        <label>QR Code</label>
-                        <input type="file" name="qr_code" class="form-control"> 
-                    </div>
-                    <div class="col-lg-12 form-group"> 
-                        <input type="submit" class="form-control btn btn-primary">
-                    </div>
+                </div>
+                <div  id="payment_option_form">
+                     
                 </div> 
                 </form> 
              </div>
