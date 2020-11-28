@@ -29,7 +29,31 @@
                 <div  id="payment_option_form">
                      
                 </div> 
-                </form> 
+                </form>
+                <table class="table table-striped table-bordered">
+                     <thead>
+                         <tr>
+                             <th>Payment Mode</th>
+                             <th>Account No.</th>
+                             <th>Ifsc Code</th>
+                             <th>Account Name</th> 
+                             <th>Action</th> 
+                         </tr>
+                     </thead>
+                     <tbody>
+                        @foreach ($paymentOptions as $paymentOption) 
+                         <tr>
+                             <td>{{ $paymentOption->paymentMode->name or '' }}</td>
+                             <td>{{ $paymentOption->account_no }}</td>
+                             <td>{{ $paymentOption->ifsc_code }}</td>
+                             <td>{{ $paymentOption->account_name }}</td>
+                             <td>
+                                 <a href="" title="" class="btn btn-xs btn-primary">Active</a>
+                             </td>
+                         </tr>
+                        @endforeach
+                     </tbody>
+                 </table> 
              </div>
          </div>
      </div>
