@@ -1,4 +1,4 @@
-@if ($paymentmodeid==1)
+@if ($payment_mode_id==1)
 <table class="table table-striped table-bordered">
      <thead>
          <tr>
@@ -11,7 +11,7 @@
      </thead>
      <tbody>
         @foreach ($paymentOptions as $paymentOption) 
-         <tr style="{{ $paymentOption->status==1?'background-color: #48a40d':'#6064600d' }}">
+         <tr >
              <td>{{ $paymentOption->paymentMode->name or '' }}</td>
              <td>{{ $paymentOption->account_no }}</td>
              <td>{{ $paymentOption->ifsc_code }}</td>
@@ -32,9 +32,9 @@
      </thead>
      <tbody>
         @foreach ($paymentOptions as $paymentOption) 
-         <tr style="{{ $paymentOption->status==1?'background-color: #48a40d':'#6064600d' }}"> 
+         <tr> 
              <td>{{ $paymentOption->account_name }}</td>
-             <td>{{ $paymentOption->account_name }}</td>
+             <td><img src="{{ url('storage/app/'.$paymentOption->qr_code) }}" alt="" title="" /></td>
              
          </tr>
         @endforeach

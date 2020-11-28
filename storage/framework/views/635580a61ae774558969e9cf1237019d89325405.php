@@ -12,7 +12,7 @@
         </div> 
         <div class="card card-info"> 
             <div class="card-body">
-                <form action="<?php echo e(route('admin.wallet.payment.option.store')); ?>" method="post" class="add_form">
+                <form action="<?php echo e(route('admin.wallet.payment.option.store')); ?>" method="post" class="add_form" content-refresh="payment_option_list">
                 <?php echo e(csrf_field()); ?>
 
                 <div class="row"> 
@@ -30,7 +30,7 @@
                      
                 </div> 
                 </form>
-                <table class="table table-striped table-bordered">
+                <table class="table table-striped table-bordered" id="payment_option_list">
                      <thead>
                          <tr>
                              <th>Payment Mode</th>
@@ -41,14 +41,28 @@
                          </tr>
                      </thead>
                      <tbody>
-                        <?php $__currentLoopData = $paymentOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $paymentOption): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?> 
+                        <?php $__currentLoopData = $paymentOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $paymentOption): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php 
+                            $image  =\Storage_path('app'.$paymentOption->qr_code);
+                        ?>      
                          <tr style="<?php echo e($paymentOption->status==1?'background-color: #48a40d':'#6064600d'); ?>">
                              <td><?php echo e(isset($paymentOption->paymentMode->name) ? $paymentOption->paymentMode->name : ''); ?></td>
-                             <td><?php echo e($paymentOption->account_no); ?></td>
+                             <td>
+                                <?php if($paymentOption->account_no==null): ?>
+                                <img src="<?php echo e($image); ?>" alt="" width="30px" height="30px">
+                                <?php else: ?>
+                                <?php echo e($paymentOption->account_no); ?> 
+                                <?php endif; ?>
+                            </td>
                              <td><?php echo e($paymentOption->ifsc_code); ?></td>
                              <td><?php echo e($paymentOption->account_name); ?></td>
                              <td>
-                                 <a href="<?php echo e(route('admin.wallet.payment.option.status',$paymentOption->id)); ?>" title="" class="btn btn-xs btn-success">Active</a>
+                                <?php if($paymentOption->status==1): ?>
+                                  <a href="<?php echo e(route('admin.wallet.payment.option.status',$paymentOption->id)); ?>" title="" class="btn btn-xs btn-success">Active</a>   
+                                <?php endif; ?>
+                                <?php if($paymentOption->status==0): ?>
+                                    <a href="<?php echo e(route('admin.wallet.payment.option.status',$paymentOption->id)); ?>" title="" class="btn btn-xs btn-default">InActive</a>
+                                <?php endif; ?> 
                              </td>
                          </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

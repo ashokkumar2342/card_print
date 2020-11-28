@@ -144,6 +144,6 @@ class WalletController extends Controller
         }else{
             $paymentOptions=PaymentOption::where('user_id',$user->created_by)->where('payment_mode_id',$payment_mode_id)->where('status',1)->get();
         } 
-       return view('admin.wallet.payment_option_show',compact('paymentOptions'));
+       return view('admin.wallet.payment_option_show',compact('paymentOptions','payment_mode_id'));
     }
 }
