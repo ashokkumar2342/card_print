@@ -22,6 +22,7 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::get('payment-option', 'WalletController@paymentOption')->name('admin.wallet.payment.option');
 		Route::get('payment-option-change', 'WalletController@paymentOptionChange')->name('admin.wallet.payment.option.change');
 		Route::post('payment-option-store', 'WalletController@paymentOptionStore')->name('admin.wallet.payment.option.store');
+		Route::get('payment-option-status/{id}', 'WalletController@paymentOptionStatus')->name('admin.wallet.payment.option.status');
 		Route::get('cashbook', 'WalletController@cashbook')->name('admin.wallet.cashbook');
 		Route::post('cashbook-store', 'WalletController@cashbookStore')->name('admin.wallet.cashbook.store');
 		Route::get('recharge-wallet', 'WalletController@rechargeWallet')->name('admin.wallet.recharge.wallet');

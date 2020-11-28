@@ -63,13 +63,14 @@ class WalletController extends Controller
        //--start-image-save
        if ($request->payment_mode!=1) { 
     	    $dirpath = Storage_path() . '/app/qrcode/'.$PaymentOption->id;
-    	    $vpath = 'app/qrcode/'.$PaymentOption->id;
+    	    $vpath = '/qrcode/'.$PaymentOption->id;
     	    @mkdir($dirpath, 0755, true);
     	    $file =$request->qr_code;
     	    $imagedata = file_get_contents($file);
     	    $encode = base64_encode($imagedata);
-    	    $image=base64_decode($encode); 
-    	    $image= \Storage::disk('local')->put($vpath.'/'.$PaymentOption->id.'.jpg',$image);
+    	    $image=base64_decode($encode);
+          $name=$PaymentOption->id; 
+    	    $image= \Storage::disk('local')->put($vpath.'/'.$name.'.jpg',$image);
           $PaymentOptions=PaymentOption::find($PaymentOption->id);
           $PaymentOptions->qr_code=$vpath.'/'.$PaymentOption->id.'.jpg'; 
           $PaymentOptions->save(); 
@@ -77,6 +78,17 @@ class WalletController extends Controller
 	    //--end-image-save 
        $response=['status'=>1,'msg'=>'Submit Successfully'];
             return response()->json($response);
+    }
+    public function paymentOptionStatus($id)
+    {
+      $PaymentOptions=PaymentOption::find($id);
+      if ($PaymentOptions->status==1) {
+          $PaymentOptions->status=0; 
+       }
+      elseif ($PaymentOptions->status==0) {
+          $PaymentOptions->status=1; 
+       }
+       $PaymentOptions->save(); 
     }
     public function cashbook()
     {  

@@ -42,13 +42,13 @@
                      </thead>
                      <tbody>
                         @foreach ($paymentOptions as $paymentOption) 
-                         <tr>
+                         <tr style="{{ $paymentOption->status==1?'background-color: #48a40d':'#6064600d' }}">
                              <td>{{ $paymentOption->paymentMode->name or '' }}</td>
                              <td>{{ $paymentOption->account_no }}</td>
                              <td>{{ $paymentOption->ifsc_code }}</td>
                              <td>{{ $paymentOption->account_name }}</td>
                              <td>
-                                 <a href="" title="" class="btn btn-xs btn-primary">Active</a>
+                                 <a href="{{ route('admin.wallet.payment.option.status',$paymentOption->id) }}" title="" class="btn btn-xs btn-success">Active</a>
                              </td>
                          </tr>
                         @endforeach

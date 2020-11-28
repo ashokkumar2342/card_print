@@ -42,13 +42,13 @@
                      </thead>
                      <tbody>
                         <?php $__currentLoopData = $paymentOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $paymentOption): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?> 
-                         <tr>
+                         <tr style="<?php echo e($paymentOption->status==1?'background-color: #48a40d':'#6064600d'); ?>">
                              <td><?php echo e(isset($paymentOption->paymentMode->name) ? $paymentOption->paymentMode->name : ''); ?></td>
                              <td><?php echo e($paymentOption->account_no); ?></td>
                              <td><?php echo e($paymentOption->ifsc_code); ?></td>
                              <td><?php echo e($paymentOption->account_name); ?></td>
                              <td>
-                                 <a href="" title="" class="btn btn-xs btn-primary">Active</a>
+                                 <a href="<?php echo e(route('admin.wallet.payment.option.status',$paymentOption->id)); ?>" title="" class="btn btn-xs btn-success">Active</a>
                              </td>
                          </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
