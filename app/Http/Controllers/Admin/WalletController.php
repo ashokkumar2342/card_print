@@ -14,8 +14,9 @@ class WalletController extends Controller
 {
     public function paymentOption()
     {  
+       $user=Auth::guard('admin')->user();
        $paymentModes=PaymentMode::all();	 
-       $paymentOptions=PaymentOption::all();   
+       $paymentOptions=PaymentOption::where('user_id',$user->id)->get();   
        return view('admin.wallet.payment_option',compact('paymentModes','paymentOptions'));  
     }
     public function paymentOptionChange(Request $request)
@@ -88,7 +89,8 @@ class WalletController extends Controller
       elseif ($PaymentOptions->status==0) {
           $PaymentOptions->status=1; 
        }
-       $PaymentOptions->save(); 
+       $PaymentOptions->save();
+       return redirect()->back()->with(['message'=>'Successfully','class'=>'success']); 
     }
     public function cashbook()
     {  

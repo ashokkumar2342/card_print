@@ -13,7 +13,7 @@
         </div> 
         <div class="card card-info"> 
             <div class="card-body">
-                <form action="{{ route('admin.wallet.payment.option.store') }}" method="post" class="add_form">
+                <form action="{{ route('admin.wallet.payment.option.store') }}" method="post" class="add_form" content-refresh="payment_option_list">
                 {{ csrf_field() }}
                 <div class="row"> 
                     <div class="col-lg-12 form-group">
@@ -30,7 +30,7 @@
                      
                 </div> 
                 </form>
-                <table class="table table-striped table-bordered">
+                <table class="table table-striped table-bordered" id="payment_option_list">
                      <thead>
                          <tr>
                              <th>Payment Mode</th>
@@ -41,14 +41,28 @@
                          </tr>
                      </thead>
                      <tbody>
-                        @foreach ($paymentOptions as $paymentOption) 
+                        @foreach ($paymentOptions as $paymentOption)
+                        @php 
+                            $image  =\Storage_path('app'.$paymentOption->qr_code);
+                        @endphp      
                          <tr style="{{ $paymentOption->status==1?'background-color: #48a40d':'#6064600d' }}">
                              <td>{{ $paymentOption->paymentMode->name or '' }}</td>
-                             <td>{{ $paymentOption->account_no }}</td>
+                             <td>
+                                @if ($paymentOption->account_no==null)
+                                <img src="{{ $image }}" alt="" width="30px" height="30px">
+                                @else
+                                {{ $paymentOption->account_no }} 
+                                @endif
+                            </td>
                              <td>{{ $paymentOption->ifsc_code }}</td>
                              <td>{{ $paymentOption->account_name }}</td>
                              <td>
-                                 <a href="{{ route('admin.wallet.payment.option.status',$paymentOption->id) }}" title="" class="btn btn-xs btn-success">Active</a>
+                                @if ($paymentOption->status==1)
+                                  <a href="{{ route('admin.wallet.payment.option.status',$paymentOption->id) }}" title="" class="btn btn-xs btn-success">Active</a>   
+                                @endif
+                                @if ($paymentOption->status==0)
+                                    <a href="{{ route('admin.wallet.payment.option.status',$paymentOption->id) }}" title="" class="btn btn-xs btn-default">InActive</a>
+                                @endif 
                              </td>
                          </tr>
                         @endforeach
