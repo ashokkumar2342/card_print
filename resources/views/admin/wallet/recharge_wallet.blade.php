@@ -13,10 +13,10 @@
         </div> 
         <div class="card card-info"> 
             <div class="card-body">
-                {{-- <form action="{{ route('admin.wallet.payment.option.store') }}" method="post" class="add_form">
+                <form action="{{ route('admin.wallet.cashbook.store') }}" method="post" class="add_form">
                 {{ csrf_field() }}
                 <div class="row"> 
-                    <div class="col-lg-4 form-group">
+                    <div class="col-lg-3 form-group">
                         <label>Payment Mode</label>
                         <select name="payment_mode" class="form-control">
                             <option selected disabled>Select Payment Mode</option>
@@ -25,31 +25,24 @@
                             @endforeach
                          </select> 
                     </div> 
-                    <div class="col-lg-4 form-group">
-                        <label>Account No.</label>
-                        <input type="text" name="account_no" class="form-control"> 
+                    <div class="col-lg-3 form-group">
+                        <label>Transaction Date</label>
+                        <input type="date" name="transaction_date" class="form-control"> 
                     </div>
-                    <div class="col-lg-4 form-group">
-                        <label>Ifsc Code</label>
-                        <input type="text" name="ifsc_code" class="form-control"> 
+                    <div class="col-lg-3 form-group">
+                        <label>Amount</label>
+                        <input type="text" name="amount" class="form-control"> 
                     </div>
-                    <div class="col-lg-4 form-group">
-                        <label>Bank Name</label>
-                        <input type="text" name="bank_name" class="form-control"> 
+                    <div class="col-lg-3 form-group">
+                        <label>Transaction No</label>
+                        <input type="text" name="transaction_no" class="form-control"> 
                     </div>
-                    <div class="col-lg-4 form-group">
-                        <label>Branch Name</label>
-                        <input type="text" name="branch_name" class="form-control">
-                    </div>
-                    <div class="col-lg-4 form-group">
-                        <label>QR Code</label>
-                        <input type="file" name="qr_code" class="form-control"> 
-                    </div>
+                    
                     <div class="col-lg-12 form-group"> 
                         <input type="submit" class="form-control btn btn-primary">
                     </div>
                 </div> 
-                </form> --}} 
+                </form> 
              </div>
          </div>
      </div>
