@@ -87,6 +87,9 @@ class WalletController extends Controller
     {   
     	$rules=[  
         "payment_mode" => 'required', 
+        "transaction_date" => 'required', 
+        "amount" => 'required', 
+        "transaction_no" => 'required', 
     	]; 
         $validator = Validator::make($request->all(),$rules);
         if ($validator->fails()) {
@@ -96,24 +99,25 @@ class WalletController extends Controller
             $response["msg"]=$errors[0];
             return response()->json($response);// response as json
         }
-       $user=Auth::guard()->user();
+       $user=Auth::guard('admin')->user(); 
        $Cashbook=new Cashbook();
        $Cashbook->user_id=$user->id; 
        $Cashbook->payment_mode_id=$request->payment_mode;
-       $Cashbook->amount=$request->amount;
+       $Cashbook->camount=$request->amount;
+       $Cashbook->damount='';
        $Cashbook->transaction_no=$request->transaction_no;
-       $Cashbook->transaction_date_time=$request->transaction_date_time;
-       $Cashbook->payment_type=$request->payment_type;
-       $Cashbook->balance=$request->balance;
-       $Cashbook->remarks=$request->remarks;
-       $Cashbook->status=0;
+       $Cashbook->transaction_date_time=$request->transaction_date;
+       $Cashbook->transaction_type=1;
+       $Cashbook->balance=0;
+       $Cashbook->remarks='Recharge Wallet';
+       $Cashbook->status=1;
        $Cashbook->save();
        $response=['status'=>1,'msg'=>'Submit Successfully'];
             return response()->json($response);
     }
     public function rechargeWallet()
     {  
-        	 
+      $paymentModes=PaymentMode::all(); 
        return view('admin.wallet.recharge_wallet',compact('paymentModes'));  
     }  
 }
