@@ -5,6 +5,16 @@
 </head>
 <style type="text/css">
 	@page{margin:10;} 
+
+
+	.test {
+    width:95px;
+    height:125px;
+    background-image: url('{{ $bimage }}');
+    background-repeat:no-repeat;background-size:95px 125px;
+    border: 1px solid black;
+    vertical-align: top;
+}
 </style>
 <body>
 	<table>
@@ -12,88 +22,85 @@
 			<th></th> 
 		</tr>
 	</table> 
-	<table style="margin-top: 80px" width="100%">
+	<table style="margin-top: 75px" width="100%">
 		<tr>
-			<th width="45%"><barcode code="{{ $value }}" height="0.7" type="C128B" class="barcode" /></th>
-			<th width="55%" style="font-size: 17px;padding-left: 8px">{{ $value }}</th>
+			<th width="45%"><barcode code="{{ $vcardno }}" height="{{ $bcheight }}" type="C128B" size = "{{ $bcsize }}" class="barcode" /></th>
+			<th width="55%" style="font-size: 15px;padding-left: 9px">{{ $vcardno }}</th>
 		</tr>
 	</table>
 	@php  
-	$dirpath = '/app/vimage/'.'1'.'/'.'1';
-	$name =1;
-	$image  =\Storage_path($dirpath.'/'.$name.'.jpg');
+		// list($width, $height, $type, $attr) = getimagesize($image);
+		
 	@endphp
-	<table style="margin-top:2px;padding-left: 5px">
+	<table style="margin-top:3px;padding-left: 5px">
 		<tr>
-			<td width="20%"></td>
-			<td width="60%"><img src="{{ $image }}" alt="" width="100px" height="120px"> </td>
-			<td width="20%"></td>
+			<td width="28%"></td>
+			<td  class="test" width="60%"><img src="{{ $image }}" alt="" width = "{{ $width }}px" height = "{{ $height }}px"></td>
+			<td width="12%"></td>
 		</tr>
 	</table>
 	<table>
 		<tr>
-			<td style="width: 300px;font-size: 15px;">नाम : सन्तोष </td> 
+			<td style="width: 300px;font-size: 19px;">नाम : {{ $name_l }}</td> 
 		</tr>
 	</table>
 	<table>
 		<tr>
-			<td style="width: 300px;font-size: 15px;font-weight: bold;padding-top:6px">Name : SANTOSH</td> 
+			<td style="width: 300px;font-size: 15px;font-weight: bold;padding-top:6px">Name : {{ $name_e }}</td> 
 		</tr>
 	</table>
 	<table>
 		<tr>
-			<td style="width: 300px;font-size: 15px;padding-top:6px">पिता का नाम : महेन्द्र सिंह </td> 
+			<td style="width: 300px;font-size: 19px;padding-top:6px">{{ $rln_l }} का नाम : {{ $rname_l }}</td> 
 		</tr>
 	</table>
 	<table>
 		<tr>
-			<td style="width: 300px;font-size: 15px;font-weight: bold;padding-top:6px">Father's Name : MAHENDER SINGH</td>
+			<td style="width: 300px;font-size: 15px;font-weight: bold;padding-top:6px">{{ $rln_e }}'s Name : {{ $rname_e }}</td>
 		</tr>
 	</table>
 	<pagebreak>
 	<table style="font-size: 7px" width="100%">
 		<tr>
-			<td style="width:55px">लिंग/<b>Gender</b> :</td>
-			<td style="width:45px">महिला &nbsp;/&nbsp; <b>Female</b></td>
-		</tr> 
-	</table>
-	<table style="font-size: 7px;margin-top: -3px" width="60%">
-		<tr> 
-			<td>जन्म तिथि / आयु :<br><b>Data of birth / Age</b> :</td>
-			<td><b>65</b></td> 
+			<td style="width:50%"><span style ="font-size: 8.5px;">लिंग</span>/<b>Gender</b> :</td>
+			<td style="width:50%"><span style ="font-size: 8.5px;">{{ $gender_l }}</span> &nbsp;/&nbsp; <b>{{ $gender_e }}</b></td>
 		</tr> 
 	</table>
 	<table style="font-size: 7px;margin-top: -3px" width="100%">
 		<tr> 
-			<td>पता: म.नं.161, गांव-नूना माजरा, तह-बहादुरगढ़, जिला-झज्जर<br>
-			<b>Address : HNo.161, VILL-NUNA MAJRA,TEH-BAHADURGRAH, DIST-JHAJJSR</b></td>
+			<td style="width:50%"><span style ="font-size: 8.5px;">जन्म तिथि/आयु :</span><br><b>Data of Birth/ Age</b> :</td>
+			<td style="width:50%; vertical-align: top;"><b>{{ $age_dob }}</b></td>	
+		</tr> 
+	</table>
+	<table style="font-size: 7px;margin-top: -3px" width="100%">
+		<tr> 
+			<td><span style ="font-size: 8.5px;">पता: {{ $add_l }}</span><br>
+			<b>Address : {{ $add_e }}</b></td>
 			 
 		</tr> 
 	</table>
-	<table width="100%">
+	<table width="100%" style="font-size: 7px;margin-top: -5px" >
 		<tr> 
-			<td></td> 
+			<td style="padding-left: 100px"><img src="{{ $signimg }}" alt="" height="20px"></td> 
 		</tr> 
 	</table>
-	<table style="font-size: 7px" width="100%">
+	<table style="font-size: 7px; margin-top: -5px" width="100%">
 		<tr> 
-			<td>तिथि /<b> Date : 29-09-2020</b></td> 
-			<td>निर्वाचक रजिस्ट्रीकरण अधिकारी <br><b>Electoral Ragistration Officer</b></td> 
+			<td style="vertical-align: top;"><span style ="font-size: 8.5px;">तिथि</span>/<b> Date : {{ $cdate }}</b></td> 
+			<td><span style ="font-size: 8.5px;">निर्वाचक रजिस्ट्रीकरण अधिकारी </span><br><b>Electoral Ragistration Officer</b></td> 
 		</tr> 
 	</table>
-	<table style="font-size: 7px" width="100%">
+	<table width="100%" style="font-size: 7px">
 		<tr> 
-			<td>विधान सभा निर्वाचन क्षेत्र संख्या व नाम : 64-बहादुरगढ़ <br> <b>Assembly Constituency No. and Name : 64-BAHADURGRAH</b></td> 
-			 
+			<td><span style ="font-size: 8.5px;">विधान सभा निर्वाचन क्षेत्र संख्या व नाम : {{ $acno_name_l }}</span><br><b>Assembly Constituency No. and Name : {{ $acno_name_e }}</b></td>
 		</tr> 
 	</table>
-	<table style="font-size: 7px" width="100%">
+	<table style="font-size: 7px;margin-top: -4px" width="100%">
 		<tr> 
-			<td>भाग संख्या व नाम : 208 नूना माजरा <br><b>Part No. And Name :208-NUNA MAJRA</b></td> 
-			 
+			<td><span style ="font-size: 8.5px;">भाग संख्या व नाम : {{ $partno_name_l }}</span><br><b>Part No. and Name :{{ $partno_name_e }}</b></td>
 		</tr> 
 	</table>
 	<div style="position: absolute;overflow: visible;left: 50;margin-top:170px;
-    margin-bottom: auto;font-size: 7px"><b>Old EPIC No.- HR/04/37/0471626</b></div>
+    margin-bottom: auto;font-size: 7px"><b>&nbsp;</b></div>
 </body>
 </html>

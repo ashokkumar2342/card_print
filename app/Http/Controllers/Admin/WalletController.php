@@ -73,7 +73,7 @@ class WalletController extends Controller
         }
        $user=Auth::guard()->user();
        $Cashbook=new Cashbook();
-       $Cashbook->user_id=$user->id;
+       $Cashbook->user_id=$user->id; 
        $Cashbook->payment_mode_id=$request->payment_mode;
        $Cashbook->amount=$request->amount;
        $Cashbook->transaction_no=$request->transaction_no;
