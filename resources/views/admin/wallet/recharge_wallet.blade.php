@@ -18,7 +18,7 @@
                 <div class="row"> 
                     <div class="col-lg-3 form-group">
                         <label>Payment Mode</label>
-                        <select name="payment_mode" class="form-control">
+                        <select name="payment_mode" class="form-control" onchange="callAjax(this,'{{ route('admin.wallet.payment.option.show') }}','payment_option_show')">
                             <option selected disabled>Select Payment Mode</option>
                             @foreach ($paymentModes as $paymentMode)
                              <option value="{{ $paymentMode->id }}">{{ $paymentMode->name }}</option>  
@@ -43,6 +43,9 @@
                     </div>
                 </div> 
                 </form> 
+             </div>
+             <div id="payment_option_show">
+                 
              </div>
          </div>
      </div>

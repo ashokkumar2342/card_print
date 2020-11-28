@@ -134,4 +134,16 @@ class WalletController extends Controller
       $paymentModes=PaymentMode::all(); 
        return view('admin.wallet.recharge_wallet',compact('paymentModes'));  
     }  
+    public function paymentOptionShow(Request $request)
+    {
+      $payment_mode_id =$request->id;
+       $user=Auth::guard('admin')->user();
+        if ($user->created_by == 0) {
+
+            $paymentOptions=PaymentOption::whereIn('user_id',[1,2])->where('payment_mode_id',$payment_mode_id)->where('status',1)->get();
+        }else{
+            $paymentOptions=PaymentOption::where('user_id',$user->created_by)->where('payment_mode_id',$payment_mode_id)->where('status',1)->get();
+        } 
+       return view('admin.wallet.payment_option_show',compact('paymentOptions'));
+    }
 }

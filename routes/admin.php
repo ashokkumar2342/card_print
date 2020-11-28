@@ -26,6 +26,7 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::get('cashbook', 'WalletController@cashbook')->name('admin.wallet.cashbook');
 		Route::post('cashbook-store', 'WalletController@cashbookStore')->name('admin.wallet.cashbook.store');
 		Route::get('recharge-wallet', 'WalletController@rechargeWallet')->name('admin.wallet.recharge.wallet');
+		Route::get('payment-option-show', 'WalletController@paymentOptionShow')->name('admin.wallet.payment.option.show');
 		 
 	});
 	Route::prefix('CardPrint')->group(function () {
