@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Storage;  
+use Storage;
+use Auth;  
 
 class CardPrintController extends Controller
 {
@@ -44,9 +45,12 @@ class CardPrintController extends Controller
 
 
         $value=$request->voter_card_no;
-        // $user=Auth::guard()->user();
+        $user=Auth::guard('admin')->user();
 
-        // $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet`('$value', $user->id) as `result`;")); 
+        $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet`('$value', $user->id) as `result`;")); 
+        if ($transaction_status[0]->result!='success'){
+            return redirect()->back()->with(['message'=>$transaction_status[0]->result,'class'=>'error']);
+        }
          
         $voterData = DB::select(DB::raw("select * from data_voters `dv` Inner Join `gender_detail` `gd` on `gd`.`code` = `dv`.`gender` Inner Join `rln_detail` `rd` on `rd`.`code` = `dv`.`relation` where cardno = '$value';"));
         
