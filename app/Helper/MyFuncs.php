@@ -126,6 +126,18 @@ class MyFuncs {
        }          
 
    }
+     //Main menu  check
+  public static function mainMenuCheck($menu_id){ 
+     $user =Auth::guard('admin')->user();
+      
+     return UsersPermission::where('role_id',$user->role_id)->where('status',1)->where('main_menu_id',$menu_id)->exists();  
+   }
+  //Main menu  check
+  public static function subMenuCheck($menu_id,$sub_menu_id){ 
+     $user =Auth::guard('admin')->user();
+      
+     return UsersPermission::where('role_id',$user->role_id)->where('status',1)->where('main_menu_id',$menu_id)->where('sub_menu_id',$sub_menu_id)->exists();  
+   }
 // // read write delete permission check
 //   public static function userHasMinu(){ 
 //     return array_pluck(Minu::where('admin_id',Auth::guard('admin')->user()->id)->where('status',1)->distinct()->get(['minu_id'])->toArray(), 'minu_id');

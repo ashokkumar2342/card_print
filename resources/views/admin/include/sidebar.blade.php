@@ -12,29 +12,33 @@
         @endphp
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false"> 
+                @if (App\Helper\MyFuncs::mainMenuCheck($mainMenu->id))
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link"> 
                         <p>
-                            {{ $mainMenu->menu_name }}
+                            {{ $mainMenu->menu_name }}  
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         @foreach ($subMenus as $subMenu)
+                        @if (App\Helper\MyFuncs::subMenuCheck($mainMenu->id,$subMenu->id))
                         <li class="nav-item">
                             <a href="{{ route(''.$subMenu->link) }}" class="nav-link" style="background-color:#01050a"> 
                                 <p>{{ $subMenu->sub_menu_name }}</p>
                             </a>
                         </li>
+                        @endif
                         @endforeach 
                     </ul>
                 </li>
+                @endif
                 @endforeach
-                <a href="{{ route('admin.card.print.index') }}" class="nav-link"> 
+               {{--  <a href="{{ route('admin.card.print.index') }}" class="nav-link"> 
                         <p>
                             Card Print
                         </p>
-                    </a>
+                    </a> --}}
             </ul>
         </nav>
     </div>

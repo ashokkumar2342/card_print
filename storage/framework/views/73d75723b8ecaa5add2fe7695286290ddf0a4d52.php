@@ -12,30 +12,29 @@
         ?>
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false"> 
+                <?php if(App\Helper\MyFuncs::mainMenuCheck($mainMenu->id)): ?>
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link"> 
                         <p>
-                            <?php echo e($mainMenu->menu_name); ?>
-
+                            <?php echo e($mainMenu->menu_name); ?>  
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <?php $__currentLoopData = $subMenus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subMenu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php if(App\Helper\MyFuncs::subMenuCheck($mainMenu->id,$subMenu->id)): ?>
                         <li class="nav-item">
                             <a href="<?php echo e(route(''.$subMenu->link)); ?>" class="nav-link" style="background-color:#01050a"> 
                                 <p><?php echo e($subMenu->sub_menu_name); ?></p>
                             </a>
                         </li>
+                        <?php endif; ?>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?> 
                     </ul>
                 </li>
+                <?php endif; ?>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                <a href="<?php echo e(route('admin.card.print.index')); ?>" class="nav-link"> 
-                        <p>
-                            Card Print
-                        </p>
-                    </a>
+               
             </ul>
         </nav>
     </div>
