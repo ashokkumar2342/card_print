@@ -43,7 +43,7 @@ class DataTransfer extends Command
         ini_set("pcre.backtrack_limit", "5000000");
         // $datas = DB::connection('sqlsrv')->select("select AC_NO, PART_NO, SECTION_NO, SlNoInPart, C_House_no, C_House_No_V1, FM_Name_EN + ' ' + IsNULL(LastName_EN,'') as name_en, FM_Name_V1 + ' ' + isNULL(LastName_V1,'') as name_l, RLN_Type, RLN_FM_NM_EN + ' ' + IsNULL(RLN_L_NM_EN,'') as fname_en, RLN_FM_NM_V1 + ' ' + IsNULL(RLN_L_NM_V1,'') as FName_L, EPIC_No, GENDER, AGE, DOB, EMAIL_ID, MOBILE_NO from dataall where ac_no in (89,90) ");
 
-        $datas = DB::connection('sqlsrv')->select("Select District_ID, Tahsil_ID, Tahsil_Name_v1, Tahsil_Name_En From Tahsils");
+        $datas = DB::connection('sqlsrv')->select("Select Select District_ID, NNN_ID, NNN_Name_v1, NNN_Name_En, tashil_id From NNN From Tahsils");
         $servername = "127.0.0.1";
         $username = "root";
         $password = "";
@@ -60,7 +60,7 @@ class DataTransfer extends Command
         // echo "New record created successfully";
         foreach ($datas as $key => $value) { 
        
-            // $name_l=str_replace('਍', '', $value->name_l);
+            $name_l=str_replace('਍', '', $value->NNN_Name_v1);
             // $name_e=str_replace('਍', '', $value->name_en);
             // $f_name_e=str_replace('਍', '', $value->fname_en);
             // $f_name_l=str_replace('਍', '', $value->FName_L);
@@ -73,7 +73,7 @@ class DataTransfer extends Command
 
             $name_l=str_replace('਍', '', $value->Tahsil_Name_v1);
             
-            $sql = "Insert Into `tahsils` (`d_id`, `Tahsil_ID`, `Name_l`, `Name_e`) Values ('$value->District_ID', '$value->Tahsil_ID', '$name_l', '$value->Tahsil_Name_En');";
+            $sql = "Insert Into `nnn` (`d_id`, `NNN_ID`, `Name_l`, `Name_e`, `tashil_id`) Values ('$value->District_ID', '$value->NNN_ID', '$name_l', '$value->NNN_Name_En', '$value->tashil_id');";
             mysqli_query($conn, $sql);
             // if (mysqli_query($conn, $sql)) {
             //   echo "New record created successfully";

@@ -13,19 +13,19 @@
                 <input type="hidden" name="op_id" value="{{ $op_id }}"> 
                     <div class="col-lg-6">
                         <div class="form-group">
-                            <label>Charge Card</label>
+                            <label>Charge Per Card (Rs.)</label>
                             <span class="fa fa-asterisk"></span> 
                             <div class="input-group"> 
-                                <input type="text" Name="charge_card" class="form-control" maxlength="5" onkeypress='return event.charCode >= 48 && event.charCode <= 57' placeholder="Enter Charge Card">
+                                <input type="text" Name="charge_card" class="form-control" maxlength="2" onkeypress='return event.charCode >= 48 && event.charCode <= 57' placeholder="Enter Charge Card">
                             </div> 
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="form-group">
-                            <label>Free Card</label>
+                            <label>Free Card (Demo)</label>
                             <span class="fa fa-asterisk"></span> 
                             <div class="input-group"> 
-                                <input type="text" Name="free_card" class="form-control" maxlength="3" onkeypress='return event.charCode >= 48 && event.charCode <= 57' placeholder="Enter Free Card">
+                                <input type="text" Name="free_card" class="form-control" maxlength="1" onkeypress='return event.charCode >= 48 && event.charCode <= 57' placeholder="Enter Free Card">
                             </div> 
                         </div>
                     </div> 
