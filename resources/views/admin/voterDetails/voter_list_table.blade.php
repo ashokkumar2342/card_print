@@ -3,19 +3,28 @@
 	<thead>
 		<tr>
 			<th>Name</th>
-			<th>F/H Name</th>
-			<th>Action</th> 
+			<th>F/H Name</th> 
+			<th>Card No.</th> 
+			<th>Gender</th> 
+			<th>Age</th> 
+			<th>Mobile</th> 
 		</tr>
 	</thead>
 	<tbody>
-		@foreach ($voterlists as $voterlist)
+		@foreach ($voters as $voter)
 		<tr>
-			<td>{{ $voterlist->name_e }}</td>
-			<td>{{ $voterlist->father_name_e }}</td> 
-			<td>
-			<a  onclick="callPopupLarge(this,'{{ route('admin.voter.voteredit',$voterlist->id) }}')" title="Edit" class="btn btn-xs btn-info"><i class="fa fa-edit"></i></a>
-			<a success-popup="true" select-triger="village_select_box" onclick="callAjax(this,'{{ route('admin.voter.voterDelete',$voterlist->id) }}')" title="Delete" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a> 
-			</td> 
+			<td>{{ $voter->name_e }}</td>
+			<td>{{ $voter->f_name_e }}</td> 
+			<td>{{ $voter->cardno }}</td> 
+			<td>{{ $voter->gender }}</td> 
+			<td>{{ $voter->age }}</td>
+			@php
+			 	$mobile=$voter->mobile;
+			 	if (strlen($mobile) >=8) {
+			 		$mobile = 'xxxxxxx'.substr($mobile, strlen($mobile)-3);	
+			 	}
+			@endphp 
+			<td>{{ $mobile }}</td> 
 		</tr> 
 		@endforeach
 	</tbody>

@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Model\Cashbook;
 use App\Model\PaymentMode;
 use App\Model\PaymentOption;
+use App\Model\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;  
 
 class WalletController extends Controller
@@ -145,5 +147,48 @@ class WalletController extends Controller
             $paymentOptions=PaymentOption::where('user_id',$user->created_by)->where('payment_mode_id',$payment_mode_id)->where('status',1)->get();
         } 
        return view('admin.wallet.payment_option_show',compact('paymentOptions','payment_mode_id'));
+    }
+    public function rechargeRequest($value='')
+    { 
+      $user=Auth::guard('admin')->user();
+      $cashbooks=Cashbook::where('user_id',$user->id)->where('status',1)->get();
+      return view('admin.wallet.recharge_request',compact('cashbooks')); 
+    }
+    public function rechargeWalletInCash()
+    { 
+      $user=Auth::guard('admin')->user();
+      $users=User::where('created_by',$user->id)->get();
+      return view('admin.wallet.recharge_wallet_in_cash',compact('users')); 
+    }
+    public function rechargeWalletInCashStore(Request $request)
+    { 
+      $rules=[  
+        "user_id" => 'required', 
+        "amount" => 'required', 
+      ]; 
+      $validator = Validator::make($request->all(),$rules);
+      if ($validator->fails()) {
+          $errors = $validator->errors()->all();
+          $response=array();
+          $response["status"]=0;
+          $response["msg"]=$errors[0];
+          return response()->json($response);// response as json
+      }
+      $user=Auth::guard('admin')->user();
+      DB::select(DB::raw("call up_recharge_wallet_cash ('$user->id','$request->user_id','$request->amount')"));
+       $response=['status'=>1,'msg'=>'Submit Successfully'];
+            return response()->json($response); 
+    }
+    public function rechargeRequestApproval($id)
+    {
+      $user=Auth::guard('admin')->user();
+      DB::select(DB::raw("call up_approve_recharge_request ('$user->id','$id','0')"));
+      return redirect()->back()->with(['message'=>'Approved Successfully','class'=>'success']);
+    }
+    public function rechargeRequestReject($id)
+    {  
+      $user=Auth::guard('admin')->user();
+      DB::select(DB::raw("call up_approve_recharge_request ('$user->id','$id','2')"));
+      return redirect()->back()->with(['message'=>'Rejected Successfully','class'=>'success']);
     }
 }
