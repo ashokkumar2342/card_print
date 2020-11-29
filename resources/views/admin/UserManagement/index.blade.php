@@ -18,22 +18,23 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="exampleInputEmail1">First Name</label>
+                            <label for="exampleInputEmail1">Name</label>
                             <span class="fa fa-asterisk"></span>
-                            <input Name="user_name" class="form-control"  placeholder="Enter First Name" required="" maxlength="50">
+                            <input Name="user_name" class="form-control"  placeholder="Enter  Name" required="" maxlength="50">
                         </div>                                
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label>Role</label>
-                            <span class="fa fa-asterisk"></span>
-                            <select class="form-control" name="role_id">
-                                @foreach($UserRoles as $UserRole)
-                                <option value="{{ $UserRole->id }}">{{ $UserRole->r_name }}</option>
-                                @endforeach 
-                            </select>
-                        </div>                               
-                    </div>
+                            <label>Email ID</label>
+                            <span class="fa fa-asterisk"></span> 
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                </div>
+                                <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Enter Email" maxlength="50">
+                            </div> 
+                        </div>
+                    </div> 
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label>Mobile No.</label>
@@ -46,19 +47,18 @@
                             </div> 
                         </div>
                     </div> 
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="form-group">
-                            <label>Email ID</label>
-                            <span class="fa fa-asterisk"></span> 
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                </div>
-                                <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Enter Email" maxlength="50">
-                            </div> 
-                        </div>
+                            <label>Role</label>
+                            <span class="fa fa-asterisk"></span>
+                            <select class="form-control" name="role_id">
+                                @foreach($UserRoles as $UserRole)
+                                <option value="{{ $UserRole->id }}">{{ $UserRole->r_name }}</option>
+                                @endforeach 
+                            </select>
+                        </div>                               
                     </div> 
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="form-group">
                             <label>Password (Min 6 Max 15 Characters )</label>
                             <span class="fa fa-asterisk"></span> 
@@ -67,6 +67,18 @@
                                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
                                 </div>
                                 <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password" maxlength="15" min="6">
+                            </div> 
+                        </div>
+                    </div> 
+                     <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <span class="fa fa-asterisk"></span> 
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                </div>
+                                <input type="password" name="confirm_password" class="form-control" id="exampleInputPassword1" placeholder="Password" maxlength="15" min="6">
                             </div> 
                         </div>
                     </div> 

@@ -17,7 +17,8 @@ class UserManagementController extends Controller
 {
     public function index()
     {   
-    	$UserRoles=UserRole::orderBy('id','ASC')->get(); 
+        $user =Auth::guard('admin')->user();
+    	$UserRoles=UserRole::orderBy('id','ASC')->where('id','>',$user->role_id)->get(); 
         return view('admin.UserManagement.index',compact('UserRoles'));
     }
     public function store(Request $request)
@@ -28,6 +29,7 @@ class UserManagementController extends Controller
         "mobile" => 'required|unique:users|numeric|digits:10',
         'email' => 'required|email|unique:users|max:100',
         "password" => 'required|min:6|max:15', 
+        "confirm_password" => 'required|min:6|max:15',
     	]; 
         $validator = Validator::make($request->all(),$rules);
         if ($validator->fails()) {
@@ -37,7 +39,7 @@ class UserManagementController extends Controller
             $response["msg"]=$errors[0];
             return response()->json($response);// response as json
         }
-        $user=Auth::guard()->user(); 
+        $user=Auth::guard('admin')->user(); 
     	$accounts = new User();
     	$accounts->user_name = $request->user_name;
     	$accounts->role_id = $request->role_id;
@@ -46,7 +48,7 @@ class UserManagementController extends Controller
     	$accounts->password = bcrypt($request['password']); 
     	$accounts->password_plain=$request->password;          
     	$accounts->created_by=$user->id;          
-        $accounts->status=1;          
+        $accounts->status=0;          
         $accounts->save();
         $userNewId=$accounts->id;
         DB::select(DB::raw("call up_AssignPermission_NewUser ('$userNewId')"));      
@@ -110,5 +112,44 @@ class UserManagementController extends Controller
       \Artisan::queue('data:transfer',['part_no'=>$request->part_no]);  
        $response=['status'=>1,'msg'=>'Submit Successfully'];
           return response()->json($response);
+    } 
+    public function changePassword(Request $request)
+    { 
+      return view('admin.myaccount.change_password');
+    }
+    public function changePasswordStore(Request $request)
+    { 
+      $rules=[
+      'oldpassword'=> 'required',
+      'password'=> 'required|min:6',
+      'passwordconfirmation'=> 'required|min:6|same:password',
+       ];
+      $validator = Validator::make($request->all(),$rules);
+      if ($validator->fails()) {
+          $errors = $validator->errors()->all();
+          $response=array();
+          $response["status"]=0;
+          $response["msg"]=$errors[0];
+          return response()->json($response);// response as json
+      }        
+      $user=Auth::guard('admin')->user();              
+        
+      if(password_verify($request->oldpassword,$user->password)){
+          if ($request->oldpassword == $request->password) {
+               $response=['status'=>0,'msg'=>'Old Password And New Password Cannot Be Same'];
+               return response()->json($response);
+          }else{
+                $accounts =  User::find($user->id); 
+                $accounts->password = bcrypt($request['password']); 
+                $accounts->password_plain=$request->password;  
+                $accounts->save();  
+                $response=['status'=>1,'msg'=>'Password Change Successfully'];
+                return response()->json($response);// response as json 
+          }
+          
+      }else{               
+          $response=['status'=>0,'msg'=>'Old Password Is Not Correct'];
+          return response()->json($response);// response as json
+      }        
     } 
 }

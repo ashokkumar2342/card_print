@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UsersPermission extends Model
 { 
-	protected $table='users_permissions'; 
+	protected $table='default_role_menu'; 
 }

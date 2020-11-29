@@ -18,6 +18,10 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::get('user-approval-form/{id}', 'UserManagementController@userApprovalForm')->name('admin.user.approval.form'); 
 		Route::post('user-approval-store', 'UserManagementController@userApprovalStore')->name('admin.user.approval.store'); 
 	});
+	Route::prefix('myaccount')->group(function () {
+		Route::get('change-password', 'UserManagementController@changePassword')->name('admin.user.change.password');
+		Route::post('change-password-store', 'UserManagementController@changePasswordStore')->name('admin.user.change.password.store'); 	 
+	});
 	Route::prefix('wallet')->group(function () {
 		Route::get('payment-option', 'WalletController@paymentOption')->name('admin.wallet.payment.option');
 		Route::get('payment-option-change', 'WalletController@paymentOptionChange')->name('admin.wallet.payment.option.change');
@@ -27,6 +31,8 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::post('cashbook-store', 'WalletController@cashbookStore')->name('admin.wallet.cashbook.store');
 		Route::get('recharge-wallet', 'WalletController@rechargeWallet')->name('admin.wallet.recharge.wallet');
 		Route::get('payment-option-show', 'WalletController@paymentOptionShow')->name('admin.wallet.payment.option.show');
+		Route::get('qrcode-show/{path}', 'WalletController@qrcodeShow')->name('admin.wallet.qrcode.show');
+		Route::post('cashbook-report', 'WalletController@cashbookReport')->name('admin.wallet.cashbook.report');
 		 
 	});
 	Route::prefix('CardPrint')->group(function () {

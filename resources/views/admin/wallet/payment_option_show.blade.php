@@ -34,7 +34,7 @@
         @foreach ($paymentOptions as $paymentOption) 
          <tr> 
              <td>{{ $paymentOption->account_name }}</td>
-             <td><img src="{{ url('storage/app/'.$paymentOption->qr_code) }}" alt="" title="" /></td>
+             <td><img src="{{ route('admin.wallet.qrcode.show',Crypt::encrypt($paymentOption->qr_code)) }}"  alt="" title="" /></td>
              
          </tr>
         @endforeach

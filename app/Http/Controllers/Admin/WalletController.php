@@ -8,7 +8,10 @@ use App\Model\PaymentMode;
 use App\Model\PaymentOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;  
+use Carbon;
 
 class WalletController extends Controller
 {
@@ -131,7 +134,14 @@ class WalletController extends Controller
     }
     public function rechargeWallet()
     {  
-      $paymentModes=PaymentMode::all(); 
+      $user=Auth::guard('admin')->user();
+      if ($user->created_by == 0) {
+
+          $payment_mode_id_arr=PaymentOption::whereIn('user_id',[1,2])->where('status',1)->pluck('payment_mode_id')->toArray();
+      }else{
+          $payment_mode_id_arr=PaymentOption::where('user_id',$user->created_by)->where('status',1)->pluck('payment_mode_id')->toArray();
+      }
+      $paymentModes=PaymentMode::whereIn('id',$payment_mode_id_arr)->get(); 
        return view('admin.wallet.recharge_wallet',compact('paymentModes'));  
     }  
     public function paymentOptionShow(Request $request)
@@ -145,5 +155,43 @@ class WalletController extends Controller
             $paymentOptions=PaymentOption::where('user_id',$user->created_by)->where('payment_mode_id',$payment_mode_id)->where('status',1)->get();
         } 
        return view('admin.wallet.payment_option_show',compact('paymentOptions','payment_mode_id'));
+    } 
+    public function qrcodeShow(Request $request,$path)
+    {  
+      $path=Crypt::decrypt($path);
+      $storagePath = storage_path('app/'.$path);              
+      $mimeType = mime_content_type($storagePath); 
+      if( ! \File::exists($storagePath)){
+
+        return view('error.home');
+      }
+      $headers = array(
+        'Content-Type' => $mimeType,
+        'Content-Disposition' => 'inline; '
+      );            
+      return Response::make(file_get_contents($storagePath), 200, $headers);     
+    } 
+    public function cashbookReport(Request $request)
+    {  
+      $rules=[  
+        "date_range" => 'required',  
+      ]; 
+      $validator = Validator::make($request->all(),$rules);
+      if ($validator->fails()) {
+          $errors = $validator->errors()->all();
+          $response=array();
+          $response["status"]=0;
+          $response["msg"]=$errors[0];
+          return response()->json($response);// response as json
+      }
+      $user =Auth::guard('admin')->user();
+      $date_range= explode('-',$request->date_range);
+      $from_date = date('Y-m-d H:i:s',strtotime($date_range[0]));
+      $to_date =  date('Y-m-d H:i:s',strtotime($date_range[1]));
+      $cashbooks = Cashbook::whereBetween('transaction_date_time',array($from_date,$to_date))->where('user_id',$user->id)->get();
+      $response =array();
+      $response['status']=1;
+      $response['data']=  view('admin.wallet.report_table',compact('cashbooks'))->render();
+      return $response;
     }
 }

@@ -117,7 +117,7 @@ class MyFuncs {
        if (empty($subMenu)) {
            return true;
        }else{
-            $userpermit= UsersPermission::where('user_id',$user->id)->where('status',1)->where('sub_menu_id',$subMenu->id)->first();
+            $userpermit= UsersPermission::where('role_id',$user->role_id)->where('status',1)->where('sub_menu_id',$subMenu->id)->first();
             if (empty($userpermit)) {
                 return false;
             }else{

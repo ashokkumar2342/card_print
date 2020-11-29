@@ -16,7 +16,7 @@
                             <label>Charge Card</label>
                             <span class="fa fa-asterisk"></span> 
                             <div class="input-group"> 
-                                <input type="text" Name="charge_card" class="form-control" maxlength="5" onkeypress='return event.charCode >= 48 && event.charCode <= 57' placeholder="Enter Mobile No.">
+                                <input type="text" Name="charge_card" class="form-control" maxlength="5" onkeypress='return event.charCode >= 48 && event.charCode <= 57' placeholder="Enter Charge Card">
                             </div> 
                         </div>
                     </div>
@@ -25,7 +25,7 @@
                             <label>Free Card</label>
                             <span class="fa fa-asterisk"></span> 
                             <div class="input-group"> 
-                                <input type="text" Name="free_card" class="form-control" maxlength="3" onkeypress='return event.charCode >= 48 && event.charCode <= 57' placeholder="Enter Mobile No.">
+                                <input type="text" Name="free_card" class="form-control" maxlength="3" onkeypress='return event.charCode >= 48 && event.charCode <= 57' placeholder="Enter Free Card">
                             </div> 
                         </div>
                     </div> 
