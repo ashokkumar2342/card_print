@@ -20,15 +20,15 @@
   {{-- <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> --}}
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition login-page" style="background-color:  #63676b">
 <div class="login-box">
   <div class="login-logo">
-   <b style="color: red;font-size: 30px">Voter Card Print</b>
+   {{-- <b style="color: red;font-size: 30px">Voter Card Print</b> --}}
   </div>
   <!-- /.login-logo -->
   <div class="card">
-    <div class="card-body login-card-body">
-      <p class="login-box-msg">Sign in to start your session</p>
+    <div class="card-body login-card-body" style="background-color: #111010">
+      <p class="login-box-msg"></p>
 
       <form action="{{ route('admin.login') }}" method="post" class="add_form">
         {{ csrf_field() }}
@@ -36,7 +36,7 @@
           <input type="email" name="email" class="form-control" placeholder="Email">
           <div class="input-group-append">
             <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
+              <span class="fas fa-envelope text-danger"></span>
             </div>
           </div>
         </div>
@@ -44,15 +44,15 @@
           <input type="password" name="password" class="form-control" placeholder="Password">
           <div class="input-group-append">
             <div class="input-group-text">
-              <span class="fas fa-lock"></span>
+              <span class="fas fa-lock text-success"></span>
             </div>
           </div>
         </div>
         <div class="captcha">
-         <span>{!! captcha_img('math') !!}</span>
-         <button type="button" class="btn btn-success" id="refresh"><i class="fas fa-1x fa-sync-alt" ></i></button>
+         <span>{!! captcha_img('characters') !!}</span>
+         <button type="button" class="btn btn-warning" id="refresh"><i class="fas fa-1x fa-sync-alt" ></i></button>
        </div>
-       <div class="input-group mb-3" style="margin-top: 5px">
+       <div class="input-group mb-3" style="margin-top: 15px">
           <input id="captcha" type="text" class="form-control" placeholder="Enter Captcha" name="captcha"> 
           <div class="input-group-append">
             <div class="input-group-text">

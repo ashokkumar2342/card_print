@@ -136,7 +136,7 @@ class LoginController extends Controller
     }
      public function refreshCaptcha()
     {  
-        return  captcha_img('math');
+        return  captcha_img('characters');
     }
     // protected function credentials(Request $request)
     // {
