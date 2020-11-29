@@ -33,7 +33,26 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::get('payment-option-show', 'WalletController@paymentOptionShow')->name('admin.wallet.payment.option.show');
 		Route::get('qrcode-show/{path}', 'WalletController@qrcodeShow')->name('admin.wallet.qrcode.show');
 		Route::post('cashbook-report', 'WalletController@cashbookReport')->name('admin.wallet.cashbook.report');
+		Route::get('recharge-request', 'WalletController@rechargeRequest')->name('admin.wallet.recharge.request');
+		Route::get('recharge-request-approval/{id}', 'WalletController@rechargeRequestApproval')->name('admin.wallet.recharge.request.approval');
+		Route::get('recharge-request-reject/{id}', 'WalletController@rechargeRequestReject')->name('admin.wallet.recharge.request.reject');
+		Route::get('recharge-wallet-in-cash', 'WalletController@rechargeWalletInCash')->name('admin.wallet.recharge.wallet.in.cash');
+		Route::post('recharge-wallet-in-cash-store', 'WalletController@rechargeWalletInCashStore')->name('admin.wallet.recharge.wallet.in.cash.store');
 		 
+	});
+	Route::prefix('process-commission')->group(function () {
+		Route::get('/', 'ProcessCommissionController@index')->name('admin.process.commission.index');
+		Route::post('store', 'ProcessCommissionController@store')->name('admin.process.commission.store'); 
+		
+	});
+	Route::prefix('voter-details')->group(function () {
+		Route::get('/', 'VoterDetailsController@index')->name('admin.voter.details.index');
+		Route::get('district-wise-acno', 'VoterDetailsController@districtWiseAcno')->name('admin.voter.details.district.wise.acno');
+		Route::get('acno-wise-partno', 'VoterDetailsController@acnoWisePartno')->name('admin.voter.details.acno.wise.partno');
+		Route::get('partno-wise-section', 'VoterDetailsController@partnoWiseSection')->name('admin.voter.details.partno.wise.section');
+		Route::post('voter-search', 'VoterDetailsController@voterSearch')->name('admin.voter.details.search');
+		 
+		
 	});
 	Route::prefix('CardPrint')->group(function () {
 		Route::get('/', 'CardPrintController@index')->name('admin.card.print.index');
