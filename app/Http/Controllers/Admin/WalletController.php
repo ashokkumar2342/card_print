@@ -223,9 +223,13 @@ class WalletController extends Controller
           return response()->json($response);// response as json
       }
       $user=Auth::guard('admin')->user();
-      DB::select(DB::raw("call up_recharge_wallet_cash ('$user->id','$request->user_id','$request->amount')"));
-       $response=['status'=>1,'msg'=>'Submit Successfully'];
-            return response()->json($response); 
+      $message=DB::select(DB::raw("call up_recharge_wallet_cash ('$user->id','$request->user_id','$request->amount')"));
+      if ($message[0]->result=='success') {
+        $response=['status'=>1,'msg'=>$message[0]->result]; 
+      }else{
+        $response=['status'=>0,'msg'=>$message[0]->result]; 
+      }
+      return response()->json($response); 
     }
     public function rechargeRequestApproval($id)
     {
