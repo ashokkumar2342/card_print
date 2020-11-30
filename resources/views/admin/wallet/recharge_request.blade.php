@@ -16,6 +16,7 @@
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
+                            <th>User</th>
                             <th>Payment Mode</th>
                             <th>Transaction Date</th>
                             <th>Amount</th>
@@ -26,7 +27,8 @@
                     <tbody>
                         @foreach ($cashbooks as $cashbook)
                         <tr>
-                            <td>{{ $cashbook->paymentMode->name or '' }}</td>
+                            <td>{{ $cashbook->uname }}</td>
+                            <td>{{ $cashbook->name  }}</td>
                             <td>{{ date('d-m-Y',strtotime($cashbook->transaction_date_time)) }}</td>
                             <td>{{ $cashbook->camount }}</td>
                             <td>{{ $cashbook->transaction_no }}</td>

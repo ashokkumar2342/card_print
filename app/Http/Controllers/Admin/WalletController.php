@@ -199,8 +199,25 @@ class WalletController extends Controller
     public function rechargeRequest($value='')
     { 
       $user=Auth::guard('admin')->user();
-      $cashbooks=Cashbook::where('user_id',$user->id)->where('status',1)->get();
+      $cashbooks=DB::select(DB::raw("Select concat(`u`.`email`,' - ', `u`.`mobile`) as `uname`, `pm`.`name`, `cb`.`transaction_date_time`, `cb`.`transaction_no`, `cb`.`camount`, `cb`.`id`
+        From `users` `u` 
+        Inner Join `cashbook` `cb` on `cb`.`user_id` = `u`.`id`
+        Inner join `payment_mode` `pm` on `pm`.`id` = `cb`.`payment_mode_id`
+        Where `u`.`created_by` =$user->id and `cb`.`status` = 1 Order By `cb`.`transaction_date_time`, `pm`.`name`;"));
+       
       return view('admin.wallet.recharge_request',compact('cashbooks')); 
+    }
+    public function rechargeRequestApproval($id)
+    {
+      $user=Auth::guard('admin')->user();
+      DB::select(DB::raw("call up_approve_recharge_request ('$user->id','$id','0')"));
+      return redirect()->back()->with(['message'=>'Approved Successfully','class'=>'success']);
+    }
+    public function rechargeRequestReject($id)
+    {  
+      $user=Auth::guard('admin')->user();
+      DB::select(DB::raw("call up_approve_recharge_request ('$user->id','$id','2')"));
+      return redirect()->back()->with(['message'=>'Rejected Successfully','class'=>'success']);
     }
     public function rechargeWalletInCash()
     { 
@@ -230,17 +247,5 @@ class WalletController extends Controller
         $response=['status'=>0,'msg'=>$message[0]->result]; 
       }
       return response()->json($response); 
-    }
-    public function rechargeRequestApproval($id)
-    {
-      $user=Auth::guard('admin')->user();
-      DB::select(DB::raw("call up_approve_recharge_request ('$user->id','$id','0')"));
-      return redirect()->back()->with(['message'=>'Approved Successfully','class'=>'success']);
-    }
-    public function rechargeRequestReject($id)
-    {  
-      $user=Auth::guard('admin')->user();
-      DB::select(DB::raw("call up_approve_recharge_request ('$user->id','$id','2')"));
-      return redirect()->back()->with(['message'=>'Rejected Successfully','class'=>'success']);
     }
 }
