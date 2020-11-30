@@ -5,6 +5,7 @@
 	<style type="text/css">
 		table, th, td {
   			border: 1px solid black;
+  			/*border-collapse:collapse;*/
 		}
 	</style>
 </head>
@@ -21,14 +22,27 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
-				<td>Dilip Kumar</td>
-				<td> dilipkumarchauhan2342@gmail.com</td>
-				<td>8210228581</td>
-				<td>Admin</td>
-				<td>Admin</td>
-				<td>Active</td>
-			</tr>
+			@foreach ($users as $user)
+				<tr>
+					<td>{{ $user->user_name }}</td>
+					<td>{{ $user->email }}</td>
+					<td>{{ $user->mobile }}</td>
+					<td>{{ $user->Roles->r_name or ''}}</td>
+					<td>{{ $user->Users->email or ''}}</td>
+					 @php
+					 	if ($user->status==0) {
+					 		$status='Pending'; 
+					 	}
+					 	elseif ($user->status==1) {
+					 		$status='Active'; 
+					 	}
+					 	elseif ($user->status==2) {
+					 		$status='InActive'; 
+					 	}
+					 @endphp
+					<td>{{ $status }}</td>
+				</tr> 
+			@endforeach
 		</tbody>
 	</table>
 </body>

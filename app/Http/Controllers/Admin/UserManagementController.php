@@ -191,7 +191,7 @@ class UserManagementController extends Controller
     public function userReportGenerate($value='')
     {
       $user=Auth::guard('admin')->user();
-      $users =  User::where('created_by',$user->id)->get();
+      $users =  User::get();
       $path=Storage_path('fonts/');
         $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir']; 
@@ -213,7 +213,7 @@ class UserManagementController extends Controller
             'nbpgPrefix' => ' कुल ',
             'nbpgSuffix' => ' पृष्ठों का पृष्ठ'
          ]);
-        $html = view('admin.UserManagement.user_report_pdf',compact(''));
+        $html = view('admin.UserManagement.user_report_pdf',compact('users'));
         $mpdf->WriteHTML($html); 
         $mpdf->Output(); 
        
