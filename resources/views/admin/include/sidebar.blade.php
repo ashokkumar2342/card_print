@@ -34,11 +34,11 @@
                 </li>
                 @endif
                 @endforeach
-                <a href="{{ route('admin.user.reset.password') }}" class="nav-link"> 
+                {{-- <a href="{{ route('admin.user.report') }}" class="nav-link"> 
                         <p>
-                            Reset Password
+                            Users Report
                         </p>
-                    </a>
+                    </a> --}}
             </ul>
         </nav>
     </div>

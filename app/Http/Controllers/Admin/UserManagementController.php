@@ -152,7 +152,7 @@ class UserManagementController extends Controller
           return response()->json($response);// response as json
       }        
     }
-    public function resetPassword(Request $request)
+    public function resetPassword()
     { 
       $user=Auth::guard('admin')->user();
       $users =  User::where('created_by',$user->id)->get(); 
@@ -179,5 +179,43 @@ class UserManagementController extends Controller
       $accounts->save();  
       $response=['status'=>1,'msg'=>'Reset Password Successfully'];
       return response()->json($response);// response as json 
+    }
+
+    public function userReport()
+    { 
+      $user=Auth::guard('admin')->user();
+      $users =  User::where('created_by',$user->id)->get(); 
+      $userRoles =  UserRole::all(); 
+      return view('admin.UserManagement.user_report',compact('userRoles'));
+    }
+    public function userReportGenerate($value='')
+    {
+      $user=Auth::guard('admin')->user();
+      $users =  User::where('created_by',$user->id)->get();
+      $path=Storage_path('fonts/');
+        $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir']; 
+        $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata']; 
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8',
+             'fontDir' => array_merge($fontDirs, [
+                 __DIR__ . $path,
+             ]),
+             'fontdata' => $fontData + [
+                 'frutiger' => [
+                     'R' => 'FreeSans.ttf',
+                     'I' => 'FreeSansOblique.ttf',
+                 ]
+             ],
+             'default_font' => 'freesans',
+             'pagenumPrefix' => '',
+            'pagenumSuffix' => '',
+            'nbpgPrefix' => ' कुल ',
+            'nbpgSuffix' => ' पृष्ठों का पृष्ठ'
+         ]);
+        $html = view('admin.UserManagement.user_report_pdf',compact(''));
+        $mpdf->WriteHTML($html); 
+        $mpdf->Output(); 
+       
     } 
 }
