@@ -7,6 +7,7 @@
              <th>Credit Amount</th>
              <th>Debit Amount</th>
              <th>Balance</th>
+             <th>Status</th>
          </tr>
      </thead>
      <tbody>
@@ -16,7 +17,8 @@
              <td>{{ $cashbook->remarks }}</td>
              <td>{{ $cashbook->camount }}</td>
              <td>{{ $cashbook->damount }}</td>
-             <td>{{ $cashbook->balance }}</td>             
+             <td>{{ $cashbook->balanceamt }}</td>             
+             <td>{{ $cashbook->tstatus }}</td>             
              
          </tr>
         @endforeach

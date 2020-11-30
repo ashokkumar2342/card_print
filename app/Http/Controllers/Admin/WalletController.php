@@ -190,7 +190,13 @@ class WalletController extends Controller
       $date_range= explode('-',$request->date_range);
       $from_date = date('Y-m-d H:i:s',strtotime($date_range[0]));
       $to_date =  date('Y-m-d H:i:s',strtotime($date_range[1]));
-      $cashbooks = Cashbook::whereBetween('transaction_date_time',array($from_date,$to_date))->where('user_id',$user->id)->get();
+      $cashbooks=DB::select(DB::raw("Select `transaction_date_time`, `remarks`, `camount`, `damount`, case `status` when 0 then '' when 1 then 'Pending' when 2 then 'Rejected' end as `tstatus`,
+        case `status` when 0 then `balance` else '' end as `balanceamt` 
+        From `cashbook` 
+        where `user_id` =$user->id
+        and `transaction_date_time` >= '$from_date'
+        and `transaction_date_time` < DATE_ADD('$to_date', INTERVAL 1 DAY)
+        Order By `id`;")); 
       $response =array();
       $response['status']=1;
       $response['data']=  view('admin.wallet.report_table',compact('cashbooks'))->render();
@@ -199,11 +205,7 @@ class WalletController extends Controller
     public function rechargeRequest($value='')
     { 
       $user=Auth::guard('admin')->user();
-      $cashbooks=DB::select(DB::raw("Select concat(`u`.`email`,' - ', `u`.`mobile`) as `uname`, `pm`.`name`, `cb`.`transaction_date_time`, `cb`.`transaction_no`, `cb`.`camount`, `cb`.`id`
-        From `users` `u` 
-        Inner Join `cashbook` `cb` on `cb`.`user_id` = `u`.`id`
-        Inner join `payment_mode` `pm` on `pm`.`id` = `cb`.`payment_mode_id`
-        Where `u`.`created_by` =$user->id and `cb`.`status` = 1 Order By `cb`.`transaction_date_time`, `pm`.`name`;"));
+      $cashbooks=DB::select(DB::raw("Select concat(`u`.`email`,' - ', `u`.`mobile`) as `uname`, `pm`.`name`, `cb`.`transaction_date_time`, `cb`.`transaction_no`, `cb`.`camount`, `cb`.`id` From `users` `u` Inner Join `cashbook` `cb` on `cb`.`user_id` = `u`.`id` Inner join `payment_mode` `pm` on `pm`.`id` = `cb`.`payment_mode_id` Where `u`.`created_by` =$user->id and `cb`.`status` = 1 Order By `cb`.`transaction_date_time`, `pm`.`name`;"));
        
       return view('admin.wallet.recharge_request',compact('cashbooks')); 
     }
