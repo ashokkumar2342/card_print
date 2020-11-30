@@ -59,7 +59,11 @@
                 <p>{{ $value->text1 }}</p>
               </div>
               <div class="icon">
-                {{-- <i class="fa fa-inr"></i> --}}
+                @if ($user->id==1)
+                  <i class="fa fa-users text-success"></i>
+                  @else
+                  <i class="fa fa-inr text-success"></i> 
+                @endif 
               </div>
               
             </div>
@@ -74,7 +78,7 @@
                 <p>{{ $value->text2 }}</p>
               </div>
               <div class="icon">
-                {{-- <i class=""></i> --}}
+                <i class="fa fa-file  text-primary"></i>
               </div>
               
             </div>

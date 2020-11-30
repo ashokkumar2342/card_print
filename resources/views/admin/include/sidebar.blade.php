@@ -34,11 +34,11 @@
                 </li>
                 @endif
                 @endforeach
-               {{--  <a href="{{ route('admin.card.print.index') }}" class="nav-link"> 
+                <a href="{{ route('admin.user.reset.password') }}" class="nav-link"> 
                         <p>
-                            Card Print
+                            Reset Password
                         </p>
-                    </a> --}}
+                    </a>
             </ul>
         </nav>
     </div>

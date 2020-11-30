@@ -21,6 +21,8 @@ Route::group(['middleware' => 'admin'], function() {
 	Route::prefix('myaccount')->group(function () {
 		Route::get('change-password', 'UserManagementController@changePassword')->name('admin.user.change.password');
 		Route::post('change-password-store', 'UserManagementController@changePasswordStore')->name('admin.user.change.password.store'); 	 
+		Route::get('reset-password', 'UserManagementController@resetPassword')->name('admin.user.reset.password'); 	 
+		Route::post('reset-password-store', 'UserManagementController@resetPasswordStore')->name('admin.user.reset.password.store'); 	 
 	});
 	Route::prefix('wallet')->group(function () {
 		Route::get('payment-option', 'WalletController@paymentOption')->name('admin.wallet.payment.option');

@@ -13,6 +13,6 @@ class DashboardController extends Controller
     {   
     	$user=Auth::guard('admin')->user();
     	$values=DB::select(DB::raw("call up_dashboard_query ('$user->id')"));
-        return view('admin.dashboard.dashboard',compact('values'));
+        return view('admin.dashboard.dashboard',compact('values','user'));
     }  
 }

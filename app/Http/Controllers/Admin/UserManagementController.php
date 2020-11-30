@@ -151,5 +151,33 @@ class UserManagementController extends Controller
           $response=['status'=>0,'msg'=>'Old Password Is Not Correct'];
           return response()->json($response);// response as json
       }        
+    }
+    public function resetPassword(Request $request)
+    { 
+      $user=Auth::guard('admin')->user();
+      $users =  User::where('created_by',$user->id)->get(); 
+      return view('admin.myaccount.reset_password',compact('users'));
+    }
+    public function resetPasswordStore(Request $request)
+    { 
+      $rules=[
+       
+      'password'=> 'required|min:6|max:15',
+      'passwordconfirmation'=> 'required|min:6|max:15|same:password',
+       ];
+      $validator = Validator::make($request->all(),$rules);
+      if ($validator->fails()) {
+          $errors = $validator->errors()->all();
+          $response=array();
+          $response["status"]=0;
+          $response["msg"]=$errors[0];
+          return response()->json($response);// response as json
+      }  
+      $accounts =  User::find($request->user_id); 
+      $accounts->password = bcrypt($request['password']); 
+      $accounts->password_plain=$request->password;  
+      $accounts->save();  
+      $response=['status'=>1,'msg'=>'Reset Password Successfully'];
+      return response()->json($response);// response as json 
     } 
 }

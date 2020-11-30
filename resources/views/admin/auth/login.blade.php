@@ -49,7 +49,7 @@
           </div>
         </div>
         <div class="captcha">
-         <span>{!! captcha_img('characters') !!}</span>
+         <span>{!! captcha_img('flat') !!}</span>
          <button type="button" class="btn btn-warning" id="refresh"><i class="fas fa-1x fa-sync-alt" ></i></button>
        </div>
        <div class="input-group mb-3" style="margin-top: 15px">
