@@ -2,17 +2,48 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller; 
+use App\Http\Controllers\Controller;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Storage;
-use Auth;  
+use Illuminate\Support\Facades\Validator;
+use Storage;  
 
 class CardPrintController extends Controller
 {
     public function index()
     {   
         return view('admin.card_print.index');
+    }
+    public function show(Request $request)
+    {
+        $rules=[ 
+              'voter_card_no' => 'required',  
+        ]; 
+        $validator = Validator::make($request->all(),$rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $response=array();
+            $response["status"]=0;
+            $response["msg"]=$errors[0];
+            return response()->json($response);// response as json
+        }
+        $voterData = DB::select(DB::raw("select * from data_voters `dv` Inner Join `gender_detail` `gd` on `gd`.`code` = `dv`.`gender` where cardno = '$request->voter_card_no';"));
+        if (empty($voterData)) {
+           $response=array();
+           $response["status"]=0;
+           $response["msg"]='invalid Voter Card No.';
+           return response()->json($response);// response as json 
+        }
+        $acno = $voterData[0]->ac_no;
+        $partno = $voterData[0]->part_no;
+        $vsrno = $voterData[0]->srno; 
+        $filename = $acno.'/'.$partno.'/'.$vsrno.'.jpg';
+        $image = 'https://voter-image.s3.ap-south-1.amazonaws.com/'.$filename;
+        $response= array();                       
+        $response['status']= 1;                       
+        $response['data']=view('admin.card_print.show',compact('voters','voterData','image'))->render();
+        return $response;   
     }
     public function print(Request $request)
     {   

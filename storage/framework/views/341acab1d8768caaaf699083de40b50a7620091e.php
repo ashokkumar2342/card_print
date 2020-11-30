@@ -13,7 +13,7 @@
         </div> 
         <div class="card card-info"> 
             <div class="card-body">
-                <form action="<?php echo e(route('admin.card.print.print')); ?>" method="post" target="blank">
+                <form action="<?php echo e(route('admin.card.print.show')); ?>" method="post" class="add_form" success-content-id="voter_card_show">
                 <?php echo e(csrf_field()); ?> 
                 <div class="row">
                     <div class="col-lg-12 form-group">
@@ -21,10 +21,13 @@
                         <input type="text" maxlength="20" name="voter_card_no" class="form-control"> 
                     </div>
                     <div class="col-lg-12 form-group">
-                        <input type="submit" class="btn btn-primary form-control"> 
+                        <input type="submit" class="btn btn-primary form-control" value="Show"> 
                     </div> 
                 </div>
                 </form> 
+                 <div class="col-lg-12" id="voter_card_show">
+                     
+                 </div> 
             </div>
         </div> 
     </div> 

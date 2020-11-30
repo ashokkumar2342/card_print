@@ -16,7 +16,7 @@
                 <form action="{{ route('admin.voter.details.search') }}" method="post" class="add_form" success-content-id="voter_list_table" no-reset="true">
                     {{ csrf_field() }}
                     <div class="row">
-                        <div class="col-lg-3 form-group">
+                        <div class="col-lg-6 form-group">
                             <label>District</label>
                             <select name="district" id="district_select_box" class="form-control" onchange="callAjax(this,'{{ route('admin.voter.details.district.wise.acno') }}'+'?district_id='+$('#district_select_box').val(),'ac_no_select_box')">
                                 <option selected disabled>Select District</option>
@@ -25,23 +25,15 @@
                                 @endforeach 
                             </select> 
                         </div>
-                        <div class="col-lg-3 form-group">
+                        <div class="col-lg-6 form-group">
                             <label>Ac.No.</label>
                             <select name="ac_no" class="form-control" id="ac_no_select_box" onchange="callAjax(this,'{{ route('admin.voter.details.acno.wise.partno') }}'+'?ac_no='+$('#ac_no_select_box').val(),'part_no_select_box')">
                                 <option selected disabled>Select Ac.No.</option> 
                             </select> 
                         </div>
-                        <div class="col-lg-3 form-group">
-                            <label>Part No.</label>
-                            <select name="part_no" class="form-control" id="part_no_select_box" onchange="callAjax(this,'{{ route('admin.voter.details.partno.wise.section') }}'+'?part_no='+$('#part_no_select_box').val(),'section_select_box')">
-                                <option selected disabled>Select Part No.</option> 
-                            </select> 
-                        </div>
-                        <div class="col-lg-3 form-group">
-                            <label>Sections</label>
-                            <select name="sections" class="form-control" id="section_select_box">
-                                <option selected disabled>Select sections</option>
-                            </select> 
+                        <div class="col-lg-12" id="part_no_select_box">
+                            
+                         
                         </div>
                         <div class="col-lg-4 form-group">
                             <label>Name</label>

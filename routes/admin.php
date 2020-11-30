@@ -50,14 +50,14 @@ Route::group(['middleware' => 'admin'], function() {
 	Route::prefix('voter-details')->group(function () {
 		Route::get('/', 'VoterDetailsController@index')->name('admin.voter.details.index');
 		Route::get('district-wise-acno', 'VoterDetailsController@districtWiseAcno')->name('admin.voter.details.district.wise.acno');
-		Route::get('acno-wise-partno', 'VoterDetailsController@acnoWisePartno')->name('admin.voter.details.acno.wise.partno');
-		Route::get('partno-wise-section', 'VoterDetailsController@partnoWiseSection')->name('admin.voter.details.partno.wise.section');
+		Route::get('acno-wise-partno', 'VoterDetailsController@acnoWisePartno')->name('admin.voter.details.acno.wise.partno'); 
 		Route::post('voter-search', 'VoterDetailsController@voterSearch')->name('admin.voter.details.search');
 		 
 		
 	});
 	Route::prefix('CardPrint')->group(function () {
 		Route::get('/', 'CardPrintController@index')->name('admin.card.print.index');
+		Route::post('show', 'CardPrintController@show')->name('admin.card.print.show');
 		Route::post('print', 'CardPrintController@print')->name('admin.card.print.print');
 		
 	});

@@ -29,14 +29,10 @@ class VoterDetailsController extends Controller
     {   
         $part_nos=NewPartList::where('AC_No',$request->ac_no)
                           ->orderBy('Part_No','ASC')->get();
-        return view('admin.voterDetails.part_no_select_box',compact('part_nos'));
-    }
-    public function partnoWiseSection(Request $request)
-    {   
-        $sections=Section::where('part_no',$request->part_no)
-                          ->orderBy('section','ASC')->get();
-        return view('admin.voterDetails.section_select_box',compact('sections'));
-    }
+        $sections=Section::where('ac_no',$request->ac_no)
+                          ->orderBy('s_name_e','ASC')->get();                  
+        return view('admin.voterDetails.part_no_select_box',compact('part_nos','sections'));
+    } 
     public function voterSearch(Request $request)
     { 
         $rules=[ 
@@ -77,7 +73,7 @@ class VoterDetailsController extends Controller
                 $query->where('cardno', 'like','%'.$request->voter_card_no.'%'); 
                 } 
                }) 
-               ->orderBy('name_e','ASC')->orderBy('f_name_e','ASC')->get(); 
+               ->orderBy('name_e','ASC')->orderBy('f_name_e','ASC')->take(25)->get(); 
         $response= array();                       
         $response['status']= 1;                       
         $response['data']=view('admin.voterDetails.voter_list_table',compact('voters'))->render();
