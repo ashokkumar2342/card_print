@@ -13,22 +13,57 @@
         </div> 
         <div class="card card-info"> 
             <div class="card-body">
-                <form action="{{ route('admin.user.report.date.wise.generate') }}" method="post" target="blank" >
+                <form action="{{ route('admin.user.report.date.wise.show') }}" method="post" class="add_form" success-content-id="report_table" no-reset="true" data-table="report-table">
                 {{ csrf_field() }}
-                <div class="row">
+                <div class="row">  
                     <div class="col-lg-12">
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Date</label>
-                            <input type="date" name="date" class="form-control">
-                        </div>                                
+                          <label>Date Range </label>
+                          <input type="text" id="reportrange" name="date_range" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%"> 
+                        </div> 
                     </div> 
-                </div>   
-                <div class="box-footer text-center" style="margin-top: 30px">
-                    <button type="submit" class="btn btn-primary form-control">Report Generate</button>
+                    <div class="col-lg-12 form-group"> 
+                        <input type="submit" class="form-control btn btn-primary" value="Show">
+                    </div>
                 </div> 
-              </form>  <!-- /.card-body -->
-            </div> 
-        </div><!-- /.container-fluid -->
-    </section>
-    @endsection 
+                </form> 
+                <div id="report_table">
+                    
+                </div>
+             </div>
+         </div>
+     </div>
+</section>
+@endsection
+@push('scripts')
+<script type="text/javascript"> 
+  
+ $(function() {
+
+     var start = moment().subtract(6, 'days');
+     var end = moment();
+
+     function cb(start, end) {
+         $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+     }
+
+     $('#reportrange').daterangepicker({
+         startDate: start,
+         endDate: end,
+         ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+         }
+     }, cb);
+
+     cb(start, end);
+
+ });
+ 
+</script> 
+@endpush
 

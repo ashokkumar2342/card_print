@@ -34,11 +34,11 @@
                 </li>
                 @endif
                 @endforeach
-                <a href="{{ route('admin.user.report.date.wise') }}" class="nav-link"> 
+                {{-- <a href="{{ route('admin.user.report.date.wise') }}" class="nav-link"> 
                         <p>
                              Report
                         </p>
-                    </a>
+                    </a> --}}
             </ul>
         </nav>
     </div>

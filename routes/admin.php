@@ -20,7 +20,8 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::get('user-report', 'UserManagementController@userReport')->name('admin.user.report'); 
 		Route::post('user-report-generate', 'UserManagementController@userReportGenerate')->name('admin.user.report.generate'); 
 		Route::get('report-date-wise', 'UserManagementController@reportDatewise')->name('admin.user.report.date.wise'); 
-		Route::post('report-date-wise-generate', 'UserManagementController@reportDatewiseGenerate')->name('admin.user.report.date.wise.generate'); 
+		Route::post('report-date-wise-show', 'UserManagementController@reportDatewiseShow')->name('admin.user.report.date.wise.show'); 
+		Route::get('report-date-wise-download/{from_date}/{to_date}', 'UserManagementController@reportDatewiseDownload')->name('admin.user.report.date.wise.download'); 
 	});
 	Route::prefix('myaccount')->group(function () {
 		Route::get('change-password', 'UserManagementController@changePassword')->name('admin.user.change.password');

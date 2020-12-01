@@ -218,38 +218,72 @@ class UserManagementController extends Controller
         $mpdf->Output(); 
        
     }
-    public function reportDatewise($value='')
+    public function reportDatewise()
     {
       return view('admin.UserManagement.report_date_wise',compact('userRoles')); 
     }
-    public function reportDatewiseGenerate($value='')
+    public function reportDatewiseShow(Request $request)
+    {
+      $rules=[ 
+          'date_range'=> 'required', 
+       ];
+      $validator = Validator::make($request->all(),$rules);
+      if ($validator->fails()) {
+          $errors = $validator->errors()->all();
+          $response=array();
+          $response["status"]=0;
+          $response["msg"]=$errors[0];
+          return response()->json($response);// response as json
+      }
+      $user=Auth::guard('admin')->user();
+      $condition = "";
+      if ($user->id<=2){
+        $condition = " and `u`.`created_by` <= 2 ";
+      }else {
+        $condition = " and `u`.`created_by`= $user->id ";
+      }
+      $date_range= explode('-',$request->date_range);
+      $from_date = date('Y-m-d H:i:s',strtotime($date_range[0]));
+      $to_date =  date('Y-m-d H:i:s',strtotime($date_range[1]));  
+      $datas=DB::select(DB::raw("select concat(`u`.`user_name`, ' - ', `u`.`mobile`) as `uname`, `cb`.`transaction_date_time`, `cb`.`camount`, `cb`.`transaction_no`, case `cb`.`transaction_type` when 1 then 'Online' When 2 then 'Cash' End as `ttype`, `cb`.`remarks`, case `cb`.`status` when 0 then '' when 1 then 'Pending' when 2 then 'Rejected' End as `tstatus` from `cashbook` `cb` Inner join `users` `u` on `u`.`id` = `cb`.`user_id` Left Join `payment_mode` `pm` on `pm`.`id` = `cb`.`payment_mode_id` Where `cb`.`transaction_type` in (1,2) $condition And `cb`.`transaction_date_time` >= '$from_date' and `cb`.`transaction_date_time` < date_add('$to_date', INTERVAL 1 DAY) Order By `cb`.`id`;"));  
+      $response=array();
+      $response["status"]=1;
+      $response["data"]=view('admin.UserManagement.report_date_wise_show',compact('datas','from_date','to_date'))->render();
+      return response()->json($response);
+    }
+    public function reportDatewiseDownload($from_date,$to_date)
     {
       $user=Auth::guard('admin')->user();
-      $users =  User::get();
+      $condition = "";
+      if ($user->id<=2){
+        $condition = " and `u`.`created_by` <= 2 ";
+      }else {
+        $condition = " and `u`.`created_by`= $user->id ";
+      } 
+      $datas=DB::select(DB::raw("select concat(`u`.`user_name`, ' - ', `u`.`mobile`) as `uname`, `cb`.`transaction_date_time`, `cb`.`camount`, `cb`.`transaction_no`, case `cb`.`transaction_type` when 1 then 'Online' When 2 then 'Cash' End as `ttype`, `cb`.`remarks`, case `cb`.`status` when 0 then '' when 1 then 'Pending' when 2 then 'Rejected' End as `tstatus` from `cashbook` `cb` Inner join `users` `u` on `u`.`id` = `cb`.`user_id` Left Join `payment_mode` `pm` on `pm`.`id` = `cb`.`payment_mode_id` Where `cb`.`transaction_type` in (1,2) $condition And `cb`.`transaction_date_time` >= '$from_date' and `cb`.`transaction_date_time` < date_add('$to_date', INTERVAL 1 DAY) Order By `cb`.`id`;"));
       $path=Storage_path('fonts/');
-        $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-        $fontDirs = $defaultConfig['fontDir']; 
-        $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-        $fontData = $defaultFontConfig['fontdata']; 
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8',
-             'fontDir' => array_merge($fontDirs, [
-                 __DIR__ . $path,
-             ]),
-             'fontdata' => $fontData + [
-                 'frutiger' => [
-                     'R' => 'FreeSans.ttf',
-                     'I' => 'FreeSansOblique.ttf',
-                 ]
-             ],
-             'default_font' => 'freesans',
-             'pagenumPrefix' => '',
-            'pagenumSuffix' => '',
-            'nbpgPrefix' => ' कुल ',
-            'nbpgSuffix' => ' पृष्ठों का पृष्ठ'
-         ]);
-        $html = view('admin.UserManagement.user_report_pdf',compact('users'));
-        $mpdf->WriteHTML($html); 
-        $mpdf->Output(); 
-       
+      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+      $fontDirs = $defaultConfig['fontDir']; 
+      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+      $fontData = $defaultFontConfig['fontdata']; 
+      $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8',
+           'fontDir' => array_merge($fontDirs, [
+               __DIR__ . $path,
+           ]),
+           'fontdata' => $fontData + [
+               'frutiger' => [
+                   'R' => 'FreeSans.ttf',
+                   'I' => 'FreeSansOblique.ttf',
+               ]
+           ],
+           'default_font' => 'freesans',
+           'pagenumPrefix' => '',
+          'pagenumSuffix' => '',
+          'nbpgPrefix' => ' कुल ',
+          'nbpgSuffix' => ' पृष्ठों का पृष्ठ'
+       ]);
+      $html = view('admin.UserManagement.report_date_wise_pdf',compact('datas'));
+      $mpdf->WriteHTML($html); 
+      $mpdf->Output(); 
     } 
 }
