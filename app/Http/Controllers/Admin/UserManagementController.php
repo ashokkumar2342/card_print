@@ -217,5 +217,39 @@ class UserManagementController extends Controller
         $mpdf->WriteHTML($html); 
         $mpdf->Output(); 
        
+    }
+    public function reportDatewise($value='')
+    {
+      return view('admin.UserManagement.report_date_wise',compact('userRoles')); 
+    }
+    public function reportDatewiseGenerate($value='')
+    {
+      $user=Auth::guard('admin')->user();
+      $users =  User::get();
+      $path=Storage_path('fonts/');
+        $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir']; 
+        $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata']; 
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8',
+             'fontDir' => array_merge($fontDirs, [
+                 __DIR__ . $path,
+             ]),
+             'fontdata' => $fontData + [
+                 'frutiger' => [
+                     'R' => 'FreeSans.ttf',
+                     'I' => 'FreeSansOblique.ttf',
+                 ]
+             ],
+             'default_font' => 'freesans',
+             'pagenumPrefix' => '',
+            'pagenumSuffix' => '',
+            'nbpgPrefix' => ' कुल ',
+            'nbpgSuffix' => ' पृष्ठों का पृष्ठ'
+         ]);
+        $html = view('admin.UserManagement.user_report_pdf',compact('users'));
+        $mpdf->WriteHTML($html); 
+        $mpdf->Output(); 
+       
     } 
 }

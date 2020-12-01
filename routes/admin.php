@@ -19,6 +19,8 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::post('user-approval-store', 'UserManagementController@userApprovalStore')->name('admin.user.approval.store'); 
 		Route::get('user-report', 'UserManagementController@userReport')->name('admin.user.report'); 
 		Route::post('user-report-generate', 'UserManagementController@userReportGenerate')->name('admin.user.report.generate'); 
+		Route::get('report-date-wise', 'UserManagementController@reportDatewise')->name('admin.user.report.date.wise'); 
+		Route::post('report-date-wise-generate', 'UserManagementController@reportDatewiseGenerate')->name('admin.user.report.date.wise.generate'); 
 	});
 	Route::prefix('myaccount')->group(function () {
 		Route::get('change-password', 'UserManagementController@changePassword')->name('admin.user.change.password');
@@ -52,7 +54,7 @@ Route::group(['middleware' => 'admin'], function() {
 	Route::prefix('voter-details')->group(function () {
 		Route::get('/', 'VoterDetailsController@index')->name('admin.voter.details.index');
 		Route::get('district-wise-acno', 'VoterDetailsController@districtWiseAcno')->name('admin.voter.details.district.wise.acno');
-		Route::get('acno-wise-partno', 'VoterDetailsController@acnoWisePartno')->name('admin.voter.details.acno.wise.partno'); 
+		Route::get('acno-wise-village', 'VoterDetailsController@acnoWiseVillage')->name('admin.voter.details.acno.wise.village'); 
 		Route::post('voter-search', 'VoterDetailsController@voterSearch')->name('admin.voter.details.search');
 		 
 		

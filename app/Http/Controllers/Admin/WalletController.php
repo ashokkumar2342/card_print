@@ -205,7 +205,13 @@ class WalletController extends Controller
     public function rechargeRequest($value='')
     { 
       $user=Auth::guard('admin')->user();
-      $cashbooks=DB::select(DB::raw("Select concat(`u`.`email`,' - ', `u`.`mobile`) as `uname`, `pm`.`name`, `cb`.`transaction_date_time`, `cb`.`transaction_no`, `cb`.`camount`, `cb`.`id` From `users` `u` Inner Join `cashbook` `cb` on `cb`.`user_id` = `u`.`id` Inner join `payment_mode` `pm` on `pm`.`id` = `cb`.`payment_mode_id` Where `u`.`created_by` =$user->id and `cb`.`status` = 1 Order By `cb`.`transaction_date_time`, `pm`.`name`;"));
+      $condition = "";
+      if ($user->id<=2){
+        $condition = " Where `u`.`created_by` <= 2 ";
+      }else {
+        $condition = " Where `u`.`created_by`= $user->id ";
+      }
+      $cashbooks=DB::select(DB::raw("Select concat(`u`.`email`,' - ', `u`.`mobile`) as `uname`, `pm`.`name`, `cb`.`transaction_date_time`, `cb`.`transaction_no`, `cb`.`camount`, `cb`.`id` From `users` `u` Inner Join `cashbook` `cb` on `cb`.`user_id` = `u`.`id` Inner join `payment_mode` `pm` on `pm`.`id` = `cb`.`payment_mode_id` $condition and `cb`.`status` = 1 Order By `cb`.`transaction_date_time`, `pm`.`name`;"));
        
       return view('admin.wallet.recharge_request',compact('cashbooks')); 
     }
@@ -224,7 +230,14 @@ class WalletController extends Controller
     public function rechargeWalletInCash()
     { 
       $user=Auth::guard('admin')->user();
-      $users=User::where('created_by',$user->id)->get();
+      // $users=User::where('created_by',$user->id)->get();
+      $condition = "";
+      if ($user->id<=2){
+        $condition = " Where created_by <= 2 and `id` > 2 ";
+      }else {
+        $condition = " Where created_by = $user->id ";
+      }
+      $users=DB::select(DB::raw("select * from `users` $condition order by `user_name`;"));
       return view('admin.wallet.recharge_wallet_in_cash',compact('users')); 
     }
     public function rechargeWalletInCashStore(Request $request)

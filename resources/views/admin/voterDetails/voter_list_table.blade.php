@@ -4,7 +4,7 @@
 		<tr>
 			<th>Name</th>
 			<th>F/H Name</th> 
-			<th>Card No.</th> 
+			<th>EPIC No.</th> 
 			<th>Gender</th> 
 			<th>Age</th> 
 			<th>Mobile</th> 

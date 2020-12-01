@@ -25,13 +25,10 @@ class VoterDetailsController extends Controller
                           ->orderBy('AC_NO','ASC')->get();
         return view('admin.voterDetails.ac_no_select_box',compact('ac_nos'));
     }
-    public function acnoWisePartno(Request $request)
-    {   
-        $part_nos=NewPartList::where('AC_No',$request->ac_no)
-                          ->orderBy('Part_No','ASC')->get();
-        $sections=Section::where('ac_no',$request->ac_no)
-                          ->orderBy('s_name_e','ASC')->get();                  
-        return view('admin.voterDetails.part_no_select_box',compact('part_nos','sections'));
+    public function acnoWiseVillage(Request $request)
+    {  
+      $villages = DB::select(DB::raw("select Distinct trim(`Name_e`) as `vilname` from `newpartlist` where `AC_No` = $request->ac_no Order By trim(`Name_e`);"));
+        return view('admin.voterDetails.village_select_box',compact('villages'));
     } 
     public function voterSearch(Request $request)
     { 
@@ -54,26 +51,47 @@ class VoterDetailsController extends Controller
               $response["msg"]='Please Enter Either Name or F/H Name or EPIC No.';
               return response()->json($response);// response as json  
           }
-        $voters =DataVoter:: 
-                 where('ac_no',$request->ac_no)
-               ->where(function($query) use($request){ 
-                if (!empty($request->part_no)) {
-                $query->where('part_no', 'like','%'.$request->part_no.'%'); 
-                }
-                if (!empty($request->sections)) {
-                $query->where('section', 'like','%'.$request->sections.'%'); 
-                }
-                if (!empty($request->voter_name)) {
-                $query->where('name_e', 'like','%'.$request->voter_name.'%'); 
-                }
-                if (!empty($request->father_name)) {
-                $query->where('f_name_e', 'like','%'.$request->father_name.'%'); 
-                }
-                if (!empty($request->voter_card_no)) {
-                $query->where('cardno', 'like','%'.$request->voter_card_no.'%'); 
-                } 
-               }) 
-               ->orderBy('name_e','ASC')->orderBy('f_name_e','ASC')->take(25)->get(); 
+        // $voters =DataVoter:: 
+        //          where('ac_no',$request->ac_no)
+        //        ->where(function($query) use($request){ 
+        //         if (!empty($request->part_no)) {
+        //         $query->where('part_no', 'like','%'.$request->part_no.'%'); 
+        //         }
+        //         if (!empty($request->sections)) {
+        //         $query->where('section', 'like','%'.$request->sections.'%'); 
+        //         }
+        //         if (!empty($request->voter_name)) {
+        //         $query->where('name_e', 'like','%'.$request->voter_name.'%'); 
+        //         }
+        //         if (!empty($request->father_name)) {
+        //         $query->where('f_name_e', 'like','%'.$request->father_name.'%'); 
+        //         }
+        //         if (!empty($request->voter_card_no)) {
+        //         $query->where('cardno', 'like','%'.$request->voter_card_no.'%'); 
+        //         } 
+        //        }) 
+        //        ->orderBy('name_e','ASC')->orderBy('f_name_e','ASC')->take(25)->get();
+
+        $condition ='';
+        if (!empty($request->village)) {
+          $condition = $condition. " and `npl`.`Name_e` = '$request->village'"; 
+        }
+        if (!empty($request->voter_name)) {
+          $text = str_replace("'", "", $request->voter_name);
+          $condition = $condition. " and `dv`.`name_e` like '%$text%'"; 
+        }
+        if (!empty($request->father_name)) {
+          $text = str_replace("'", "", $request->father_name);
+          $condition = $condition. " and `dv`.`f_name_e` like '%$text%'"; 
+        }
+        if (!empty($request->voter_card_no)) {
+          $text = str_replace("'", "", $request->voter_card_no);
+          $condition = $condition. " and `dv`.`cardno` like '%$text%'"; 
+        }
+        $orderby = " Order By `dv`.`name_e`, `dv`.`f_name_e` limit 25;";
+        $voters = DB::select(DB::raw("Select `dv`.`name_e`, `dv`.`f_name_e`, `dv`.`cardno`, `dv`.`gender`, `dv`.`age`, `dv`.`mobile` From `data_voters` `dv` Inner Join `newpartlist` `npl` on `npl`.`AC_No` = `dv`.`ac_no` and `npl`.`Part_No` = `dv`.`part_no` Where `dv`.`ac_no` = $request->ac_no $condition $orderby"));
+
+        
         $response= array();                       
         $response['status']= 1;                       
         $response['data']=view('admin.voterDetails.voter_list_table',compact('voters'))->render();
