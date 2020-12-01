@@ -39,16 +39,16 @@
             </div>
           </div>
         </div>
+        <p class="text-danger">{{ $errors->first('user_name') }}</p>
         <div class="input-group mb-3">
           <input type="email" name="email" class="form-control" placeholder="Email">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
             </div>
-             <p class="text-danger">{{ $errors->first('email') }}</p>
-          </div>
-
+          </div> 
         </div>
+        <p class="text-danger">{{ $errors->first('email') }}</p>
         <div class="input-group mb-3">
           <input type="text" name="mobile" class="form-control" placeholder="Mobile No." maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
           <div class="input-group-append">
@@ -57,6 +57,7 @@
             </div>
           </div>
         </div>
+        <p class="text-danger">{{ $errors->first('mobile') }}</p>
         <div class="input-group mb-3">
           <input type="password" name="password" class="form-control" placeholder="Password">
           <div class="input-group-append">
@@ -65,6 +66,7 @@
             </div>
           </div>
         </div>
+        <p class="text-danger">{{ $errors->first('password') }}</p>
         <div class="input-group mb-3">
           <input type="password" name="confirm_password" class="form-control" placeholder="Confirm password">
           <div class="input-group-append">
@@ -73,13 +75,14 @@
             </div>
           </div>
         </div>
+        <p class="text-danger">{{ $errors->first('confirm_password') }}</p>
         <div class="row"> 
           <div class="col-12">
             <button type="submit" class="btn btn-primary btn-block">Register</button>
           </div> 
         </div>
       </form> 
-      <a href="login.html" class="text-center">I already have a membership</a>
+      <a href="{{ route('admin.login') }}" class="text-center">I already have a membership</a>
     </div>
     <!-- /.form-box -->
   </div><!-- /.card -->

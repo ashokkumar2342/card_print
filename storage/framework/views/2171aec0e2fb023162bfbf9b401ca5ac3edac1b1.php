@@ -12,49 +12,25 @@
         </div> 
         <div class="card card-info"> 
             <div class="card-body">
-                <form action="<?php echo e(route('admin.wallet.cashbook.store')); ?>" method="post" class="add_form">
+                <form action="<?php echo e(route('admin.wallet.cashbook.report')); ?>" method="post" class="add_form" success-content-id="report_table" no-reset="true" data-table="report-table">
                 <?php echo e(csrf_field()); ?>
 
-                <div class="row"> 
-                    <div class="col-lg-4 form-group">
-                        <label>Payment Mode</label>
-                        <select name="payment_mode" class="form-control">
-                            <option selected disabled>Select Payment Mode</option>
-                            <?php $__currentLoopData = $paymentModes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $paymentMode): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                             <option value="<?php echo e($paymentMode->id); ?>"><?php echo e($paymentMode->name); ?></option>  
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                         </select> 
+                <div class="row">  
+                    <div class="col-lg-4 ">
+                        <div class="form-group">
+                          <label>Date Range </label>
+                          <input type="text" id="reportrange" name="date_range" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%"> 
+                        </div> 
                     </div>
-                    <div class="col-lg-4 form-group">
-                        <label>Amount</label>
-                        <input type="text" name="amount" class="form-control"> 
-                    </div>
-                    <div class="col-lg-4 form-group">
-                        <label for="transaction_date_time">Transaction (date and time):</label>
-                          <input type="datetime-local" id="transaction_date_time" name="transaction_date_time" class="form-control">
-                           
-                    </div>
-                    <div class="col-lg-4 form-group">
-                        <label>Transaction No.</label>
-                        <input type="text" name="transaction_no" class="form-control"> 
-                    </div>
-                    <div class="col-lg-4 form-group">
-                        <label>Payment Type</label>
-                        <input type="text" name="payment_type" class="form-control"> 
-                    </div>
-                    <div class="col-lg-4 form-group">
-                        <label>balance</label>
-                        <input type="text" name="balance" class="form-control"> 
-                    </div>
-                    <div class="col-lg-12 form-group">
-                        <label>Remarks</label>
-                        <input type="text" name="remarks" class="form-control">
-                    </div>
+                    
                     <div class="col-lg-12 form-group"> 
-                        <input type="submit" class="form-control btn btn-primary">
+                        <input type="submit" class="form-control btn btn-primary" value="Show">
                     </div>
                 </div> 
                 </form> 
+                <div class="col-lg-12" id="report_table">
+                    
+                </div>
              </div>
          </div>
      </div>
@@ -62,6 +38,32 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startPush('scripts'); ?>
 <script type="text/javascript"> 
+  
+ $(function() {
+
+     var start = moment().subtract(6, 'days');
+     var end = moment();
+
+     function cb(start, end) {
+         $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+     }
+
+     $('#reportrange').daterangepicker({
+         startDate: start,
+         endDate: end,
+         ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+         }
+     }, cb);
+
+     cb(start, end);
+
+ });
  
 </script> 
 <?php $__env->stopPush(); ?>
