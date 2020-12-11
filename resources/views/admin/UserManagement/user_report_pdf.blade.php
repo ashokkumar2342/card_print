@@ -17,7 +17,6 @@
 				<th>Email</th>
 				<th>Mobile No.</th>
 				<th>Role</th>
-				<th>Created By</th>
 				<th>Status</th>
 			</tr>
 		</thead>
@@ -27,9 +26,8 @@
 					<td>{{ $user->user_name }}</td>
 					<td>{{ $user->email }}</td>
 					<td>{{ $user->mobile }}</td>
-					<td>{{ $user->Roles->r_name or ''}}</td>
-					<td>{{ $user->Users->email or ''}}</td>
-					 @php
+					<td>{{ $user->r_name or ''}}</td>
+					@php
 					 	if ($user->status==0) {
 					 		$status='Pending'; 
 					 	}
@@ -39,7 +37,7 @@
 					 	elseif ($user->status==2) {
 					 		$status='InActive'; 
 					 	}
-					 @endphp
+					@endphp
 					<td>{{ $status }}</td>
 				</tr> 
 			@endforeach

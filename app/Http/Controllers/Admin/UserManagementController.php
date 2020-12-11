@@ -185,13 +185,19 @@ class UserManagementController extends Controller
     { 
       $user=Auth::guard('admin')->user();
       $users =  User::where('created_by',$user->id)->get(); 
-      $userRoles =  UserRole::all(); 
+      $userRoles =  DB::select(DB::raw("select * from `user_roles` where `id` > (Select `role_id` from `users` where `id` = $user->id) order by `id`;")); 
       return view('admin.UserManagement.user_report',compact('userRoles'));
     }
     public function userReportGenerate($value='')
     {
       $user=Auth::guard('admin')->user();
-      $users =  User::get();
+      $condition = '';
+      if ($user->id <= 2){
+        $condition = " where `u`.`created_by` <= 2";
+      }else{
+        $condition = " where `u`.`created_by` = ".$user->id;
+      }
+      $users =  DB::select(DB::raw("select `u`.`user_name`, `u`.`email`, `u`.`mobile`, `u`.`status`, `ur`.`r_name` from `users` `u` inner join `user_roles` `ur` on `u`.`role_id` = `ur`.`id` $condition;"));
       $path=Storage_path('fonts/');
         $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir']; 
