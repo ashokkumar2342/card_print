@@ -65,7 +65,14 @@ class UserManagementController extends Controller
     }
     public function userApprovalList($value='')
     {
-        $users=User::orderBy('user_name','ASC')->where('status',0)->get(); 
+        $user=Auth::guard('admin')->user();
+        $condition = '';
+        if ($user->id <= 2){
+          $condition = " and `u`.`created_by` <= 2";
+        }else{
+          $condition = " and `u`.`created_by` = ".$user->id;
+        }
+        $users =  DB::select(DB::raw("select `u`.`id`, `u`.`user_name`, `u`.`email`, `u`.`mobile`, `u`.`status`, `ur`.`r_name` from `users` `u` inner join `user_roles` `ur` on `u`.`role_id` = `ur`.`id` where `u`.`status` = 0 $condition;")); 
         return view('admin.UserManagement.user_list',compact('users'));
     }
     public function userApprovalForm($op_id)
@@ -188,16 +195,23 @@ class UserManagementController extends Controller
       $userRoles =  DB::select(DB::raw("select * from `user_roles` where `id` > (Select `role_id` from `users` where `id` = $user->id) order by `id`;")); 
       return view('admin.UserManagement.user_report',compact('userRoles'));
     }
-    public function userReportGenerate($value='')
+    public function userReportGenerate(Request $request)
     {
+      $role_id = $request->role_id;
       $user=Auth::guard('admin')->user();
+      $role_condition = '';
+      if ($role_id == 0){
+        $role_condition = " where `u`.`role_id` > 1 ";
+      }else{
+        $role_condition = " where `u`.`role_id` = ".$role_id;
+      }
       $condition = '';
       if ($user->id <= 2){
-        $condition = " where `u`.`created_by` <= 2";
+        $condition = " and `u`.`created_by` <= 2";
       }else{
-        $condition = " where `u`.`created_by` = ".$user->id;
+        $condition = " and `u`.`created_by` = ".$user->id;
       }
-      $users =  DB::select(DB::raw("select `u`.`user_name`, `u`.`email`, `u`.`mobile`, `u`.`status`, `ur`.`r_name` from `users` `u` inner join `user_roles` `ur` on `u`.`role_id` = `ur`.`id` $condition;"));
+      $users =  DB::select(DB::raw("select `u`.`user_name`, `u`.`email`, `u`.`mobile`, `u`.`status`, `ur`.`r_name` from `users` `u` inner join `user_roles` `ur` on `u`.`role_id` = `ur`.`id` $role_condition $condition;"));
       $path=Storage_path('fonts/');
         $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir']; 

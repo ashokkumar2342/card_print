@@ -66,7 +66,7 @@ class LoginController extends Controller
           ]);
           $user=User::where('email',$request->email)->first();
           if (!empty($user)) { 
-              if (password_verify($request->password,$user->password) && $user->status!=2) {
+              if (password_verify($request->password,$user->password) && $user->status==1) {
                  auth()->guard('admin')->loginUsingId($user->id); 
                   return redirect()->route('admin.dashboard');
               }else{
