@@ -15,8 +15,28 @@
     border: 1px solid black;
     vertical-align: top;
 }
+@page first{
+       background-image: url('{{ $bimage1 }}');
+       background-repeat:no-repeat;background-size:195px 125px;
+       margin-top:0px;
+       margin-bottom:0px;
+   }
+   @page second{
+       background-image: url('{{ $bimage2 }}');
+       background-repeat:no-repeat;
+       margin-top:0px;
+       margin-bottom:0px;
+   }
+div.first{
+	page:first;
+}
+div.second{
+	page:second;
+}
+
 </style>
 <body>
+	<div class="first"> 
 	<table>
 		<tr>
 			<th></th> 
@@ -59,7 +79,9 @@
 			<td style="width: 300px;font-size: 15px;font-weight: bold;padding-top:6px">{{ $rln_e }}'s Name : {{ $rname_e }}</td>
 		</tr>
 	</table>
-	<pagebreak>
+	</div>
+	{{-- <pagebreak> --}}
+	<div class="second">
 	<table style="font-size: 7px" width="100%">
 		<tr>
 			<td style="width:50%"><span style ="font-size: 8.5px;">लिंग</span>/<b>Gender</b> :</td>
@@ -100,7 +122,8 @@
 			<td><span style ="font-size: 8.5px;">भाग संख्या व नाम : {{ $partno_name_l }}</span><br><b>Part No. and Name :{{ $partno_name_e }}</b></td>
 		</tr> 
 	</table>
-	<div style="position: absolute;overflow: visible;left: 50;margin-top:170px;
-    margin-bottom: auto;font-size: 7px"><b>&nbsp;</b></div>
+	{{-- <div style="position: absolute;overflow: visible;left: 50;margin-top:170px;
+    margin-bottom: auto;font-size: 7px"><b>&nbsp;</b></div> --}}
+</div>
 </body>
 </html>

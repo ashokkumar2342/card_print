@@ -1,5 +1,6 @@
 <form action="{{ route('admin.card.print.print') }}" method="post" target="blank">
 {{ csrf_field() }}
+<input type="hidden" name="pre_printed_card" value="{{ $pre_printed_card }}">
 <div class="row"> 
 <table style="border-collapse: collapse; width: 100.609%; height: 203px;" border="1">
 <tbody>

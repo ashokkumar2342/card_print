@@ -28,6 +28,12 @@ class CardPrintController extends Controller
             $response["msg"]=$errors[0];
             return response()->json($response);// response as json
         }
+        if (empty($request->pre_printed_card)) {
+          $pre_printed_card=0;  
+        }
+        elseif (!empty($request->pre_printed_card)) {
+          $pre_printed_card=1;  
+        }
         $voterData = DB::select(DB::raw("select * from data_voters `dv` Inner Join `gender_detail` `gd` on `gd`.`code` = `dv`.`gender` where cardno = '$request->voter_card_no';"));
         if (empty($voterData)) {
            $response=array();
@@ -42,7 +48,7 @@ class CardPrintController extends Controller
         $image = 'https://voter-image.s3.ap-south-1.amazonaws.com/'.$filename;
         $response= array();                       
         $response['status']= 1;                       
-        $response['data']=view('admin.card_print.show',compact('voters','voterData','image'))->render();
+        $response['data']=view('admin.card_print.show',compact('voters','voterData','image','pre_printed_card'))->render();
         return $response;   
     }
     public function print(Request $request)
@@ -51,6 +57,7 @@ class CardPrintController extends Controller
         
         // Storage::disk('s3')->setVisibility('1/1/2.jpg', 'public');
         // return $image;
+
         $path=Storage_path('fonts/');
         $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir']; 
@@ -78,10 +85,10 @@ class CardPrintController extends Controller
         $value=$request->voter_card_no;
         $user=Auth::guard('admin')->user();
 
-        $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet`('$value', $user->id) as `result`;")); 
-        if ($transaction_status[0]->result!='success'){
-            return redirect()->back()->with(['message'=>$transaction_status[0]->result,'class'=>'error']);
-        }
+        // $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet`('$value', $user->id) as `result`;")); 
+        // if ($transaction_status[0]->result!='success'){
+        //     return redirect()->back()->with(['message'=>$transaction_status[0]->result,'class'=>'error']);
+        // }
          
         $voterData = DB::select(DB::raw("select * from data_voters `dv` Inner Join `gender_detail` `gd` on `gd`.`code` = `dv`.`gender` Inner Join `rln_detail` `rd` on `rd`.`code` = `dv`.`relation` where cardno = '$value';"));
         
@@ -140,6 +147,13 @@ class CardPrintController extends Controller
         $cdate = date("d-m-Y");
         
         $bimage  =\Storage_path('app/image/blank.png');
+        if ($request->pre_printed_card==1) {
+            $bimage1  =\Storage_path('app/image/images.jpg');
+            $bimage2  =\Storage_path('app/image/images2.jpg'); 
+        }else {
+            $bimage1  =\Storage_path('app/image/images.jpg');
+            $bimage2  =\Storage_path('app/image/images2.jpg'); 
+        }
 
         list($width, $height, $type, $attr) = getimagesize($image);
         
@@ -165,7 +179,7 @@ class CardPrintController extends Controller
         // $width = 88;
         // $height = 117;
 
-        $html = view('admin.card_print.print',compact('vcardno', 'image', 'width', 'height', 'name_l', 'name_e', 'rln_l', 'rln_e', 'rname_l', 'rname_e', 'gender_l', 'gender_e', 'age_dob', 'add_l', 'add_e', 'acno_name_l', 'acno_name_e', 'partno_name_l', 'partno_name_e', 'cdate', 'bimage', 'bcheight', 'bcsize', 'signimg'));
+        $html = view('admin.card_print.print',compact('vcardno', 'image', 'width', 'height', 'name_l', 'name_e', 'rln_l', 'rln_e', 'rname_l', 'rname_e', 'gender_l', 'gender_e', 'age_dob', 'add_l', 'add_e', 'acno_name_l', 'acno_name_e', 'partno_name_l', 'partno_name_e', 'cdate', 'bimage', 'bcheight', 'bcsize', 'signimg','bimage1','bimage2'));
         $mpdf->WriteHTML($html); 
         $mpdf->Output();
     }  
