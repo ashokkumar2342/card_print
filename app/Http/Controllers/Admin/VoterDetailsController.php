@@ -10,7 +10,8 @@ use App\Model\NewPartList;
 use App\Model\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;  
+use Illuminate\Support\Facades\Validator;
+use Auth;  
 
 class VoterDetailsController extends Controller
 {
@@ -51,6 +52,18 @@ class VoterDetailsController extends Controller
               $response["msg"]='Please Enter Either Name or F/H Name or EPIC No.';
               return response()->json($response);// response as json  
           }
+
+
+          $appuser = Auth::guard('admin')->user();
+          $wballance = DB::select(DB::raw("select `amt` from `balanceamt` where `userid` = $appuser->id;"));
+          $cardrate = DB::select(DB::raw("select `amt` from `charge_per_card` where `userid` = $appuser->id;"));
+          if ($wballance[0]->amt<$cardrate[0]->amt) {
+              $response=array();
+              $response["status"]=0;
+              $response["msg"]='Insufficiant Balance, Plz Recharge you Account';
+              return response()->json($response);// response as json  
+          }
+
         // $voters =DataVoter:: 
         //          where('ac_no',$request->ac_no)
         //        ->where(function($query) use($request){ 

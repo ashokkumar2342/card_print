@@ -17,16 +17,16 @@
                 <form action="{{ route('admin.card.print.show') }}" method="post" class="add_form" success-content-id="voter_card_show">
                 {{ csrf_field() }} 
                 <div class="row">
-                    <div class="col-lg-8 form-group">
+                    <div class="col-lg-12 form-group">
                         <label>Voter Card No.(EPIC No.)</label>
                         <input type="text" maxlength="20" name="voter_card_no" class="form-control"> 
                     </div>
-                    <div class="col-lg-4 form-group" style="margin-top: 40px">
+                    {{-- <div class="col-lg-4 form-group" style="margin-top: 40px">
                         <div class="icheck-primary d-inline">
                         <input type="checkbox" id="all_check" class="checked_all" name="pre_printed_card" value="1">
                         <label for="all_check" class="checked_all">Pre Printed Card</label>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-lg-12 form-group">
                         <input type="submit" class="btn btn-primary form-control" value="Show"> 
                     </div> 

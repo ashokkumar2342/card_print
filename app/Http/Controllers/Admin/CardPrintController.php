@@ -28,12 +28,22 @@ class CardPrintController extends Controller
             $response["msg"]=$errors[0];
             return response()->json($response);// response as json
         }
-        if (empty($request->pre_printed_card)) {
-          $pre_printed_card=0;  
+
+        $appuser = Auth::guard('admin')->user();
+        if ($appuser->id>2){
+            $wballance = DB::select(DB::raw("select `amt` from `balanceamt` where `userid` = $appuser->id;"));
+            $cardrate = DB::select(DB::raw("select `amt` from `charge_per_card` where `userid` = $appuser->id;"));
+            if ($wballance[0]->amt<$cardrate[0]->amt) {
+                  $response=array();
+                  $response["status"]=0;
+                  $response["msg"]='Insufficiant Balance, Plz Recharge you Account';
+                  return response()->json($response);// response as json  
+            }
         }
-        elseif (!empty($request->pre_printed_card)) {
-          $pre_printed_card=1;  
-        }
+        
+        
+        
+          
         $voterData = DB::select(DB::raw("select * from data_voters `dv` Inner Join `gender_detail` `gd` on `gd`.`code` = `dv`.`gender` where cardno = '$request->voter_card_no';"));
         if (empty($voterData)) {
            $response=array();
@@ -48,7 +58,7 @@ class CardPrintController extends Controller
         $image = 'https://voter-image.s3.ap-south-1.amazonaws.com/'.$filename;
         $response= array();                       
         $response['status']= 1;                       
-        $response['data']=view('admin.card_print.show',compact('voters','voterData','image','pre_printed_card'))->render();
+        $response['data']=view('admin.card_print.show',compact('voters','voterData','image'))->render();
         return $response;   
     }
     public function print(Request $request)
@@ -148,11 +158,11 @@ class CardPrintController extends Controller
         
         $bimage  =\Storage_path('app/image/blank.png');
         if ($request->pre_printed_card==1) {
-            $bimage1  =\Storage_path('app/image/images.jpg');
-            $bimage2  =\Storage_path('app/image/images2.jpg'); 
+            $bimage1  =\Storage_path('app/image/front.jpg');
+            $bimage2  =\Storage_path('app/image/back.jpg'); 
         }else {
-            $bimage1  =\Storage_path('app/image/images.jpg');
-            $bimage2  =\Storage_path('app/image/images2.jpg'); 
+            $bimage1  =\Storage_path('app/image/blank.png');
+            $bimage2  =\Storage_path('app/image/blank.png'); 
         }
 
         list($width, $height, $type, $attr) = getimagesize($image);
@@ -179,7 +189,8 @@ class CardPrintController extends Controller
         // $width = 88;
         // $height = 117;
 
-        $html = view('admin.card_print.print',compact('vcardno', 'image', 'width', 'height', 'name_l', 'name_e', 'rln_l', 'rln_e', 'rname_l', 'rname_e', 'gender_l', 'gender_e', 'age_dob', 'add_l', 'add_e', 'acno_name_l', 'acno_name_e', 'partno_name_l', 'partno_name_e', 'cdate', 'bimage', 'bcheight', 'bcsize', 'signimg','bimage1','bimage2'));
+        $epicbackground = $request->pre_printed_card;
+        $html = view('admin.card_print.print',compact('vcardno', 'image', 'width', 'height', 'name_l', 'name_e', 'rln_l', 'rln_e', 'rname_l', 'rname_e', 'gender_l', 'gender_e', 'age_dob', 'add_l', 'add_e', 'acno_name_l', 'acno_name_e', 'partno_name_l', 'partno_name_e', 'cdate', 'bimage', 'bcheight', 'bcsize', 'signimg','bimage1','bimage2','epicbackground'));
         $mpdf->WriteHTML($html); 
         $mpdf->Output();
     }  
