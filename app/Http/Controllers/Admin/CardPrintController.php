@@ -61,6 +61,7 @@ class CardPrintController extends Controller
         $response['data']=view('admin.card_print.show',compact('voters','voterData','image'))->render();
         return $response;   
     }
+    
     public function print(Request $request)
     {   
 
@@ -95,10 +96,10 @@ class CardPrintController extends Controller
         $value=$request->voter_card_no;
         $user=Auth::guard('admin')->user();
 
-        // $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet`('$value', $user->id) as `result`;")); 
-        // if ($transaction_status[0]->result!='success'){
-        //     return redirect()->back()->with(['message'=>$transaction_status[0]->result,'class'=>'error']);
-        // }
+        $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet`('$value', $user->id) as `result`;")); 
+        if ($transaction_status[0]->result!='success'){
+            return redirect()->back()->with(['message'=>$transaction_status[0]->result,'class'=>'error']);
+        }
          
         $voterData = DB::select(DB::raw("select * from data_voters `dv` Inner Join `gender_detail` `gd` on `gd`.`code` = `dv`.`gender` Inner Join `rln_detail` `rd` on `rd`.`code` = `dv`.`relation` where cardno = '$value';"));
         
