@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller; 
-use Illuminate\Http\Request;  
-use App\Model\UserRole;
-use App\Model\User;
+use App\Http\Controllers\Controller;
 use App\Model\MainMenu;
 use App\Model\SubMenu;
+use App\Model\User;
+use App\Model\UserRole;
 use App\Model\UsersPermission;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;  
-use Illuminate\Support\Facades\Auth;  
-use Illuminate\Support\Facades\DB;  
 
 class UserManagementController extends Controller
 {
@@ -56,7 +57,25 @@ class UserManagementController extends Controller
             return response()->json($response);
     }
 
-
+    public function userList($value='')
+    {
+      $user=Auth::guard('admin')->user();
+      $users =User::where('created_by',$user->id)->where('status','!=',0)->get(); 
+      return view('admin.UserManagement.status_list',compact('users'));
+    }
+    public function userListStatus($id)
+    {
+      $id=Crypt::decrypt($id);
+      $user=User::find($id);
+      if ($user->status==1) {
+       $user->status=2;   
+      }
+      elseif ($user->status==2) {
+       $user->status=1;   
+      }
+      $user->save();
+      return redirect()->back()->with(['message'=>'Status Change Successfully','class'=>'success']);   
+    }
     //----------start---usersPermissions-usersPermissions-----------//
     public function userApproval()
     {
