@@ -13,6 +13,9 @@ Route::group(['middleware' => 'admin'], function() {
 	Route::prefix('UserManagement')->group(function () {
 		Route::get('/', 'UserManagementController@index')->name('admin.user.index');
 		Route::post('store', 'UserManagementController@store')->name('admin.user.post'); 
+		Route::get('user-list', 'UserManagementController@userList')->name('admin.user.list');
+		Route::get('user-list-status/{id}', 'UserManagementController@userListStatus')->name('admin.user.list.status');
+
 		Route::get('user-approval', 'UserManagementController@userApproval')->name('admin.user.approval'); 
 		Route::get('user-approval-list', 'UserManagementController@userApprovalList')->name('admin.user.approval.list'); 
 		Route::get('user-approval-form/{id}', 'UserManagementController@userApprovalForm')->name('admin.user.approval.form'); 
