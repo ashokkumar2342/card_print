@@ -22,7 +22,7 @@
     height:125px;
     background-image: url('{{ $bimage }}');
     background-repeat:no-repeat;background-size:95px 125px;
-    border: 1px solid black;
+    border: 0px solid black;
     vertical-align: top;
 
 	}
@@ -64,7 +64,7 @@ div.second{
 		</tr>
 	</table>
 	@else
-	<table style="margin-top: 75px" width="100%">
+	<table style="margin-top: 78px" width="100%">
 		<tr>
 			<th width="45%"><barcode code="{{ $vcardno }}" height="{{ $bcheight }}" type="C128B" size = "{{ $bcsize }}" class="barcode" /></th>
 			<th width="55%" style="font-size: 15px;padding-left: 9px">{{ $vcardno }}</th>
@@ -81,7 +81,7 @@ div.second{
 		</tr>
 	</table>
 	@else
-	<table style="margin-top:3px;padding-left: 5px">
+	<table style="margin-top:3px;padding-left: 8px">
 		<tr>
 			<td width="28%"></td>
 			<td  class="test" width="60%"><img src="{{ $image }}" alt="" width = "{{ $width }}px" height = "{{ $height }}px"></td>
