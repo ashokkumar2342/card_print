@@ -86,6 +86,34 @@
           @endforeach
           </div>
         </div>
+        @if ($user->role_id!=1) 
+        <div class="card">
+          <div class="card-header bg-success">
+            <h3 class="card-title">Recharge Package <small>Offer</small></h3>
+          </div> 
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="border-bottom: 2px solid #e92259;">Package Name</th>
+                    <th style="border-bottom: 2px solid #e92259;">Package Price</th>
+                    <th style="border-bottom: 2px solid #e92259;">Package Value</th>
+                    
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach ($recharge_packages as $recharge_package)
+                  <tr>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $recharge_package->package_name }}</td>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $recharge_package->package_price }}</td>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $recharge_package->package_value }}</td>
+                    
+                  </tr> 
+                  @endforeach
+                </tbody>
+              </table> 
+            </div>
+           
+        @endif 
     </section>
 @endsection 
 

@@ -6,14 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Model\Cashbook;
 use App\Model\PaymentMode;
 use App\Model\PaymentOption;
+use App\Model\RechargePackage;
 use App\Model\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; 
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Response; 
-use Illuminate\Support\Facades\DB; 
-use Illuminate\Support\Facades\Validator;  
 use Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
 
 class WalletController extends Controller
 {
@@ -107,8 +108,8 @@ class WalletController extends Controller
     	$rules=[  
         "payment_mode" => 'required', 
         "transaction_date" => 'required', 
-        "amount" => 'required', 
         "transaction_no" => 'required', 
+        "amount" => 'required', 
     	]; 
         $validator = Validator::make($request->all(),$rules);
         if ($validator->fails()) {
@@ -144,7 +145,8 @@ class WalletController extends Controller
           $payment_mode_id_arr=PaymentOption::where('user_id',$user->created_by)->where('status',1)->pluck('payment_mode_id')->toArray();
       }
       $paymentModes=PaymentMode::whereIn('id',$payment_mode_id_arr)->get(); 
-       return view('admin.wallet.recharge_wallet',compact('paymentModes'));  
+      $recharge_packages=RechargePackage::where('user_type',$user->role_id)->where('status',1)->get(); 
+       return view('admin.wallet.recharge_wallet',compact('paymentModes','recharge_packages'));  
     }  
     public function paymentOptionShow(Request $request)
     {
@@ -218,13 +220,13 @@ class WalletController extends Controller
     public function rechargeRequestApproval($id)
     {
       $user=Auth::guard('admin')->user();
-      DB::select(DB::raw("call up_approve_recharge_request ('$user->id','$id','0')"));
+      DB::select(DB::raw("call up_approve_recharge_request ('$id','1')"));
       return redirect()->back()->with(['message'=>'Approved Successfully','class'=>'success']);
     }
     public function rechargeRequestReject($id)
     {  
       $user=Auth::guard('admin')->user();
-      DB::select(DB::raw("call up_approve_recharge_request ('$user->id','$id','2')"));
+      DB::select(DB::raw("call up_approve_recharge_request ('$id','2')"));
       return redirect()->back()->with(['message'=>'Rejected Successfully','class'=>'success']);
     }
     public function rechargeWalletInCash()
@@ -238,7 +240,8 @@ class WalletController extends Controller
         $condition = " Where created_by = $user->id ";
       }
       $users=DB::select(DB::raw("select * from `users` $condition order by `user_name`;"));
-      return view('admin.wallet.recharge_wallet_in_cash',compact('users')); 
+      $recharge_packages=RechargePackage::where('user_type','>',$user->role_id)->get();
+      return view('admin.wallet.recharge_wallet_in_cash',compact('users','recharge_packages')); 
     }
     public function rechargeWalletInCashStore(Request $request)
     { 

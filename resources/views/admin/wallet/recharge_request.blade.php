@@ -12,7 +12,7 @@
             </div>
         </div> 
         <div class="card card-info"> 
-            <div class="card-body">
+            <div class="table-responsive card-body">
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>

@@ -26,7 +26,11 @@
                         </div>
                         <div class="col-lg-6 form-group">
                             <label>Amount</label>
-                            <input type="text" name="amount" class="form-control" maxlength="7" onkeypress='return event.charCode >= 48 && event.charCode <= 57'> 
+                            <select name="amount" class="form-control">
+                            @foreach ($recharge_packages as $recharge_package)
+                                <option value="{{ $recharge_package->id }}">{{ $recharge_package->package_name }}</option> 
+                            @endforeach 
+                        </select>
                         </div>
                         <div class="col-lg-12 form-group">
                           <input type="submit" class="form-control btn btn-primary">   

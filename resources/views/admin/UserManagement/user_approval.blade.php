@@ -14,7 +14,7 @@
         <div class="card card-info"> 
             <div class="card-body">
                 <button type="button" hidden id="btn_user_approval_list" onclick="callAjax(this,'{{ route('admin.user.approval.list') }}','user_approval_list')">dd</button>
-               <div id="user_approval_list">
+               <div class="table-responsive" id="user_approval_list">
                     
                 </div> 
              </div>
