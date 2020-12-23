@@ -12,8 +12,8 @@
             </div>
         </div> 
         <div class="card card-info"> 
-            <div class="card-body">
-                <table class="table table-striped table-bordered">
+            <div class="card-body table-responsive">
+                <table class="table table-striped table-bordered" id="user_list_table">
                 <thead>
                     <tr>
                         <th>User Name</th>
@@ -29,21 +29,21 @@
                     @php
                     
                     if ($user->status==1){
-                        $color='background-color:#479641';
+                        $color='bg-success';
                         $status='Active';
                     }elseif($user->status==2){
-                        $color='background-color:#a4b1bf'; 
+                        $color='bg-danger'; 
                         $status='disabled';
                     }                    
                     @endphp
-                    <tr style="{{ $color }}">
+                    <tr class="{{ $color }}">
                         <td>{{ $user->user_name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->mobile }}</td>
                         <td>{{ $user->r_name }}</td>
                         <td>{{ $status }}</td>
                         <td>
-                           <a href="{{ route('admin.user.list.status',Crypt::encrypt($user->id)) }}" class="btn btn-xs btn{{ $color }}" title="">Active</a>
+                           <a href="{{ route('admin.user.list.status',Crypt::encrypt($user->id)) }}" class="btn btn-xs btn-info" title="">Change Status</a>
                         </td>
                     </tr> 
                     @endforeach
@@ -53,5 +53,10 @@
         </div>
     </div>
     </section>
-    @endsection 
+    @endsection
+@push('scripts')     
+<script>
+  $('#user_list_table').DataTable();  
+</script>
+@endpush
 

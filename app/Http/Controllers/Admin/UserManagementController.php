@@ -324,5 +324,27 @@ class UserManagementController extends Controller
       $html = view('admin.UserManagement.report_date_wise_pdf',compact('datas'));
       $mpdf->WriteHTML($html); 
       $mpdf->Output(); 
+    }
+    public function modifyPerCard()
+    { 
+      $user=Auth::guard('admin')->user();
+      $users=User::where('created_by',$user->id)->orWhere('created_by','<=',2)->where('status',1)->get();
+      return view('admin.UserManagement.modify_per_card',compact('users'));
+    }
+    public function modifyPerCardStore(Request $request)
+    {
+      $rules=[
+        'user_id' => 'required',             
+        "charge_card" => 'required', 
+      ]; 
+        $validator = Validator::make($request->all(),$rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $response=array();
+            $response["status"]=0;
+            $response["msg"]=$errors[0];
+            return response()->json($response);// response as json
+        }
+        return  $request;
     } 
 }

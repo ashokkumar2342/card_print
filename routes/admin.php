@@ -24,7 +24,10 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::post('user-report-generate', 'UserManagementController@userReportGenerate')->name('admin.user.report.generate'); 
 		Route::get('report-date-wise', 'UserManagementController@reportDatewise')->name('admin.user.report.date.wise'); 
 		Route::post('report-date-wise-show', 'UserManagementController@reportDatewiseShow')->name('admin.user.report.date.wise.show'); 
-		Route::get('report-date-wise-download/{from_date}/{to_date}', 'UserManagementController@reportDatewiseDownload')->name('admin.user.report.date.wise.download'); 
+		Route::get('report-date-wise-download/{from_date}/{to_date}', 'UserManagementController@reportDatewiseDownload')->name('admin.user.report.date.wise.download');
+
+		Route::get('modify-per-card', 'UserManagementController@modifyPerCard')->name('admin.user.modify.per.card'); 
+		Route::post('modify-per-card-store', 'UserManagementController@modifyPerCardStore')->name('admin.user.modify.per.card.store'); 
 	});
 	Route::prefix('myaccount')->group(function () {
 		Route::get('change-password', 'UserManagementController@changePassword')->name('admin.user.change.password');
