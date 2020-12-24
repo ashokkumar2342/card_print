@@ -55,13 +55,15 @@ class VoterDetailsController extends Controller
 
 
           $appuser = Auth::guard('admin')->user();
-          $wballance = DB::select(DB::raw("select `amt` from `balanceamt` where `userid` = $appuser->id;"));
-          $cardrate = DB::select(DB::raw("select `amt` from `charge_per_card` where `userid` = $appuser->id;"));
-          if ($wballance[0]->amt<$cardrate[0]->amt) {
-              $response=array();
-              $response["status"]=0;
-              $response["msg"]='Insufficiant Balance, Plz Recharge you Account';
-              return response()->json($response);// response as json  
+          if ($appuser->id > 2){
+            $wballance = DB::select(DB::raw("select `amt` from `balanceamt` where `userid` = $appuser->id;"));
+            $cardrate = DB::select(DB::raw("select `amt` from `charge_per_card` where `userid` = $appuser->id;"));
+            if ($wballance[0]->amt<$cardrate[0]->amt) {
+                $response=array();
+                $response["status"]=0;
+                $response["msg"]='Insufficiant Balance, Plz Recharge you Account';
+                return response()->json($response);// response as json  
+            }
           }
 
         // $voters =DataVoter:: 

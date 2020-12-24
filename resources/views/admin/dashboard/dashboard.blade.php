@@ -97,6 +97,7 @@
                     <th style="border-bottom: 2px solid #e92259;">Package Name</th>
                     <th style="border-bottom: 2px solid #e92259;">Package Price</th>
                     <th style="border-bottom: 2px solid #e92259;">Package Value</th>
+                    <th style="border-bottom: 2px solid #e92259;">Action</th>
                     
                   </tr>
                 </thead>
@@ -106,6 +107,9 @@
                     <td style="border-bottom: 2px solid #e92259;">{{ $recharge_package->package_name }}</td>
                     <td style="border-bottom: 2px solid #e92259;">{{ $recharge_package->package_price }}</td>
                     <td style="border-bottom: 2px solid #e92259;">{{ $recharge_package->package_value }}</td>
+                    <td style="border-bottom: 2px solid #e92259;">
+                      <a href="{{ route('admin.wallet.recharge.wallet') }}" class="btn btn-xs btn-success">Recharge Now</a>
+                    </td>
                     
                   </tr> 
                   @endforeach

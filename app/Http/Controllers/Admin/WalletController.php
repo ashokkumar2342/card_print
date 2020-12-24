@@ -103,6 +103,7 @@ class WalletController extends Controller
        $paymentModes=PaymentMode::all();	 
        return view('admin.wallet.cashbook',compact('paymentModes'));  
     }
+    
     public function cashbookStore(Request $request)
     {   
     	$rules=[  
@@ -120,18 +121,21 @@ class WalletController extends Controller
             return response()->json($response);// response as json
         }
        $user=Auth::guard('admin')->user(); 
-       $Cashbook=new Cashbook();
-       $Cashbook->user_id=$user->id; 
-       $Cashbook->payment_mode_id=$request->payment_mode;
-       $Cashbook->camount=$request->amount;
-       $Cashbook->damount='';
-       $Cashbook->transaction_no=$request->transaction_no;
-       $Cashbook->transaction_date_time=$request->transaction_date;
-       $Cashbook->transaction_type=1;
-       $Cashbook->balance=0;
-       $Cashbook->remarks='Recharge Wallet';
-       $Cashbook->status=1;
-       $Cashbook->save();
+       
+       $cashbooks=DB::select(DB::raw("call `up_save_recharge_request`($user->id, $request->amount, $request->payment_mode, '$request->transaction_date', '$request->transaction_no');")); 
+
+       // $Cashbook=new Cashbook();
+       // $Cashbook->user_id=$user->id; 
+       // $Cashbook->payment_mode_id=$request->payment_mode;
+       // $Cashbook->camount=$request->amount;
+       // $Cashbook->damount='';
+       // $Cashbook->transaction_no=$request->transaction_no;
+       // $Cashbook->transaction_date_time=$request->transaction_date;
+       // $Cashbook->transaction_type=1;
+       // $Cashbook->balance=0;
+       // $Cashbook->remarks='Recharge Wallet';
+       // $Cashbook->status=1;
+       // $Cashbook->save();
        $response=['status'=>1,'msg'=>'Submit Successfully'];
             return response()->json($response);
     }
@@ -145,8 +149,16 @@ class WalletController extends Controller
           $payment_mode_id_arr=PaymentOption::where('user_id',$user->created_by)->where('status',1)->pluck('payment_mode_id')->toArray();
       }
       $paymentModes=PaymentMode::whereIn('id',$payment_mode_id_arr)->get(); 
-      $recharge_packages=RechargePackage::where('user_type',$user->role_id)->where('status',1)->get(); 
-       return view('admin.wallet.recharge_wallet',compact('paymentModes','recharge_packages'));  
+      $recharge_packages=RechargePackage::where('user_type',$user->role_id)->where('status',1)->get();
+
+      $recharge_request_list=DB::select(DB::raw("Select `rp`.`package_name`, `pm`.`name`, `rr`.`transaction_date`, `rr`.`transaction_no`, case `rr`.`status` when 0 then 'Pending' when 1 then 'Approved' when 2 then 'Rejected' end as `trans_status`, `rr`.`status`, `rr`.`remarks` 
+From `recharge_request` `rr`
+inner join `recharge_package` `rp` on `rp`.`id` = `rr`.`package_id`
+inner join `payment_mode` `pm` on `pm`.`id` = `rr`.`payment_option`
+Where `rr`.`user_id` = $user->id order by `rr`.`id` desc limit 5;"));
+
+
+       return view('admin.wallet.recharge_wallet',compact('paymentModes','recharge_packages','recharge_request_list'));  
     }  
     public function paymentOptionShow(Request $request)
     {
@@ -209,11 +221,16 @@ class WalletController extends Controller
       $user=Auth::guard('admin')->user();
       $condition = "";
       if ($user->id<=2){
-        $condition = " Where `u`.`created_by` <= 2 ";
+        $condition = " Where `rr`.`owner_user_id` <= 2 ";
       }else {
-        $condition = " Where `u`.`created_by`= $user->id ";
+        $condition = " Where `rr`.`owner_user_id`= $user->id ";
       }
-      $cashbooks=DB::select(DB::raw("Select concat(`u`.`email`,' - ', `u`.`mobile`) as `uname`, `pm`.`name`, `cb`.`transaction_date_time`, `cb`.`transaction_no`, `cb`.`camount`, `cb`.`id` From `users` `u` Inner Join `cashbook` `cb` on `cb`.`user_id` = `u`.`id` Inner join `payment_mode` `pm` on `pm`.`id` = `cb`.`payment_mode_id` $condition and `cb`.`status` = 1 Order By `cb`.`transaction_date_time`, `pm`.`name`;"));
+      $cashbooks=DB::select(DB::raw("Select `rr`.`id`, concat(`us`.`email`,' - ', `us`.`mobile`) as `uname`, `rp`.`package_name`, `pm`.`name`, `rr`.`transaction_date`, `rr`.`transaction_no` 
+        From `recharge_request` `rr`
+        inner join `recharge_package` `rp` on `rp`.`id` = `rr`.`package_id`
+        inner join `payment_mode` `pm` on `pm`.`id` = `rr`.`payment_option`
+        inner join `users` `us` on `us`.`id` = `rr`.`user_id`
+        $condition and `rr`.`status` = 0 order by `rr`.`id`;"));
        
       return view('admin.wallet.recharge_request',compact('cashbooks')); 
     }
