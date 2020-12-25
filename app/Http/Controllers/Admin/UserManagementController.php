@@ -214,29 +214,16 @@ class UserManagementController extends Controller
       $userRoles =  DB::select(DB::raw("select * from `user_roles` where `id` > (Select `role_id` from `users` where `id` = $user->id) order by `id`;")); 
       return view('admin.UserManagement.user_report',compact('userRoles'));
     }
+    
     public function userReportGenerate(Request $request)
     {
-      $role_id = $request->role_id;
       $user=Auth::guard('admin')->user();
-      $role_condition = '';
-      if ($role_id == 0){
-        $role_condition = " where `u`.`role_id` > 1 ";
-      }else{
-        $role_condition = " where `u`.`role_id` = ".$role_id;
-      }
-      $condition = '';
-      if ($user->id <= 2){
-        $condition = " and `u`.`created_by` <= 2";
-      }else{
-        $condition = " and `u`.`created_by` = ".$user->id;
-      }
-      $users =  DB::select(DB::raw("select `u`.`user_name`, `u`.`email`, `u`.`mobile`, `u`.`status`, `ur`.`r_name` from `users` `u` inner join `user_roles` `ur` on `u`.`role_id` = `ur`.`id` $role_condition $condition;"));
       $path=Storage_path('fonts/');
-        $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-        $fontDirs = $defaultConfig['fontDir']; 
-        $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-        $fontData = $defaultFontConfig['fontdata']; 
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8',
+      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+      $fontDirs = $defaultConfig['fontDir']; 
+      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+      $fontData = $defaultFontConfig['fontdata']; 
+      $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8',
              'fontDir' => array_merge($fontDirs, [
                  __DIR__ . $path,
              ]),
@@ -252,11 +239,164 @@ class UserManagementController extends Controller
             'nbpgPrefix' => ' कुल ',
             'nbpgSuffix' => ' पृष्ठों का पृष्ठ'
          ]);
-        $html = view('admin.UserManagement.user_report_pdf',compact('users'));
-        $mpdf->WriteHTML($html); 
-        $mpdf->Output(); 
+
+      $role_type=$request->role_id;
+      if ($role_type == 0){
+        $role_type=4;  
+      }
+      
+      $user_status = $request->status;
+      $status_cond = '';
+      if($user_status == 1){
+        $status_cond = " and `us`.`status` = 1";
+      }elseif($user_status == 2){
+        $status_cond = " and `us`.`status` = 2";
+      }
+      
+      $balance_cond = $request->cond_bal_amount;
+      $balance_amt = $request->amount;
+      if(empty($request->amount)){
+        $balance_amt = 0;
+      }
+
+      $cond_balance = '';
+      if($balance_cond == 1){
+        $cond_balance = " and `ba`.`amt` >= $balance_amt";
+      }
+      if($balance_cond == 2){
+        $cond_balance = " and `ba`.`amt` <= $balance_amt";
+      }
+
+
+      $card_cond = $request->cond_card_print;
+      $card_count = $request->card;
+      if(empty($request->card)){
+        $card_count = 0;
+      }
+
+      $cond_card = '';
+      if($card_cond == 1){
+        $cond_card = " and (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) >= $card_count";
+      }
+      if($card_cond == 2){
+        $cond_card = " and (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) <= $card_count";
+      }
+
+      $html = view('admin.UserManagement.user_report_pdf_start');
+      $user_role_type = $user->role_id;
+      $user_id = $user->id;
+      $margin = 2;
+      if ($user_role_type==1){
+        $html = $html.$this->userReportDistributer($user_id, $role_type, $status_cond, $cond_card, $cond_balance, $margin);
+        if($role_type>=3){
+          $html = $html.$this->userReportAgent($user_id, $role_type, $status_cond, $cond_card,$cond_balance, $margin);  
+        }
+        if($role_type>=4){
+          $html = $html.$this->userReportOperator($user_id, $role_type, $status_cond, $cond_card, $cond_balance, $margin);  
+        }
+      }elseif($user_role_type==2){
+        $html = $html.$this->userReportAgent($user_id, $role_type, $status_cond, $cond_card, $cond_balance, $margin);
+        if($role_type>=4){
+          $html = $html.$this->userReportOperator($user_id, $role_type, $status_cond, $cond_card, $cond_balance, $margin);  
+        }
+      }elseif($user_role_type==3){
+        $html = $html.$this->userReportOperator($user_id, $role_type, $status_cond, $cond_card, $cond_balance, $margin);
+      }
+      
+      $mpdf->WriteHTML($html); 
+
+      $html = "</tbody></table></body></html>";
+      $mpdf->WriteHTML($html);      
+      $mpdf->Output(); 
        
     }
+
+    public function userReportDistributer($user_id, $role_type, $status_cond, $cardPrint, $BalcaneAmt, $margin)
+    {
+      $condition = '';
+      if ($user_id <= 2){
+        $condition = " and `us`.`created_by` <= 2";
+      }else{
+        $condition = " and `us`.`created_by` = ".$user_id;
+      }
+      $myquery = "select `us`.`id`, `us`.`user_name`, `us`.`email`, `us`.`mobile`, `us`.`role_id`, `us`.`status`, `ba`.`amt`,
+        (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) as `tcardprint` 
+        from `users` `us`
+        inner join `balanceamt` `ba` on `ba`.`userid` = `us`.`id`
+        where `us`.`role_id` = 2
+        $condition $status_cond order by `us`.`user_name`;";
+
+      $distributers =  DB::select(DB::raw($myquery));
+      $html = '';
+      foreach ($distributers as $users) {
+        $bgcolor = 'lightgreen';
+        $html = $html.view('admin.UserManagement.user_report_pdf',compact('users','margin', 'bgcolor'));
+        if ($role_type > 2){
+          $html = $html.$this->userReportAgent($users->id, $role_type, $status_cond, $cardPrint, $BalcaneAmt, $margin+20);
+        }
+        if ($role_type > 3){  
+          $html = $html.$this->userReportOperator($users->id, $role_type, $status_cond, $cardPrint, $BalcaneAmt, $margin+20);
+        }
+      }
+      return $html;
+    }
+
+    public function userReportAgent($user_id, $role_type, $status_cond, $cardPrint, $BalcaneAmt, $margin)
+    {
+      $condition = '';
+      if ($user_id <= 2){
+        $condition = " and `us`.`created_by` <= 2";
+      }else{
+        $condition = " and `us`.`created_by` = ".$user_id;
+      }
+      $myquery = "select `us`.`id`, `us`.`user_name`, `us`.`email`, `us`.`mobile`, `us`.`role_id`, `us`.`status`, `ba`.`amt`,
+        (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) as `tcardprint` 
+        from `users` `us`
+        inner join `balanceamt` `ba` on `ba`.`userid` = `us`.`id`
+        where `us`.`role_id` = 3
+        $condition $status_cond order by `us`.`user_name`;";
+
+      $agents =  DB::select(DB::raw($myquery));
+      $html = '';
+      foreach ($agents as $users) {
+        $bgcolor = 'yellow';
+        $html = $html.view('admin.UserManagement.user_report_pdf',compact('users','margin', 'bgcolor'));
+        if ($role_type > 3){
+          $html = $html.$this->userReportOperator($users->id, $role_type, $status_cond, $cardPrint, $BalcaneAmt, $margin+35);
+        }
+      }
+      return $html;
+    }
+
+
+    public function userReportOperator($user_id, $role_type, $status_cond, $cardPrint, $BalcaneAmt, $margin)
+    {
+      $condition = '';
+      if ($user_id <= 2){
+        $condition = " and `us`.`created_by` <= 2";
+      }else{
+        $condition = " and `us`.`created_by` = ".$user_id;
+      }
+      $myquery = "select `us`.`id`, `us`.`user_name`, `us`.`email`, `us`.`mobile`, `us`.`role_id`, `us`.`status`, `ba`.`amt`,
+        (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) as `tcardprint` 
+        from `users` `us`
+        inner join `balanceamt` `ba` on `ba`.`userid` = `us`.`id`
+        where `us`.`role_id` = 4
+        $condition $status_cond $cardPrint $BalcaneAmt order by `us`.`user_name`;";
+
+      $Operators =  DB::select(DB::raw($myquery));
+      $html = '';
+      foreach ($Operators as $users) {
+        $bgcolor = 'orange';
+        $html = $html.view('admin.UserManagement.user_report_pdf',compact('users','margin','bgcolor'));  
+      }
+      return $html;
+    }
+
+
+
+
+
     public function reportDatewise()
     {
       return view('admin.UserManagement.report_date_wise',compact('userRoles')); 
