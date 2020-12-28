@@ -185,7 +185,7 @@ class CardPrintController extends Controller
             $bcsize = 0.5;
         }
 
-        $signimg = \Storage_path('app/image/sign/'.$acno.'.jpg');
+        $signimg = \Storage_path('app/image/sign/'.$acno.'.png');
 
         // $width = 88;
         // $height = 117;
