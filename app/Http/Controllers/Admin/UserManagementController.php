@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Model\District;
 use App\Model\MainMenu;
 use App\Model\SubMenu;
 use App\Model\User;
@@ -486,5 +487,37 @@ class UserManagementController extends Controller
             return response()->json($response);// response as json
         }
         return  $request;
+    }
+
+    public function mappingDistrictUser()
+    {
+      $user=Auth::guard('admin')->user(); 
+      $districts=District::orderBy('Name_E','ASC')->get();
+      $users=User::where('role_id',2)->orderBy('user_name','ASC')->orderBy('status',1)->get();
+      return view('admin.UserManagement.mapping',compact('users','districts')); 
+    }
+    public function mappingDistrictWiseList(Request $request)
+    { 
+      $districts=District::where('d_id',$request->id)->get();
+      return view('admin.UserManagement.mapping_list',compact('districts')); 
+    }
+    public function mappingDistrictUserStore(Request $request)
+    {
+      $rules=[
+        'district' => 'required',             
+        "distributer" => 'required', 
+      ]; 
+        $validator = Validator::make($request->all(),$rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $response=array();
+            $response["status"]=0;
+            $response["msg"]=$errors[0];
+            return response()->json($response);// response as json
+        }
+        $datas=DB::select(DB::raw("update `districts` set `distributer_id`=$request->distributer where `d_id`=$request->district"));
+        
+        $response=['status'=>1,'msg'=>'Submit Successfully'];
+            return response()->json($response);
     } 
 }

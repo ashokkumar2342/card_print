@@ -32,6 +32,15 @@
       <form action="{{ route('admin.register.store') }}" method="post" class="add_form">
         {{ csrf_field() }}
         <div class="input-group mb-3">
+          <select name="district" class="form-control select2">
+            <option selected disabled>Select Your District Name</option>
+            @foreach ($districts as $district)
+             <option value="{{ $district->d_id }}">{{ $district->Name_E }}</option> 
+            @endforeach 
+           </select> 
+        </div>
+        <p class="text-danger">{{ $errors->first('district') }}</p>
+        <div class="input-group mb-3">
           <input type="text" name="user_name" class="form-control" placeholder="User Name">
           <div class="input-group-append">
             <div class="input-group-text">

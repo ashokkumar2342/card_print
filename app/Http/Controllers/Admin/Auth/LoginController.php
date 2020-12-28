@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Auth;
 
 use App\Helpers\MailHelper;
 use App\Http\Controllers\Controller;
+use App\Model\District;
 use App\Model\User;
 use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -94,11 +95,13 @@ class LoginController extends Controller
     }
     public function register()
     {
-      return view('admin.auth.register'); 
+      $districts=District::orderBy('Name_E','ASC')->get();
+      return view('admin.auth.register',compact('districts')); 
     }
     public function registerStore(Request $request)
     {  
       $this->validate($request, [
+         'district' => 'required',             
          'user_name' => 'required|string|min:3|max:50',             
          'email' => 'required|email|unique:users|max:100', 
          "mobile" => 'required|unique:users|numeric|digits:10',
@@ -106,17 +109,21 @@ class LoginController extends Controller
          "confirm_password" => 'required|min:6|max:15',
       ]); 
        
+        $datas=DB::select(DB::raw("select `distributer_id` from `districts` where `d_id`=$request->district"));
+        $distributer_id=$datas[0]->distributer_id;
         // $user=Auth::guard()->user(); 
         $accounts = new User();
+        $accounts->district_id = $request->district;
         $accounts->user_name = $request->user_name;
         $accounts->mobile = $request->mobile; 
         $accounts->email = $request->email;
         $accounts->password = bcrypt($request['password']); 
         $accounts->password_plain=$request->password;          
         $accounts->role_id =4;
-        $accounts->created_by=0;          
-        $accounts->status=0;          
-        
+        $accounts->created_by=$distributer_id;          
+        $accounts->status=0;
+
+
         if ($accounts->save()) {
           return redirect()->route('admin.login')->with(['message'=>'Registration Successfully','class'=>'success']); 
         }else{

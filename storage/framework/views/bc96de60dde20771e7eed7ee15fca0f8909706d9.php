@@ -33,6 +33,15 @@
         <?php echo e(csrf_field()); ?>
 
         <div class="input-group mb-3">
+          <select name="district" class="form-control select2">
+            <option selected disabled>Select Your District Name</option>
+            <?php $__currentLoopData = $districts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $district): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+             <option value="<?php echo e($district->d_id); ?>"><?php echo e($district->Name_E); ?></option> 
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?> 
+           </select> 
+        </div>
+        <p class="text-danger"><?php echo e($errors->first('district')); ?></p>
+        <div class="input-group mb-3">
           <input type="text" name="user_name" class="form-control" placeholder="User Name">
           <div class="input-group-append">
             <div class="input-group-text">
