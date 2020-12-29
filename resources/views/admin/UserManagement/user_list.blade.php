@@ -1,6 +1,7 @@
 <table class="table table-striped table-bordered">
 <thead>
     <tr>
+        <th>District</th>
         <th>User Name</th>
         <th>Email</th>
         <th>Mobile No.</th>
@@ -11,6 +12,7 @@
 <tbody>
     @foreach ($users as $user)
     <tr>
+        <td>{{ $user->Name_E }}</td>
         <td>{{ $user->user_name }}</td>
         <td>{{ $user->email }}</td>
         <td>{{ $user->mobile }}</td>

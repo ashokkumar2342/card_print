@@ -19,13 +19,19 @@ class UserManagementController extends Controller
 {
     public function index()
     {   
-        $user =Auth::guard('admin')->user();
+      $user =Auth::guard('admin')->user();
+      if($user->id<=2){
+        $districts = District::orderBy('Name_E', 'ASC')->get();
+      }else{
+        $districts = District::where('d_id',$user->district_id)->orderBy('Name_E', 'ASC')->get();
+      }
     	$UserRoles=UserRole::orderBy('id','ASC')->where('id','>',$user->role_id)->get(); 
-        return view('admin.UserManagement.index',compact('UserRoles'));
+        return view('admin.UserManagement.index',compact('UserRoles', 'districts'));
     }
     public function store(Request $request)
     {   
     	$rules=[
+        'district' => 'required',             
         'user_name' => 'required|string|min:3|max:50',             
         "role_id" => 'required',
         "mobile" => 'required|unique:users|numeric|digits:10',
@@ -41,9 +47,10 @@ class UserManagementController extends Controller
             $response["msg"]=$errors[0];
             return response()->json($response);// response as json
         }
-        $user=Auth::guard('admin')->user(); 
+      $user=Auth::guard('admin')->user(); 
     	$accounts = new User();
-    	$accounts->user_name = $request->user_name;
+    	$accounts->district_id = $request->district;
+      $accounts->user_name = $request->user_name;
     	$accounts->role_id = $request->role_id;
     	$accounts->mobile = $request->mobile; 
     	$accounts->email = $request->email;
@@ -92,7 +99,7 @@ class UserManagementController extends Controller
         }else{
           $condition = " and `u`.`created_by` = ".$user->id;
         }
-        $users =  DB::select(DB::raw("select `u`.`id`, `u`.`user_name`, `u`.`email`, `u`.`mobile`, `u`.`status`, `ur`.`r_name` from `users` `u` inner join `user_roles` `ur` on `u`.`role_id` = `ur`.`id` where `u`.`status` = 0 $condition;")); 
+        $users =  DB::select(DB::raw("select `u`.`id`, `d`.`Name_E`, `u`.`user_name`, `u`.`email`, `u`.`mobile`, `u`.`status`, `ur`.`r_name` from `users` `u` inner join `user_roles` `ur` on `u`.`role_id` = `ur`.`id` Inner Join `districts` `d` on `d`.`d_id` = `u`.`district_id` where `u`.`status` = 0 $condition;")); 
         return view('admin.UserManagement.user_list',compact('users'));
     }
     public function userApprovalForm($op_id)

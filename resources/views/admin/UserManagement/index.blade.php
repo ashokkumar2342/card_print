@@ -16,6 +16,18 @@
                 <form action="{{ route('admin.user.post') }}" method="post" class="add_form" >
                 {{ csrf_field() }}
                 <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>District</label>
+                            <span class="fa fa-asterisk"></span>
+                            <select class="form-control" name="district">
+                                @foreach($districts as $district)
+                                <option value="{{ $district->d_id }}">{{ $district->Name_E }}</option>
+                                @endforeach 
+                            </select>
+                        </div>                               
+                    </div> 
+                    
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="exampleInputEmail1">Name</label>
