@@ -123,7 +123,7 @@
 @endsection
 @push('scripts')
 <script>
-  @if ($user->district_id==0)
+  @if ($user->district_id==0 && $user->id>2)
     $('#district_update_btn').click(); 
   @endif
 </script>
