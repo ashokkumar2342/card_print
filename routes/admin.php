@@ -9,6 +9,8 @@ Route::post('register-store', 'Auth\LoginController@registerStore')->name('admin
 Route::get('otp-verify', 'Auth\LoginController@otpVerify')->name('admin.otp-verify');
 Route::group(['middleware' => 'admin'], function() {
 	Route::get('dashboard', 'DashboardController@index')->name('admin.dashboard');
+	Route::get('district-update', 'DashboardController@districtUpdate')->name('admin.district.update');
+	Route::post('district-update-post', 'DashboardController@districtUpdatePost')->name('admin.district.update.post');
 	//-------start--UserManagement--------- 
 	Route::prefix('UserManagement')->group(function () {
 		Route::get('/', 'UserManagementController@index')->name('admin.user.index');

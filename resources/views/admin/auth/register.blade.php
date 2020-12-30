@@ -41,7 +41,7 @@
         </div>
         <p class="text-danger">{{ $errors->first('district') }}</p>
         <div class="input-group mb-3">
-          <input type="text" name="user_name" class="form-control" placeholder="User Name">
+          <input type="text" name="user_name" class="form-control" placeholder="Name">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-user"></span>

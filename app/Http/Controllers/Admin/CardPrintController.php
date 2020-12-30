@@ -42,15 +42,32 @@ class CardPrintController extends Controller
         }
         
         
-        
-          
         $voterData = DB::select(DB::raw("select * from data_voters `dv` Inner Join `gender_detail` `gd` on `gd`.`code` = `dv`.`gender` where cardno = '$request->voter_card_no';"));
+        
         if (empty($voterData)) {
            $response=array();
            $response["status"]=0;
            $response["msg"]='invalid Voter Card No.';
            return response()->json($response);// response as json 
         }
+
+        if ($appuser->created_by>2){
+            $acno = $voterData[0]->ac_no;
+            $partno = $voterData[0]->part_no;
+            $section_no = $voterData[0]->section;
+
+            $voterSection = DB::select(DB::raw("Select * From `sections` where `ac_no` = '$acno' and `part_no` = '$partno' and `section` = '$section_no';"));
+
+            $d_id = $voterSection[0]->d_id;
+            if($d_id!=$appuser->district_id){
+                $response=array();
+                $response["status"]=0;
+                $response["msg"]='Voter Card No. is of Another District';
+                return response()->json($response);// response as json     
+            }
+        }  
+        
+        
         $acno = $voterData[0]->ac_no;
         $partno = $voterData[0]->part_no;
         $vsrno = $voterData[0]->srno; 

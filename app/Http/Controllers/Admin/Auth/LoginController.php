@@ -69,7 +69,10 @@ class LoginController extends Controller
           $user=User::where('email',$request->email)->first();
           if (!empty($user)) { 
               if (password_verify($request->password,$user->password) && $user->status==1) {
-                 auth()->guard('admin')->loginUsingId($user->id); 
+                 auth()->guard('admin')->loginUsingId($user->id);
+                  $lastlogin=User::find($user->id); 
+                  $lastlogin->lastlogin_on=date('Y-m-d'); 
+                  $lastlogin->save(); 
                   return redirect()->route('admin.dashboard');
               }else{
                  return Redirect()->back()->with(['message'=>'Invalid User or Password','class'=>'error']);
@@ -122,6 +125,7 @@ class LoginController extends Controller
         $accounts->password_plain=$request->password;          
         $accounts->role_id =4;
         $accounts->created_by=$distributer_id;          
+        $accounts->created_on=date('Y-m-d'); 
         $accounts->status=0;
 
 

@@ -47,17 +47,18 @@ class UserManagementController extends Controller
             $response["msg"]=$errors[0];
             return response()->json($response);// response as json
         }
-      $user=Auth::guard('admin')->user(); 
-    	$accounts = new User();
-    	$accounts->district_id = $request->district;
-      $accounts->user_name = $request->user_name;
-    	$accounts->role_id = $request->role_id;
-    	$accounts->mobile = $request->mobile; 
-    	$accounts->email = $request->email;
-    	$accounts->password = bcrypt($request['password']); 
-    	$accounts->password_plain=$request->password;          
-    	$accounts->created_by=$user->id;          
+        $user=Auth::guard('admin')->user(); 
+      	$accounts = new User();
+      	$accounts->district_id = $request->district;
+        $accounts->user_name = $request->user_name;
+      	$accounts->role_id = $request->role_id;
+      	$accounts->mobile = $request->mobile; 
+      	$accounts->email = $request->email;
+      	$accounts->password = bcrypt($request['password']); 
+      	$accounts->password_plain=$request->password;          
+      	$accounts->created_by=$user->id;          
         $accounts->status=0;          
+        $accounts->created_on=date('Y-m-d');          
         $accounts->save();
         $userNewId=$accounts->id;
         DB::select(DB::raw("call up_AssignPermission_NewUser ('$userNewId')"));      
