@@ -18,7 +18,7 @@ class VoterDetailsController extends Controller
     public function index()
     {   
       $user =Auth::guard('admin')->user();
-      if($user->id<=2){
+      if($user->created_by<=2){
         $districts = District::orderBy('Name_E', 'ASC')->get();
       }else{
         $districts = District::where('d_id',$user->district_id)->orderBy('Name_E', 'ASC')->get();
