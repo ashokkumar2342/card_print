@@ -18,12 +18,12 @@ class VoterDetailsController extends Controller
     public function index()
     {   
       $user =Auth::guard('admin')->user();
-      if($user->created_by<=2){
-        $districts = District::orderBy('Name_E', 'ASC')->get();
-      }else{
-        $districts = District::where('d_id',$user->district_id)->orderBy('Name_E', 'ASC')->get();
-      }
-        // $districts=District::orderBy('Name_E','ASC')->get();
+      $districts = District::orderBy('Name_E', 'ASC')->get();
+      // if($user->created_by<=2){
+      //   $districts = District::orderBy('Name_E', 'ASC')->get();
+      // }else{
+      //   $districts = District::where('d_id',$user->district_id)->orderBy('Name_E', 'ASC')->get();
+      // }
       return view('admin.voterDetails.index',compact('districts'));
     }
     public function districtWiseAcno(Request $request)

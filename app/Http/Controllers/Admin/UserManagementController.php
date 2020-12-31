@@ -20,11 +20,12 @@ class UserManagementController extends Controller
     public function index()
     {   
       $user =Auth::guard('admin')->user();
-      if($user->id<=2){
-        $districts = District::orderBy('Name_E', 'ASC')->get();
-      }else{
-        $districts = District::where('d_id',$user->district_id)->orderBy('Name_E', 'ASC')->get();
-      }
+      $districts = District::orderBy('Name_E', 'ASC')->get();
+      // if($user->id<=2){
+      //   $districts = District::orderBy('Name_E', 'ASC')->get();
+      // }else{
+      //   $districts = District::where('d_id',$user->district_id)->orderBy('Name_E', 'ASC')->get();
+      // }
     	$UserRoles=UserRole::orderBy('id','ASC')->where('id','>',$user->role_id)->get(); 
         return view('admin.UserManagement.index',compact('UserRoles', 'districts'));
     }
