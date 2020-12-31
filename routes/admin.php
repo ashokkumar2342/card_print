@@ -77,5 +77,8 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::post('show', 'CardPrintController@show')->name('admin.card.print.show');
 		Route::post('print', 'CardPrintController@print')->name('admin.card.print.print');
 		
+		Route::get('adhaar','CardPrintController@adhaar')->name('admin.card.print.adhaar');
+		    
+		
 	});
 });	   
