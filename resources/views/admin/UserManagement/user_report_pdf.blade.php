@@ -16,6 +16,5 @@
 					<td>{{ $status }}</td>
 					<td>{{ $users->amt }}</td>
 					<td>{{ $users->tcardprint or ''}}</td>
-					
 				</tr> 
 		

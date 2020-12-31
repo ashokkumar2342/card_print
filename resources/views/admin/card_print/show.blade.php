@@ -5,25 +5,24 @@
 <table style="border-collapse: collapse; width: 100.609%; height: 203px;" border="1">
 <tbody>
 <tr>
-<td style="width: 33.3333%;">Name</td>
-<td style="width: 33.3333%;"><b>{{ $voterData[0]->name_e }}</b></td>
-<td style="width: 33.3333%;" rowspan="5"><img src="{{ $image }}" alt=""></td>
+<td style="width: 30%;">Name</td>
+<td style="width: 70%;"><b>{{ $voterData[0]->name_e }}</b></td>
 </tr>
 <tr>
-<td style="width: 33.3333%;">F/H name</td>
-<td style="width: 33.3333%;"><b>{{ $voterData[0]->f_name_e }}</b></td>
+<td>F/H name</td>
+<td><b>{{ $voterData[0]->f_name_e }}</b></td>
 </tr>
 <tr>
-<td style="width: 33.3333%;">Gender</td>
-<td style="width: 33.3333%;"><b>{{ $voterData[0]->gender_e }}</b></td>
+<td>Gender</td>
+<td><b>{{ $voterData[0]->gender_e }}</b></td>
 </tr>
 <tr>
-<td style="width: 33.3333%;">House No.</td>
-<td style="width: 33.3333%;"><b>{{ $voterData[0]->hno_e }}</b></td>
+<td>House No.</td>
+<td><b>{{ $voterData[0]->hno_e }}</b></td>
 </tr>
 <tr>
-<td style="width: 33.3333%;">Mobile No.</td>
-<td style="width: 33.3333%;"><b>{{ $voterData[0]->mobile }}</b></td>
+<td>Mobile No.</td>
+<td><b>xxxxxx{{ substr($voterData[0]->mobile,-4,4) }}</b></td>
 </tr>
 </tbody>
 </table>
