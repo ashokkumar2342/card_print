@@ -93,13 +93,13 @@ div.second{
 	@if ($epicbackground==1)
 	<table style="margin-top:20px;">
 		<tr>
-			<td style="width: 300px;font-size: 19px;">नाम : {{ $name_l }}</td> 
+			<td style="width: 300px;font-size: 19px;">नाम : {{ $name_l }}&nbsp;</td> 
 		</tr>
 	</table>
 	@else
 	<table>
 		<tr>
-			<td style="width: 300px;font-size: 19px;">नाम : {{ $name_l }}</td> 
+			<td style="width: 300px;font-size: 19px;">नाम : {{ $name_l }}&nbsp;</td> 
 		</tr>
 	</table>
 	@endif
@@ -110,7 +110,7 @@ div.second{
 	</table>
 	<table>
 		<tr>
-			<td style="width: 300px;font-size: 19px;padding-top:6px">{{ $rln_l }} का नाम : {{ $rname_l }}</td> 
+			<td style="width: 300px;font-size: 19px;padding-top:6px">{{ $rln_l }} का नाम : {{ $rname_l }}&nbsp;</td> 
 		</tr>
 	</table>
 	<table>
