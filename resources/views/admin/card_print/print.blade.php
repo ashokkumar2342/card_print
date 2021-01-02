@@ -148,7 +148,7 @@ div.second{
 	<table style="font-size: 7px; margin-top: -5px" width="100%">
 		<tr> 
 			<td style="vertical-align: top;"><span style ="font-size: 8.5px;">तिथि</span>/<b> Date : {{ $cdate }}</b></td> 
-			<td><span style ="font-size: 8.5px;">निर्वाचक रजिस्ट्रीकरण अधिकारी </span><br><b>Electoral Ragistration Officer</b></td> 
+			<td><span style ="font-size: 8.5px;">निर्वाचक रजिस्ट्रीकरण अधिकारी </span><br><b>Electoral Registration Officer</b></td> 
 		</tr> 
 	</table>
 	<table width="100%" style="font-size: 7px">
