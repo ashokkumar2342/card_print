@@ -7,11 +7,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Storage;
-// use App\Http\Controllers\class.pdf2text;
-// include('c:\xampp\htdocs\card_print\app\Helper\class.pdf2text.php');  
-include('c:\xampp\htdocs\card_print\app\Http\Controllers\Admin\class.pdf2text.php'); 
-
+use Storage; 
 class CardPrintController extends Controller
 {
     public function index()
