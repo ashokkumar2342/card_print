@@ -125,8 +125,8 @@
 <script src="{{ asset('admin_asset/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- ChartJS -->
 <script src="{{ asset('admin_asset/plugins/chart.js/Chart.min.js') }}"></script>
-<!-- Sparkline -->
-{{-- <script src="{{ asset('admin_asset/plugins/sparklines/sparkline.js') }}"></script> --}}
+
+<script src="{{ asset('admin_asset/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
 <!-- JQVMap -->
 {{-- <script src="{{ asset('admin_asset/plugins/jqvmap/jquery.vmap.min.js') }}"></script> --}}
 {{-- <script src="{{ asset('admin_asset/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script> --}}

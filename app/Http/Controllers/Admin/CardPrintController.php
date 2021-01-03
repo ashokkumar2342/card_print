@@ -7,7 +7,10 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Storage;  
+use Storage;
+// use App\Http\Controllers\class.pdf2text;
+// include('c:\xampp\htdocs\card_print\app\Helper\class.pdf2text.php');  
+include('c:\xampp\htdocs\card_print\app\Http\Controllers\Admin\class.pdf2text.php'); 
 
 class CardPrintController extends Controller
 {
@@ -217,5 +220,37 @@ class CardPrintController extends Controller
     public function adhaar()
     {
       return view('admin.card_print.adhaar',compact('vcardno'));    
-    }  
+    }
+    public function adhaarStore(Request $request)
+    {
+        // $vpath = '/adhaar';
+        // @mkdir($dirpath, 0755, true); 
+        // $pdf_file=$request->adhaar_card;
+        // $name =1;
+        // $pdf_file= \Storage::disk('local')->put($vpath.'/'.$name.'.pdf', $pdf_file);
+
+        // $vpath = '/adhaar';
+        $file   =  \Storage_path('app/adhaar/test2.pdf');// name of pdf file without .pdf extenstion, sample.pdf
+        $pdf    =  new PdfToText () ;
+        $pdf->setFilename($file);
+        // $pdf->setUnicode(true);
+     
+        
+        // $this->output ( "Extracted file contents :\n" );
+        // $this->output ( $pdf->decodePDF() ) ; 
+        $pdf->decodePDF();
+        $pdf->output();
+        dd($pdf->output());
+
+    } 
+
+    function  output ( $message )
+    {
+        if  ( php_sapi_name ( )  ==  'cli' )
+        echo ( $message ) ;
+        else
+        echo ( nl2br ( $message ) ) ;
+    }
+    
+
 }

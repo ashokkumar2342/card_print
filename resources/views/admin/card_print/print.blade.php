@@ -82,9 +82,14 @@ div.second{
 	</table>
 	@else
 	<table style="margin-top:3px;padding-left: 8px">
-		<tr>
+		{{-- <tr>
 			<td width="28%"></td>
 			<td  class="test" width="60%"><img src="{{ $image }}" alt="" width = "{{ $width }}px" height = "{{ $height }}px"></td>
+			<td width="12%"></td>
+		</tr> --}}
+		<tr>
+			<td width="28%"></td>
+			<td  class="test" width="60%"><img src="{{ $image }}" alt="" width = "90px" height = "120px"></td>
 			<td width="12%"></td>
 		</tr>
 	</table>
@@ -97,7 +102,7 @@ div.second{
 		</tr>
 	</table>
 	@else
-	<table>
+	<table style="margin-top:20px;">
 		<tr>
 			<td style="width: 300px;font-size: 19px;">नाम : {{ $name_l }}&nbsp;</td> 
 		</tr>
@@ -121,7 +126,7 @@ div.second{
 	</div>
 	{{-- <pagebreak> --}}
 	<div class="second">
-	<table style="font-size: 7px" width="100%">
+	<table style="font-size: 7px;padding-top:10px" width="100%">
 		<tr>
 			<td style="width:50%"><span style ="font-size: 8.5px;">लिंग</span>/<b>Gender</b> :</td>
 			<td style="width:50%"><span style ="font-size: 8.5px;">{{ $gender_l }}</span> &nbsp;/&nbsp; <b>{{ $gender_e }}</b></td>
@@ -133,7 +138,7 @@ div.second{
 			<td style="width:50%; vertical-align: top;"><b>{{ $age_dob }}</b></td>	
 		</tr> 
 	</table>
-	<table style="font-size: 7px;margin-top: -3px" width="100%">
+	<table style="font-size: 7px;margin-top: 2px" width="100%">
 		<tr> 
 			<td><span style ="font-size: 8.5px;">पता: {{ $add_l }}</span><br>
 			<b>Address : {{ $add_e }}</b></td>
@@ -151,12 +156,12 @@ div.second{
 			<td><span style ="font-size: 8.5px;">निर्वाचक रजिस्ट्रीकरण अधिकारी </span><br><b>Electoral Registration Officer</b></td> 
 		</tr> 
 	</table>
-	<table width="100%" style="font-size: 7px">
+	<table width="100%" style="font-size: 7px;padding-top:3px">
 		<tr> 
 			<td><span style ="font-size: 8.5px;">विधान सभा निर्वाचन क्षेत्र संख्या व नाम : {{ $acno_name_l }}</span><br><b>Assembly Constituency No. and Name : {{ $acno_name_e }}</b></td>
 		</tr> 
 	</table>
-	<table style="font-size: 7px;margin-top: -4px" width="100%">
+	<table style="font-size: 7px;margin-top: 0px" width="100%">
 		<tr> 
 			<td><span style ="font-size: 8.5px;">भाग संख्या व नाम : {{ $partno_name_l }}</span><br><b>Part No. and Name :{{ $partno_name_e }}</b></td>
 		</tr> 
