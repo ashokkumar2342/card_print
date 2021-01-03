@@ -17,8 +17,34 @@ class DashboardController extends Controller
     {   
     	$user=Auth::guard('admin')->user();
     	$values=DB::select(DB::raw("call up_dashboard_query ('$user->id')")); 
-    	$recharge_packages=RechargePackage::where('user_type',$user->role_id)->where('status',1)->get(); 
-        return view('admin.dashboard.dashboard',compact('values','user','recharge_packages'));
+    	$recharge_packages=RechargePackage::where('user_type',$user->role_id)->where('status',1)->get();
+
+        $t_date = date('Y-m-d');
+        $work_details = DB::select(DB::raw("select `Name_E`, (select count(*) from `users` where `district_id` = `d_id` and `status` = 1) as `total_user`,
+(select count(*) from `users` where `district_id` = `d_id` and `created_on` = '$t_date') as `new_user`,
+(select count(*) from `users` where `district_id` = `d_id` and `lastlogin_on` = '$t_date') as `active_user`,
+(select count(*) from `cashbook` `cb` inner Join `users` `u` on `u`.`id` = `cb`.`user_id` where `cb`.`transaction_date_time` >= '$t_date' and `cb`. `transaction_type` = 0 and `u`.`district_id` = `d_id`) as `print_card`,
+(select ifnull(sum(`rp`.`package_price`),0) from `recharge_request` `rr` inner join `recharge_package` `rp` on `rp`.`id` = `rr`.`package_id` inner join `users` `u` on `rr`.`user_id` = `u`.`id` where `rr`.`status` = 1 and `rr`.`owner_user_id` <=2 and `rr`.`transaction_date` = '$t_date' and `u`.`district_id` = `d_id`) as `recharge`,
+(select ifnull(count(`rp`.`package_price`),0) from `recharge_request` `rr` inner join `recharge_package` `rp` on `rp`.`id` = `rr`.`package_id` inner join `users` `u` on `rr`.`user_id` = `u`.`id` where `rr`.`status` = 1 and `rr`.`owner_user_id` <=2 and `rr`.`transaction_date` = '$t_date' and `u`.`district_id` = `d_id`) as `t_req_recharge`,
+(select ifnull(sum(`rp`.`package_price`),0) from `recharge_request` `rr` inner join `recharge_package` `rp` on `rp`.`id` = `rr`.`package_id` inner join `users` `u` on `rr`.`user_id` = `u`.`id` where `rr`.`status` = 1 and `rr`.`owner_user_id` <=2 and `rr`.`transaction_date` = '$t_date' and `u`.`created_on` = '$t_date' and `u`.`district_id` = `d_id`) as `t_act_recharge`,
+(select ifnull(count(`rp`.`package_price`),0) from `recharge_request` `rr` inner join `recharge_package` `rp` on `rp`.`id` = `rr`.`package_id` inner join `users` `u` on `rr`.`user_id` = `u`.`id` where `rr`.`status` = 1 and `rr`.`owner_user_id` <=2 and `rr`.`transaction_date` = '$t_date' and `u`.`created_on` = '$t_date' and `u`.`district_id` = `d_id`) as `t_act__req_recharge`
+from `districts`
+Order By trim(`Name_E`);"));
+        
+        
+        $totals = array('Total',0,0,0,0,0,0,0,0);
+        foreach ($work_details as $key => $work_detail) {
+            $totals[1] = $totals[1] + $work_detail->total_user;
+            $totals[2] = $totals[2] + $work_detail->new_user;
+            $totals[3] = $totals[3] + $work_detail->active_user;
+            $totals[4] = $totals[4] + $work_detail->print_card;
+            $totals[5] = $totals[5] + $work_detail->recharge;
+            $totals[6] = $totals[6] + $work_detail->t_req_recharge;
+            $totals[7] = $totals[7] + $work_detail->t_act_recharge;
+            $totals[8] = $totals[8] + $work_detail->t_act__req_recharge;
+        }
+        // dd($totals[0].' / '.$totals[1]);
+        return view('admin.dashboard.dashboard',compact('values','user','recharge_packages', 'work_details', 'totals'));
     }
     public function districtUpdate()
     {   

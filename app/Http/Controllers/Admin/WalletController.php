@@ -210,7 +210,7 @@ Where `rr`.`user_id` = $user->id order by `rr`.`id` desc limit 5;"));
         where `user_id` =$user->id
         and `transaction_date_time` >= '$from_date'
         and `transaction_date_time` < DATE_ADD('$to_date', INTERVAL 1 DAY)
-        Order By `id`;")); 
+        Order By `id` desc;")); 
       $response =array();
       $response['status']=1;
       $response['data']=  view('admin.wallet.report_table',compact('cashbooks'))->render();

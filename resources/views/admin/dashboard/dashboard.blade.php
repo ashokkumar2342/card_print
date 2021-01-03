@@ -68,25 +68,82 @@
               </div>
               
             </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-6 col-6">
-            <!-- small box -->
+          </div> 
+          <div class="col-lg-6 col-6"> 
             <div class="small-box bg-danger">
               <div class="inner">
                 <h3>{{ $value->value2 }}</h3>
 
                 <p>{{ $value->text2 }}</p>
-              </div>
-              <div class="icon">
-                <i class="fa fa-file  text-primary"></i>
-              </div>
-              
+                <div class="icon">
+                  <i class="fa fa-file  text-primary"></i>
+                </div>
+              </div> 
             </div>
           </div>
           @endforeach
+          
+          
           </div>
         </div>
+
+        <!-- Dashboard only for Admin Work Report-->
+        @if ($user->role_id==1) 
+        <div class="card">
+          <div class="card-header bg-success">
+            <h3 class="card-title">Districtwise Progress</h3>
+          </div> 
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="border-bottom: 2px solid #e92259;">District</th>
+                    <th style="border-bottom: 2px solid #e92259;">Total User</th>
+                    <th style="border-bottom: 2px solid #e92259;">New User</th>
+                    <th style="border-bottom: 2px solid #e92259;">Active User</th>
+                    <th style="border-bottom: 2px solid #e92259;">Card Printed</th>
+                    <th style="border-bottom: 2px solid #e92259;">Recharge Value</th>
+                    <th style="border-bottom: 2px solid #e92259;">Recharge Count</th>
+                    <th style="border-bottom: 2px solid #e92259;">Today Activated Users Recharge Value</th>
+                    <th style="border-bottom: 2px solid #e92259;">Today Activated Users Recharge Count</th>
+                    
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="border-bottom: 2px solid #e92259;"><b>{{$totals[0]}}</b></td>
+                    <td style="border-bottom: 2px solid #e92259;"><b>{{$totals[1]}}</b></td>
+                    <td style="border-bottom: 2px solid #e92259;"><b>{{$totals[2]}}</b></td>
+                    <td style="border-bottom: 2px solid #e92259;"><b>{{$totals[3]}}</b></td>
+                    <td style="border-bottom: 2px solid #e92259;"><b>{{$totals[4]}}</b></td>
+                    <td style="border-bottom: 2px solid #e92259;"><b>{{$totals[5]}}</b></td>
+                    <td style="border-bottom: 2px solid #e92259;"><b>{{$totals[6]}}</b></td>
+                    <td style="border-bottom: 2px solid #e92259;"><b>{{$totals[7]}}</b></td>
+                    <td style="border-bottom: 2px solid #e92259;"><b>{{$totals[8]}}</b></td>
+                    
+                  </tr>
+                  @foreach ($work_details as $work_detail)
+                  <tr>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->Name_E }}</td>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->total_user }}</td>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->new_user }}</td>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->active_user }}</td>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->print_card }}</td>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->recharge }}</td>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->t_req_recharge }}</td>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->t_act_recharge }}</td>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->t_act__req_recharge }}</td>
+                    
+                    
+                  </tr> 
+                  @endforeach
+                </tbody>
+              </table> 
+            </div>
+           
+        @endif
+
+
+
         @if ($user->role_id!=1) 
         <div class="card">
           <div class="card-header bg-success">
