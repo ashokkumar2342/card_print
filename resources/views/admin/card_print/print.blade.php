@@ -110,7 +110,7 @@ div.second{
 	@endif
 	<table>
 		<tr>
-			<td style="width: 300px;font-size: 15px;font-weight: bold;padding-top:6px">Name : {{ $name_e }}</td> 
+			<td style="width: 300px;font-size: 15px;font-weight: bold;padding-top:6px">Name : {{ $name_e }}&nbsp;</td> 
 		</tr>
 	</table>
 	<table>
