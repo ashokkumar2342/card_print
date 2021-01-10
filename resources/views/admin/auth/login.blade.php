@@ -64,9 +64,9 @@
         </div>
         <p class="text-danger">{{ $errors->first('captcha') }}</p> 
         <div class="row"> 
-          <div class="col-12 form-group">
+          {{-- <div class="col-12 form-group">
             <a href="{{ route('admin.register') }}" title="">Register a new membership</a>
-          </div>
+          </div> --}}
           <div class="col-12 form-group">
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
