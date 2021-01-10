@@ -74,8 +74,31 @@ Route::get('login/facebook/callback', 'Auth\LoginController@handleProviderCallba
 Route::get('login/google', 'Auth\LoginController@googleredirectToProvider');
 Route::get('login/google/callback', 'Auth\LoginController@googlehandleProviderCallback');
 
-Route::get('inbox', 'HomeController@inbox');
+Route::get('inbox', 'HomeController@index');
 Route::get('saveapidata', 'HomeController@saveapi');
+
+Route::get('image', function() { 
+  $destinationPath = storage_path('app/');
+  $pdfbox = base_path('pdfbox-app.jar');
+  $pdf = $destinationPath.'secure.pdf';
+  exec("java -jar ".$pdfbox." Decrypt -password ASHO1991 ".$pdf);
+  exec("java -jar ".$pdfbox." ExtractText ".$pdf);
+  
+  // exec("java -jar pdfbox-app.jar ExtractImages ak.pdf");
+  exec("java -jar pdfbox-app.jar ExtractText ak.pdf");
+
+   // create an image manager instance with favored driver
+   $manager = new Intervention\Image\ImageManager();
+
+   // to finally create image instances
+      $destinationPath = storage_path('app/');
+
+           // $thumb_img = Image::make($photo->getRealPath())->resize(100, 100);
+   $image = $manager->make($destinationPath.'/ak.jpg');
+   $image->brightness(25);
+   $image->contrast(30);    
+   return $image->response('jpg');
+});
 
 
 
