@@ -124,6 +124,21 @@ class UserManagementController extends Controller
             $response["msg"]=$errors[0];
             return response()->json($response);// response as json
         }
+
+        $role_id=User::where('id', $request->op_id)->first();  
+        
+        if ($request->charge_card<20 && $role_id->role_id == 4){
+          $response=array();
+          $response["status"]=0;
+          $response["msg"]='Charge per card cannot be less than 20';
+          return response()->json($response);// response as json
+             
+        }elseif($request->charge_card<16 && $role_id->role_id == 3){
+          $response=array();
+          $response["status"]=0;
+          $response["msg"]='Charge per card cannot be less than 16';
+          return response()->json($response);// response as json
+        }
         $user=Auth::guard('admin')->user();  
         $message=DB::select(DB::raw("call up_approve_user ($user->id, '$request->op_id','$request->charge_card','$request->free_card')"));
         if ($message[0]->result=='success') {

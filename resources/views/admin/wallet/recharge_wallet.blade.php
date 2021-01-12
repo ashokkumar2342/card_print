@@ -74,10 +74,13 @@
                              <option value="{{ $paymentMode->id }}">{{ $paymentMode->name }}</option>  
                             @endforeach
                          </select> 
-                    </div> 
+                    </div>
+                    @php
+                         $date=date('d-m-Y');
+                     @endphp 
                     <div class="col-lg-3 form-group">
                         <label>Transaction Date</label>
-                        <input type="date" name="transaction_date" class="form-control"> 
+                        <input type="date" name="transaction_date" class="form-control" max="{{ date('Y-m-d',strtotime($date)) }}"> 
                     </div>
                     <div class="col-lg-3 form-group">
                         <label>Transaction No</label>
@@ -98,7 +101,9 @@
 @endsection
 @push('scripts')
 <script type="text/javascript"> 
- 
+ function dateValiDation(argument) {alert(argument);
+     
+ }
 </script> 
 @endpush
 

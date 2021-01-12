@@ -79,6 +79,12 @@ Route::group(['middleware' => 'admin'], function() {
 		
 		Route::get('adhaar','CardPrintController@adhaar')->name('admin.card.print.adhaar');
 		Route::post('adhaar-store','CardPrintController@adhaarStore')->name('admin.card.print.adhaar.store');
+		Route::get('adhaar-download','CardPrintController@adhaarStoreDownload')->name('admin.card.print.adhaar.download');
+		Route::get('adhaar-print-purchase','CardPrintController@adhaarPrintPurchase')->name('admin.card.adhaar.print.purchase');
+		Route::post('adhaar-print-purchase-store','CardPrintController@adhaarPrintPurchaseStore')->name('admin.card.adhaar.print.purchase.store');
+		Route::get('adhaar-print-feedback','CardPrintController@adhaarPrintFeedback')->name('admin.card.adhaar.print.feedback');
+		Route::post('adhaar-print-feedback-store','CardPrintController@adhaarPrintFeedbackStore')->name('admin.card.adhaar.print.feedback.store');
+
 		    
 		
 	});
