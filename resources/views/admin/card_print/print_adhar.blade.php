@@ -9,7 +9,7 @@
 	.test {
     width:251px;
     height:133px;
-    background-image: url('{{ $files_path.$files_name."_2.png" }}');
+    background-image: url('{{ $files_path."2_1.png" }}');
     background-repeat:no-repeat;background-size:251px 133px;
     border: 0px solid black;
     vertical-align: top;
@@ -48,7 +48,7 @@ div.second{
 			<tr>
 				<td>
 					@if ($opt_print_dates==1)
-						<img src="{{ $files_path.$files_name."_1.png" }}" alt="" width = "18px" height="133px">
+						<img src="{{ $files_path."1_1.png" }}" alt="" width = "18px" height="133px">
 					@else
 						<img src="{{ $bg_files_path."blank.png" }}" alt="" width = "18px" height="133px">
 					@endif
@@ -74,7 +74,7 @@ div.second{
 				
 				<td>
 					@if ($opt_print_dates==1)
-						<img src="{{ $files_path.$files_name."_3.png" }}" alt="" width = "46px" height="133px">
+						<img src="{{ $files_path."3_1.png" }}" alt="" width = "46px" height="133px">
 					@else
 					<img src="{{ $bg_files_path."blank.png" }}" alt="" width = "46px" height="133px">
 					@endif
@@ -118,7 +118,7 @@ div.second{
 
 		<table width="100%" style="padding-top: -10px">
 			<tr>
-				<td><img src="{{ $files_path.$files_name."_4.png" }}" alt="" width = "327px" height="140px"></td>
+				<td><img src="{{ $files_path."4_1.png" }}" alt="" width = "327px" height="140px"></td>
 			</tr> 
 		</table>
 

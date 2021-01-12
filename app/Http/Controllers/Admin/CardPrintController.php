@@ -392,22 +392,21 @@ class CardPrintController extends Controller
         $pdf = $destinationPath.$name.'.pdf';
         
 
-        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix f1_ -dpi 300 -cropbox 33 110 48 233 ".$pdf);
+        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 33 110 48 233 ".$pdf);
 
         // Storage::copy($vpath.$name."1.png",$vpath.$name."_1.png");
 
 
-        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix f2_ -dpi 300 -cropbox 48 110 255 233 ".$pdf);
+        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 48 110 255 233 ".$pdf);
 
         // Storage::copy($vpath.$name."1.png",$vpath.$name."_2.png");
 
-        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix f3_ -dpi 300 -cropbox 255 110 292 233 ".$pdf);
+        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."3_ -dpi 300 -cropbox 255 110 292 233 ".$pdf);
 
         // Storage::copy($vpath.$name."1.png",$vpath.$name."_3.png");
         
 
-
-        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix b1_ -dpi 300 -cropbox 303 110 562 233 ".$pdf);
+        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."4_ -dpi 300 -cropbox 303 110 562 233 ".$pdf);
         // Storage::copy($vpath.$name."1.png",$vpath.$name."_4.png");
 
     }    

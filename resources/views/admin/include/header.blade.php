@@ -7,8 +7,10 @@
       </li>
       @includeIf('admin.include.hot_menu_top')      
     </ul> 
+    अब आप आधार कार्ड भी प्रिंट कर सकते हैं| 13/01/2021 को डेमो फ्री हैं| 
     <ul class="navbar-nav ml-auto">       
       <li class="nav-item">
+
         <a class="btn btn-lg" title="Sign Out" href="{{ route('admin.logout.get') }}"
                         >
           <i class="fa fa-sign-out"></i>
@@ -16,6 +18,7 @@
         <form id="logout-form" action="{{ route('admin.logout.get') }}" method="POST" style="display: none;">
            {{ csrf_field() }}
         </form>
+
       </li>
     </ul>
   </nav>
