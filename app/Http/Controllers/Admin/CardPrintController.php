@@ -394,24 +394,20 @@ class CardPrintController extends Controller
 
         exec("java -jar ".$pdfbox." PDFToImage -imageType png -dpi 300 -cropbox 33 110 48 233 ".$pdf);
 
-        Storage::delete($vpath.$name."_1.png");
         Storage::copy($vpath.$name."1.png",$vpath.$name."_1.png");
 
 
         exec("java -jar ".$pdfbox." PDFToImage -imageType png -dpi 300 -cropbox 48 110 255 233 ".$pdf);
 
-        Storage::delete($vpath.$name."_2.png");
         Storage::copy($vpath.$name."1.png",$vpath.$name."_2.png");
 
         exec("java -jar ".$pdfbox." PDFToImage -imageType png -dpi 300 -cropbox 255 110 292 233 ".$pdf);
 
-        Storage::delete($vpath.$name."_3.png");
         Storage::copy($vpath.$name."1.png",$vpath.$name."_3.png");
         
 
 
         exec("java -jar ".$pdfbox." PDFToImage -imageType png -dpi 300 -cropbox 303 110 562 233 ".$pdf);
-        Storage::delete($vpath.$name."_4.png");
         Storage::copy($vpath.$name."1.png",$vpath.$name."_4.png");
 
     }    
