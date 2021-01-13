@@ -7,7 +7,7 @@
       </li>
       @includeIf('admin.include.hot_menu_top')      
     </ul> 
-    अब आप आधार कार्ड भी प्रिंट कर सकते हैं| 13/01/2021 को डेमो फ्री हैं| 
+    अब आप आधार और पैन कार्ड भी प्रिंट कर सकते हैं| 14/01/2021 तक डेमो फ्री हैं| 
     <ul class="navbar-nav ml-auto">       
       <li class="nav-item">
 

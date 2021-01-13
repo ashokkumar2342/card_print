@@ -76,13 +76,22 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::get('/', 'CardPrintController@index')->name('admin.card.print.index');
 		Route::post('show', 'CardPrintController@show')->name('admin.card.print.show');
 		Route::post('print', 'CardPrintController@print')->name('admin.card.print.print');
-		
+	//------Aadhaar-Print-------------	
 		Route::get('adhaar','CardPrintController@adhaar')->name('admin.card.print.adhaar');
 		Route::post('adhaar-store','CardPrintController@adhaarStore')->name('admin.card.print.adhaar.store');
 		Route::get('adhaar-download','CardPrintController@adhaarStoreDownload')->name('admin.card.print.adhaar.download');
 		Route::get('adhaar-print-purchase','CardPrintController@adhaarPrintPurchase')->name('admin.card.adhaar.print.purchase');
 		Route::post('adhaar-print-purchase-store','CardPrintController@adhaarPrintPurchaseStore')->name('admin.card.adhaar.print.purchase.store');
-		Route::get('adhaar-print-feedback','CardPrintController@adhaarPrintFeedback')->name('admin.card.adhaar.print.feedback');
+	//------Pan-Card-Print-------------	
+		Route::get('pancard','CardPrintController@pancard')->name('admin.card.print.pancard');
+		Route::post('pancard-store','CardPrintController@pancardStore')->name('admin.card.print.pancard.store');
+		Route::get('pancard-download','CardPrintController@pancardDownload')->name('admin.card.print.pancard.download');
+
+		Route::get('pancard-print-purchase','CardPrintController@pancardPrintPurchase')->name('admin.card.pancard.print.purchase');
+		Route::post('pancard-print-purchase-store','CardPrintController@pancardPrintPurchaseStore')->name('admin.card.pancard.print.purchase.store');
+
+
+		Route::get('adhaar-print-feedback/{type}','CardPrintController@adhaarPrintFeedback')->name('admin.card.adhaar.print.feedback');
 		Route::post('adhaar-print-feedback-store','CardPrintController@adhaarPrintFeedbackStore')->name('admin.card.adhaar.print.feedback.store');
 
 		    

@@ -108,7 +108,7 @@
                     </table> 
                 </div>
                 <div class="col-lg-12">
-                    <button class="btn btn-info btn-xs" style="float:right;margin: 5px" onclick="callPopupLarge(this,'{{ route('admin.card.adhaar.print.feedback') }}')">Feedback</button>
+                    <button class="btn btn-info btn-xs" style="float:right;margin: 5px" onclick="callPopupLarge(this,'{{ route('admin.card.adhaar.print.feedback',2) }}')">Feedback</button>
                     
                 </div> 
             </div>

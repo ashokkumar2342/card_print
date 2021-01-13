@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Model\AadharDetail;
 use App\Model\FeedbackUser;
+use App\Model\PanDetail;
 use Storage; 
 use Intervention\Image\ImageManager;
 
@@ -218,14 +219,179 @@ class CardPrintController extends Controller
 
 
 
-//-------Aadhaar-print--------------------------
+
+    //----ForPanCard
+    public function pancard()
+    {   
+        $appuser = Auth::guard('admin')->user(); 
+        $PanDetails=PanDetail::where('user_id',$appuser->id)->where('upload_date',date('Y-m-d'))->get();  
+        return view('admin.card_print.pancard',compact('PanDetails'));      
+    }
+    public function pancardStore(Request $request)
+    {    
+        $rules=[ 
+              'pan_card' => 'required',  
+              'password' => 'required',  
+        ]; 
+        $validator = Validator::make($request->all(),$rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $response=array();
+            $response["status"]=0;
+            $response["msg"]=$errors[0];
+            return response()->json($response);// response as json
+        }
+        $appuser = Auth::guard('admin')->user();
+
+
+                
+        $transaction_status = DB::select(DB::raw("Select `check_wallet_balance_print`($appuser->id, 3) as `result`;")); 
+        if ($transaction_status[0]->result!='ok'){
+            $response=array();
+            $response["status"]=0;
+            $response["msg"]=$transaction_status[0]->result;
+            return response()->json($response);
+        }
+
+        $name =date('Ymdhis');
+        $vpath = '/pan/'.$appuser->id.'/'.$name.'/';
+        @mkdir($dirpath, 0755, true); 
+        $pdf_file=$request->pan_card;
+        $imagedata = file_get_contents($pdf_file);
+        $encode = base64_encode($imagedata);
+        $pdf_file=base64_decode($encode);
+        
+        $pdf_file= \Storage::disk('local')->put($vpath.$name.'.pdf', $pdf_file);
+
+
+        $destinationPath = storage_path('app'.$vpath);
+        $pdfbox = base_path('pdfbox-app.jar');
+        $pdf = $destinationPath.$name.'.pdf';
+        $outpdf = $destinationPath.$name.'-1.pdf';
+        exec("java -jar ".$pdfbox." Decrypt -password ".$request->password." ".$pdf." ".$outpdf);
+        if(file_exists($outpdf)!=1){
+            exec("java -jar ".$pdfbox." PDFSplit -password ".$request->password." ".$pdf);
+            if(file_exists($outpdf)!=1){
+                $response=array();
+                $response["status"]=0;
+                $response["msg"]='Please Enter Correct Password';
+                return response()->json($response);
+            }
+        }
+        
+        
+
+        exec("java -jar ".$pdfbox." ExtractText ".$outpdf);
+        exec("java -jar ".$pdfbox." ExtractImages ".$outpdf);
+
+        
+        // create an image manager instance with favored driver
+        $manager = new ImageManager();
+
+        // to finally create image instances
+        $image = $manager->make($destinationPath.$name.'-1-2.jpg');
+        $image->brightness(25);
+        $image->contrast(30);
+        $image->save($destinationPath.$name.'-1_photo.jpg');    
+        
+
+        $filename = \Storage_path('app'.$vpath.$name.'-1.txt');
+        $fp = fopen($filename, "r");
+
+        $content = fread($fp, filesize($filename));
+        $lines = explode("\n", $content);
+        fclose($fp);
+
+        $pan_no = trim($lines[0]);
+        $name_e = trim($lines[1]);
+        $text = trim($lines[2]);
+        $dob = '';
+        $fathername = '';
+        $cardtype = 0;
+        if($this->check_dob_fahtername($text) == 0){
+            $fathername = trim($lines[2]);
+            $dob = trim($lines[3]);
+            $cardtype = 1;
+        }else{
+            $dob = trim($lines[2]);
+            $cardtype = 2;
+        }
+
+        
+        $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet_card_print`($aadhar_no, $appuser->id, 3) as `result`;")); 
+        if ($transaction_status[0]->result!='success'){
+            $response=array();
+            $response["status"]=0;
+            $response["msg"]=$transaction_status[0]->result;
+            return response()->json($response);
+        }
+
+        $PanDetail = new PanDetail();
+        $PanDetail->user_id = $appuser->id;
+        $PanDetail->file_path = $vpath;
+        $PanDetail->file_name = $name.'-1.pdf';
+        $PanDetail->file_password = $request->password;
+        $PanDetail->upload_date = date('Y-m-d');
+        $PanDetail->pan_no = $pan_no;
+        $PanDetail->name_e = $name_e;
+        $PanDetail->upload_type = $cardtype;
+        $PanDetail->father_name_e = $fathername;
+        $PanDetail->dob = $dob;
+        $PanDetail->save();
+
+        // $this->process_aadhar_card_info($vpath, $name);
+
+        $response=['status'=>1,'msg'=>'Upload Successfully'];
+            return response()->json($response);        
+
+    }
+    public function pancardDownload(Request $request)
+    {
+        
+        $path=Storage_path('fonts/');
+        $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir']; 
+        $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata']; 
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [88, 55],
+             'fontDir' => array_merge($fontDirs, [
+                 __DIR__ . $path,
+             ]),
+             'fontdata' => $fontData + [
+                 'frutiger' => [
+                     'R' => 'FreeSans.ttf',
+                     'I' => 'FreeSansOblique.ttf',
+                 ]
+             ],
+             'default_font' => 'freesans'
+         ]);
+         
+
+
+        $opt_print_background = $request->background; 
+        $ad_id = $request->id;
+        $user=Auth::guard('admin')->user();
+
+        $pan_data = DB::select(DB::raw("select * from pan_details where `id` = $ad_id;"));
+        
+        $files_path  =\Storage_path('app'.$pan_data[0]->file_path);
+        $bg_files_path  =\Storage_path('app/pan/backgroud_files/');
+        $files_name  =substr($pan_data[0]->file_name, 0,16);
+        $cardtype = $pan_data[0]->upload_type;
+
+        $html = view('admin.card_print.print_pan',compact('ad_id', 'files_path', 'files_name', 'bg_files_path', 'opt_print_background', 'cardtype', 'pan_data'));
+        $mpdf->WriteHTML($html); 
+        $mpdf->Output();   
+    }
+
+
+    //-------Aadhaar-print--------------------------
     public function adhaar()
     { 
       $appuser = Auth::guard('admin')->user();  
-      $AadharDetails=AadharDetail::where('user_id',$appuser->id)->get();       
+      $AadharDetails=AadharDetail::where('user_id',$appuser->id)->where('upload_date',date('Y-m-d'))->get();       
       return view('admin.card_print.adhaar',compact('AadharDetails'));    
     }
-
 
     public function adhaarStore(Request $request)
     {   
@@ -244,11 +410,7 @@ class CardPrintController extends Controller
         $appuser = Auth::guard('admin')->user();
 
 
-        // // $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet_aadhar`('$request->adhaar_card', $user->id) as `result`;")); 
-        // if ($transaction_status[0]->result!='success'){
-        //     return redirect()->back()->with(['message'=>$transaction_status[0]->result,'class'=>'error']);
-        // }
-        
+                
         $transaction_status = DB::select(DB::raw("Select `check_wallet_balance_print`($appuser->id, 2) as `result`;")); 
         if ($transaction_status[0]->result!='ok'){
             $response=array();
@@ -352,6 +514,33 @@ class CardPrintController extends Controller
 
     }
 
+    public function check_dob_fahtername($text) 
+    {
+        $isdob = 1;
+        $txtlen = strlen($text);
+        if ($txtlen==10){
+            for ($i=0; $i <2 ; $i++) { 
+                if (ord(substr($text, $i,1))<48 || ord(substr($text, $i,1))>57){
+                    $isdob = 0;
+                }
+            }
+            for ($i=3; $i <5 ; $i++) { 
+                if (ord(substr($text, $i,1))<48 || ord(substr($text, $i,1))>57){
+                    $isdob = 0;
+                }
+            }
+            for ($i=6; $i <10 ; $i++) { 
+                if (ord(substr($text, $i,1))<48 || ord(substr($text, $i,1))>57){
+                    $isdob = 0;
+                }
+            }    
+        }else{
+            $isdob = 0;
+        }
+
+        return $isdob;
+    }
+
     public function check_mobile_no($text) 
     {
         $ismobile = 1;
@@ -394,20 +583,12 @@ class CardPrintController extends Controller
 
         exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 33 110 48 233 ".$pdf);
 
-        // Storage::copy($vpath.$name."1.png",$vpath.$name."_1.png");
-
-
         exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 48 110 255 233 ".$pdf);
-
-        // Storage::copy($vpath.$name."1.png",$vpath.$name."_2.png");
 
         exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."3_ -dpi 300 -cropbox 255 110 292 233 ".$pdf);
 
-        // Storage::copy($vpath.$name."1.png",$vpath.$name."_3.png");
-        
-
         exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."4_ -dpi 300 -cropbox 303 110 562 233 ".$pdf);
-        // Storage::copy($vpath.$name."1.png",$vpath.$name."_4.png");
+        
 
     }    
 
@@ -462,7 +643,21 @@ class CardPrintController extends Controller
         echo ( nl2br ( $message ) ) ;
     }
 
-
+    public function pancardPrintPurchase()
+    {
+       return view('admin.card_print.pancard_print_purchase');  
+    }
+    public function pancardPrintPurchaseStore(Request $request)
+    {
+        $this->validate($request, [
+         'I_Want_To_Purchase' => 'required',             
+          
+      ]); 
+        $appuser = Auth::guard('admin')->user();      
+        $datas=DB::select(DB::raw("select `up_deduct_wallet_package_lifetime`($appuser->id, 3) as `result`;")); 
+        return Redirect()->back()->with(['message'=>$datas[0]->result,'class'=>'success']); 
+        
+    }
     public function adhaarPrintPurchase()
     {
        return view('admin.card_print.adhaar_print_purchase');  
@@ -478,11 +673,11 @@ class CardPrintController extends Controller
         return Redirect()->back()->with(['message'=>$datas[0]->result,'class'=>'success']); 
         
     }
-    public function adhaarPrintFeedback($value='')
+    public function adhaarPrintFeedback($type)
     {
         $appuser = Auth::guard('admin')->user();
         $FeedbackUser=FeedbackUser::where('user_id',$appuser->id)->first();
-        return view('admin.card_print.feedback_form',compact('FeedbackUser')); 
+        return view('admin.card_print.feedback_form',compact('FeedbackUser','type')); 
     }
     public function adhaarPrintFeedbackStore(Request $request)
     {
@@ -498,10 +693,10 @@ class CardPrintController extends Controller
             return response()->json($response);// response as json
         }
         $appuser = Auth::guard('admin')->user();
-        $FeedbackUser=FeedbackUser::firstOrNew(['user_id'=>$appuser->id]);
+        $FeedbackUser=FeedbackUser::firstOrNew(['user_id'=>$appuser->id,'service_type'=>$request->type]);
         $FeedbackUser->user_id=$appuser->id;
         $FeedbackUser->ondate=date('Y-m-d');
-        $FeedbackUser->service_type=2;
+        $FeedbackUser->service_type=$request->type;
         $FeedbackUser->rating=$request->r1;
         $FeedbackUser->remarks=$request->message;
         $FeedbackUser->save();

@@ -15,9 +15,7 @@
         </div>
         <form action="{{ route('admin.card.adhaar.print.feedback.store') }}" method="post" class="add_form" button-click="btn_close">
         {{csrf_field()}}
-        @if ($FeedbackUser->rating==1)
-              
-        @endif 
+        <input type="hidden" name="type" value="{{$type}}">
         <div class="modal-body">
             <div class="form-check mb-4 form-group"> 
                 <div class="icheck-primary d-inline">

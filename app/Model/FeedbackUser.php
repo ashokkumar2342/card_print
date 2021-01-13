@@ -8,6 +8,6 @@ class FeedbackUser extends Model
 {
 	
     protected $table='feedback_user';
-    protected $fillable=['user_id'];
+    protected $fillable=['user_id','service_type'];
     public $timestamps=false;
 }
