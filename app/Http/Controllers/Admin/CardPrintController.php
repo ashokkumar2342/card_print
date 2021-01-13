@@ -318,7 +318,7 @@ class CardPrintController extends Controller
         }
 
         
-        $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet_card_print`($aadhar_no, $appuser->id, 3) as `result`;")); 
+        $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet_card_print`('$pan_no', $appuser->id, 3) as `result`;")); 
         if ($transaction_status[0]->result!='success'){
             $response=array();
             $response["status"]=0;
