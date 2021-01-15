@@ -74,9 +74,14 @@ div.second{
 	
 	@if ($epicbackground==1)
 	<table style="margin-top:7px;padding-left: 5px">
-		<tr>
+		{{-- <tr>
 			<td width="20%"></td>
 			<td  class="test" width="60%"><img src="{{ $image }}" alt="" width = "{{ $width*1.2 }}px" height = "{{ $height*1.2 }}px"></td>
+			<td width="12%"></td>
+		</tr> --}}
+		<tr>
+			<td width="20%"></td>
+			<td  class="test" width="60%"><img src="{{ $image }}" alt="" width = "108px" height = "140px"></td>
 			<td width="12%"></td>
 		</tr>
 	</table>

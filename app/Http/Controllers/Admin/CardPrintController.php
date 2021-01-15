@@ -289,11 +289,17 @@ class CardPrintController extends Controller
         $manager = new ImageManager();
 
         // to finally create image instances
-        $image = $manager->make($destinationPath.$name.'-1-2.jpg');
-        $image->brightness(25);
-        $image->contrast(30);
-        $image->save($destinationPath.$name.'-1_photo.jpg');    
+        // $image = $manager->make($destinationPath.$name.'-1-2.jpg');
+        // $image->brightness(25);
+        // $image->contrast(30);
+        // $image->save($destinationPath.$name.'-1_photo.jpg');    
         
+        $totalfiles = glob($destinationPath . '*');
+        $countFile = 0;
+        if ($totalfiles != false)
+        {
+            $countFile = count($totalfiles);
+        }
 
         $filename = \Storage_path('app'.$vpath.$name.'-1.txt');
         $fp = fopen($filename, "r");
@@ -302,20 +308,69 @@ class CardPrintController extends Controller
         $lines = explode("\n", $content);
         fclose($fp);
 
-        $pan_no = trim($lines[0]);
-        $name_e = trim($lines[1]);
-        $text = trim($lines[2]);
+        $pan_no = '';
+        $name_e = '';
         $dob = '';
         $fathername = '';
         $cardtype = 0;
-        if($this->check_dob_fahtername($text) == 0){
-            $fathername = trim($lines[2]);
-            $dob = trim($lines[3]);
-            $cardtype = 1;
-        }else{
+        $text = '';
+        if(trim($lines[0])=='Cut'){
+            $pan_no = trim($lines[1]);
+            $name_e = trim($lines[4]);
             $dob = trim($lines[2]);
-            $cardtype = 2;
+            $text = trim($lines[5]);
+            if(strlen($text)>20){
+                $fathername = trim($lines[7]);
+            }else{
+                $fathername = trim($lines[6]);
+            }
+
+
+            if($countFile==10){
+                $cardtype = 3;
+            }else{
+                $cardtype = 4;
+            }
+        }else{
+            $pan_no = trim($lines[0]);
+            $name_e = trim($lines[1]);
+            $text = trim($lines[2]);
+            $dob = '';
+            $fathername = '';
+            $cardtype = 0;
+            if($this->check_dob_fahtername($text) == 0){
+                $fathername = trim($lines[2]);
+                $dob = trim($lines[3]);
+                $cardtype = 1;
+            }else{
+                $dob = trim($lines[2]);
+                $cardtype = 2;
+            }    
         }
+
+        $qrcode = '';
+        $sign = '';
+        $photo = '';
+        if($countFile==8){
+            $photo = '2';
+            list($width, $height, $type, $attr) = getimagesize($destinationPath.$name.'-1-3.png');
+            if($width == $height){
+                $qrcode = '3';
+                $sign = '';
+            }else{
+                $qrcode = '4';
+                $sign = '3';
+            }
+        }elseif($countFile==10){
+            $qrcode = '3';
+            $sign = '';
+            $photo = '4';
+        }elseif($countFile==11){
+            $qrcode = '4';
+            $sign = '3';
+            $photo = '5';
+        }
+        
 
         
         $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet_card_print`('$pan_no', $appuser->id, 3) as `result`;")); 
@@ -337,10 +392,12 @@ class CardPrintController extends Controller
         $PanDetail->upload_type = $cardtype;
         $PanDetail->father_name_e = $fathername;
         $PanDetail->dob = $dob;
+        $PanDetail->qrcode = $qrcode;
+        $PanDetail->sign = $sign;
+        $PanDetail->photo = $photo;
         $PanDetail->save();
 
-        // $this->process_aadhar_card_info($vpath, $name);
-
+        
         $response=['status'=>1,'msg'=>'Upload Successfully'];
             return response()->json($response);        
 
@@ -409,7 +466,9 @@ class CardPrintController extends Controller
         }
         $appuser = Auth::guard('admin')->user();
 
-
+        // $vpath = '/adhaar/1/20210114075511/';
+        // $name = '20210114075511';
+        // return $this->process_aadhar_card_info($vpath, $name);
                 
         $transaction_status = DB::select(DB::raw("Select `check_wallet_balance_print`($appuser->id, 2) as `result`;")); 
         if ($transaction_status[0]->result!='ok'){
@@ -466,29 +525,122 @@ class CardPrintController extends Controller
         $content = fread($fp, filesize($filename));
         $lines = explode("\n", $content);
         fclose($fp);
-        
+
+        $add_line_start = 50;
+        $add_line_end = 0;
+        $text='';
         $lineno = 0;
+        $f_enrolmentno = 0;
+        $enrolmentno = '';
+        $f_fathername = 0;
+        $a_name = '';
+        $fathername = '';
+        $f_mobileno = 0;
         $mobile_no = '';
-        while ($lineno <= 15) {
-            if($this->check_mobile_no(trim($lines[$lineno])) == 1){
-                $mobile_no = $lines[$lineno];
-                $lineno = 15;    
+        $f_aadharno = 0;
+        $aadhar_no = '';
+        $f_vid = 0;
+        $vid = '';
+        $f_down_date = 0;
+        $down_date = '';
+        $f_issue_date = 0;
+        $issue_date = '';
+        foreach ($lines as $key => $value) {
+            $text = trim($value);
+            if ($f_enrolmentno==0){
+                if($this->check_enrolment_no($text) == 1){
+                    $f_enrolmentno = 1;
+                    $enrolmentno = substr($text, strlen($text)-16);
+                    $lineno = $lineno + 1;
+                    continue;    
+                }    
             }
+            if ($f_fathername==0){
+                if (stripos($text,'/O:')>0) {
+                    $f_fathername = 1;
+                    $fathername = $text;
+                    $a_name = $lines[$lineno-1];
+                    $add_line_start = $lineno;
+                    $lineno = $lineno + 1;
+                    continue;
+                }
+            }
+            if ($f_mobileno==0){
+                if($this->check_mobile_no($text) == 1){
+                    $f_mobileno = 1;
+                    $mobile_no = $text;    
+                    $add_line_end = $lineno-1;
+                    $lineno = $lineno + 1;
+                    continue;
+                }    
+            }
+            if ($f_aadharno==0){
+                if($this->check_aadhar_no($text) == 1){
+                    $f_aadharno = 1;
+                    $aadhar_no = str_replace(' ', '', $text);
+                    if ($f_mobileno==0){
+                        $add_line_end = $lineno-1;    
+                    }
+                    $lineno = $lineno + 1;
+                    continue;
+                }    
+            }
+            if ($f_vid==0){
+                if($this->check_vid_no($text) == 1){
+                    $f_vid = 1;
+                    $vid = substr($text, strlen($text)-19);
+                    $lineno = $lineno + 1;
+                    continue;
+                }    
+            }
+
+            if ($f_down_date==0){
+                if($this->check_down_issue_date($text) == 1){
+                    $f_down_date = 1;
+                    $down_date = substr($text, strlen($text)-10);
+                    $lineno = $lineno + 1;
+                    continue;
+                }    
+            }
+
+            if ($f_issue_date==0){
+                if($this->check_down_issue_date($text) == 1){
+                    $f_issue_date = 1;
+                    $issue_date = substr($text, strlen($text)-10);
+                    $lineno = $lineno + 1;
+                    continue;
+                }    
+            }
+
+
             $lineno = $lineno + 1;
         }
 
-        $lineno = 0;
-        $aadhar_no = '';
-        while ($lineno <= 16) {
-            if($this->check_aadhar_no(trim($lines[$lineno])) == 1){
-                $aadhar_no = str_replace(' ', '', trim($lines[$lineno]));
-                $lineno = 16;    
-            }
-            $lineno = $lineno + 1;
-        }
+
+
+        
+        // $lineno = 0;
+        // $mobile_no = '';
+        // while ($lineno <= 15) {
+        //     if($this->check_mobile_no(trim($lines[$lineno])) == 1){
+        //         $mobile_no = $lines[$lineno];
+        //         $lineno = 15;    
+        //     }
+        //     $lineno = $lineno + 1;
+        // }
+
+        // $lineno = 0;
+        // $aadhar_no = '';
+        // while ($lineno <= 16) {
+        //     if($this->check_aadhar_no(trim($lines[$lineno])) == 1){
+        //         $aadhar_no = str_replace(' ', '', trim($lines[$lineno]));
+        //         $lineno = 16;    
+        //     }
+        //     $lineno = $lineno + 1;
+        // }
         
 
-        $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet_card_print`($aadhar_no, $appuser->id, 2) as `result`;")); 
+        $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet_card_print`('$aadhar_no', $appuser->id, 2) as `result`;")); 
         if ($transaction_status[0]->result!='success'){
             $response=array();
             $response["status"]=0;
@@ -502,9 +654,53 @@ class CardPrintController extends Controller
         $AadharDetail->file_name = $name.'.pdf';
         $AadharDetail->file_password = $request->password;
         $AadharDetail->upload_date = date('Y-m-d');
-        $AadharDetail->name_e = $lines[3];
-        $AadharDetail->mobile_no = $mobile_no;
+
+        $AadharDetail->enrolment_no = $enrolmentno;
         $AadharDetail->aadhar_no = $aadhar_no;
+        $AadharDetail->VID = $vid;
+        $AadharDetail->name_e = $a_name;
+        // $AadharDetail->name_l = $a_name;
+        $AadharDetail->mobile_no = $mobile_no;
+        // $AadharDetail->pin_code = $mobile_no;
+        // $AadharDetail->DOB = $mobile_no;
+        // $AadharDetail->gender_e = $mobile_no;
+        // $AadharDetail->gender_l = $mobile_no;
+        $AadharDetail->download_date = $down_date;
+        $AadharDetail->issue_date = $issue_date;
+        
+        if($add_line_start<=$add_line_end){
+            $AadharDetail->address_1_e = trim($lines[$add_line_start]);    
+            $add_line_start = $add_line_start + 1;
+        }
+        if($add_line_start<=$add_line_end){
+            $AadharDetail->address_2_e = trim($lines[$add_line_start]);    
+            $add_line_start = $add_line_start + 1;
+        }
+        if($add_line_start<=$add_line_end){
+            $AadharDetail->address_3_e = trim($lines[$add_line_start]);    
+            $add_line_start = $add_line_start + 1;
+        }
+        if($add_line_start<=$add_line_end){
+            $AadharDetail->address_4_e = trim($lines[$add_line_start]);    
+            $add_line_start = $add_line_start + 1;
+        }
+        if($add_line_start<=$add_line_end){
+            $AadharDetail->address_5_e = trim($lines[$add_line_start]);    
+            $add_line_start = $add_line_start + 1;
+        }
+        if($add_line_start<=$add_line_end){
+            $AadharDetail->address_6_e = trim($lines[$add_line_start]);    
+            $add_line_start = $add_line_start + 1;
+        }
+        if($add_line_start<=$add_line_end){
+            $AadharDetail->address_7_e = trim($lines[$add_line_start]);    
+            $add_line_start = $add_line_start + 1;
+        }
+        if($add_line_start<=$add_line_end){
+            $AadharDetail->address_8_e = trim($lines[$add_line_start]);    
+            $add_line_start = $add_line_start + 1;
+        }
+        
         $AadharDetail->save();
 
         $this->process_aadhar_card_info($vpath, $name);
@@ -512,6 +708,75 @@ class CardPrintController extends Controller
         $response=['status'=>1,'msg'=>'Upload Successfully'];
             return response()->json($response);        
 
+    }
+
+    public function check_down_issue_date($text) 
+    {
+        $ischeck = 1;
+        if (strlen($text) >= 10)
+        {
+            $text = substr($text, strlen($text)-10);
+            $text = str_replace('/', '', $text);
+            if(strlen($text)==8){
+                for ($i=0; $i <8 ; $i++) { 
+                    if (ord(substr($text, $i,1))<48 || ord(substr($text, $i,1))>57){
+                        $ischeck = 0;
+                    }
+                }
+            }else{
+                $ischeck = 0;    
+            }
+            
+        }else{
+            $ischeck = 0;
+        }
+        return $ischeck;
+    }
+
+    public function check_vid_no($text) 
+    {
+        $ischeck = 1;
+        if (strlen($text) >= 19)
+        {
+            $text = substr($text, strlen($text)-19);
+            $text = str_replace(' ', '', $text);
+            if(strlen($text)==16){
+                for ($i=0; $i <16 ; $i++) { 
+                    if (ord(substr($text, $i,1))<48 || ord(substr($text, $i,1))>57){
+                        $ischeck = 0;
+                    }
+                }
+            }else{
+                $ischeck = 0;    
+            }
+            
+        }else{
+            $ischeck = 0;
+        }
+        return $ischeck;
+    }
+
+    public function check_enrolment_no($text) 
+    {
+        $ischeck = 1;
+        if (strlen($text) >= 16)
+        {
+            $text = substr($text, strlen($text)-16);
+            $text = str_replace('/', '', $text);
+            if(strlen($text)==14){
+                for ($i=0; $i <14 ; $i++) { 
+                    if (ord(substr($text, $i,1))<48 || ord(substr($text, $i,1))>57){
+                        $ischeck = 0;
+                    }
+                }
+            }else{
+                $ischeck = 0;    
+            }
+            
+        }else{
+            $ischeck = 0;
+        }
+        return $ischeck;
     }
 
     public function check_dob_fahtername($text) 
@@ -580,14 +845,36 @@ class CardPrintController extends Controller
         $pdfbox = base_path('pdfbox-app.jar');
         $pdf = $destinationPath.$name.'.pdf';
         
+        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 113 180 255 230 ".$pdf);
 
-        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 33 110 48 233 ".$pdf);
+        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 140 460 233 ".$pdf);
 
-        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 48 110 255 233 ".$pdf);
+        $manager = new ImageManager();
 
-        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."3_ -dpi 300 -cropbox 255 110 292 233 ".$pdf);
+        // to finally create image instances
+        $image = $manager->make($destinationPath.'1_1.png');
+        $image->brightness(-15);
+        $hexcolor = $image->pickColor(2, 2, 'hex');
+        $image->limitColors(255, $hexcolor);
+        // $image->greyscale();
+        // $image->contrast(-30);
+        // $image->sharpen(50);
+        $image->save($destinationPath.'1_2.png');
 
-        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."4_ -dpi 300 -cropbox 303 110 562 233 ".$pdf);
+
+        $image = $manager->make($destinationPath.'2_1.png');
+        $image->brightness(-15);
+        $hexcolor = $image->pickColor(2, 2, 'hex');
+        $image->limitColors(255, $hexcolor);
+        $image->save($destinationPath.'2_2.png');    
+
+        // exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 33 110 48 233 ".$pdf);
+
+        // exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 48 110 255 233 ".$pdf);
+
+        // exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."3_ -dpi 300 -cropbox 255 110 292 233 ".$pdf);
+
+        // exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."4_ -dpi 300 -cropbox 303 110 562 233 ".$pdf);
         
 
     }    
@@ -630,7 +917,43 @@ class CardPrintController extends Controller
         $bg_files_path  =\Storage_path('app/adhaar/backgroud_files/');
         $files_name  =substr($aadharData[0]->file_name, 0,14);
 
-        $html = view('admin.card_print.print_adhar',compact('ad_id', 'files_path', 'files_name', 'bg_files_path', 'opt_print_background', 'opt_print_mobile', 'opt_print_dates', 'opt_print_tagline', 'aadharData'));
+        $topfront = '';
+        $downdate = '';
+        $mobileno = '';
+        $issuedate = '';
+        $tagfront = '';
+        $topback = '';
+        $bottomback = '';
+        if($opt_print_background==1){
+            $topfront = $bg_files_path."top_front.jpg";
+            $tagfront = $bg_files_path."tagline_front.jpg";
+            $topback = $bg_files_path."top_back.png";
+            $bottomback = $bg_files_path."tagline_back.png";
+        }else{
+            $topfront = $bg_files_path."blank.png";
+            $topback = $bg_files_path."blank.png";
+            $bottomback = $bg_files_path."blank.png";
+            if($opt_print_tagline==1){
+                $tagfront = $bg_files_path."tagline_front1.jpg";  
+            }else{
+                $tagfront = $bg_files_path."blank.png";
+            }
+        }
+        if($opt_print_dates==1){
+            $downdate = 'Download Date: '.$aadharData[0]->download_date;
+            $issuedate = 'Issue Date: '.$aadharData[0]->issue_date;
+        }
+        $photopath = $files_path.$files_name."_photo.jpg";
+        if($opt_print_mobile==1){
+            if(trim($aadharData[0]->mobile_no)!=''){
+                $mobileno = "Mobile No.: ".$aadharData[0]->mobile_no;    
+            }
+        }
+
+        $aadharno = $aadharData[0]->aadhar_no;
+        $aadharno = substr($aadharno, 0,4).' '.substr($aadharno, 4,4).' '.substr($aadharno, 8,4);
+
+        $html = view('admin.card_print.print_adhar',compact('ad_id', 'files_path', 'files_name', 'bg_files_path', 'opt_print_background', 'opt_print_mobile', 'opt_print_dates', 'opt_print_tagline', 'aadharData', 'topfront', 'downdate', 'photopath', 'mobileno', 'issuedate', 'tagfront', 'topback', 'bottomback', 'aadharno'));
         $mpdf->WriteHTML($html); 
         $mpdf->Output();   
     } 

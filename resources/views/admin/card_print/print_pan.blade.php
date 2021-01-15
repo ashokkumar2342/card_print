@@ -102,7 +102,7 @@ div.second{
 					</td>
 				</tr>
 			</table>
-		@else
+		@elseif ($cardtype==2)
 			<table style="width: 100%;">
 				<tr>
 					<td style="vertical-align: top;width: 69%">
@@ -135,6 +135,109 @@ div.second{
 					</td>
 					<td style="padding-top: 100px;padding-left:-5px;width: 31%;text-align: left;vertical-align: top;">
 						<img src="{{ $files_path.$files_name."-3.png" }}" alt="" width = "105px" height="105px">
+					</td>
+				</tr>
+			</table>
+		@elseif ($cardtype==3)
+			<table>
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td>
+									<table>
+										<tr>
+											<td style="padding-top: 45px">
+												<img src="{{ $files_path.$files_name."-4.jpg" }}" alt="" width = "60px" height="55px">
+											</td>
+											<td style="padding-top: 62px;padding-left:17px;">
+												<h4>{{ $pan_data[0]->pan_no }}</h4>			
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding-top: 11px;padding-left: 8px">
+									<h6>{{ $pan_data[0]->name_e }}</h6>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding-top: 11px;padding-left: 8px">
+									<h6>{{ $pan_data[0]->father_name_e }}</h6>
+								</td>
+							</tr>
+						</table>	
+					</td>
+					<td style="padding-top: 36px;padding-left:28px">
+						<img src="{{ $files_path.$files_name."-3.png" }}" alt="" width = "86px" height="86px">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td style="padding-top: 9px;padding-left: 8px">
+									<h6>{{ $pan_data[0]->dob }}</h6>
+								</td>
+								<td style="padding-left: 58px;padding-top: -15px">
+									&nbsp;
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		@elseif ($cardtype==4)
+			<table width = "100%" style="vertical-align: top;text-align: left;">
+				<tr>
+					<td width = "67%" style="vertical-align: top;text-align: left;">
+						<table width = "100%" style="vertical-align: top;text-align: left;">
+							<tr>
+								<td width = "100%" style="vertical-align: top;text-align: left;">
+									<table width = "100%" style="vertical-align: top;text-align: left;">
+										<tr>
+											<td width = "40%" style="vertical-align: top;text-align: left;padding-top: 48px;padding-left: 4px;">
+												<img src="{{ $files_path.$files_name."-".$pan_data[0]->photo.".jpg" }}" alt="" width = "59px" height="59px">
+											</td>
+											<td width = "60%" style="vertical-align: top;text-align: left;padding-top: 72px;padding-left:17px;">
+												<h4>{{ $pan_data[0]->pan_no }}</h4>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td style="vertical-align: top;text-align: left;padding-top: 3px;padding-left: 8px">
+									<h6>{{ $pan_data[0]->name_e }}</h6>
+								</td>
+							</tr>
+							<tr>
+								<td style="vertical-align: top;text-align: left;padding-top: 11px;padding-left: 8px">
+									<h6>{{ $pan_data[0]->father_name_e }}</h6>
+								</td>
+							</tr>
+						</table>	
+					</td>
+					<td width = "33%" style="vertical-align: top;text-align: left;padding-top: 59px;padding-left:4px">
+						<img src="{{ $files_path.$files_name."-".$pan_data[0]->qrcode.".png" }}" alt="" width = "86px" height="86px">
+					</td>
+				</tr>
+				<tr>
+					<td style="vertical-align: top;text-align: left;">
+						<table width = "100%" style="vertical-align: top;text-align: left;">
+							<tr>
+								<td width = "40%" style="vertical-align: top;text-align: left;padding-top: 9px;padding-left: 8px">
+									<h6>{{ $pan_data[0]->dob }}</h6>
+								</td>
+								<td width = "60%" style="vertical-align: top;text-align: left;padding-left: 20px;padding-top: -10px">
+									<img src="{{ $files_path.$files_name."-".$pan_data[0]->sign.".jpg" }}" alt="" width = "86px" height="20px">
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td>
+						&nbsp;
 					</td>
 				</tr>
 			</table>
