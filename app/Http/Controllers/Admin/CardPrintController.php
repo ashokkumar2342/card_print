@@ -359,7 +359,7 @@ class CardPrintController extends Controller
                 $sign = '';
             }else{
                 $qrcode = '4';
-                $sign = '3';
+                $sign = '3.png';
             }
         }elseif($countFile==10){
             $qrcode = '3';
@@ -367,7 +367,7 @@ class CardPrintController extends Controller
             $photo = '4';
         }elseif($countFile==11){
             $qrcode = '4';
-            $sign = '3';
+            $sign = '3.jpg';
             $photo = '5';
         }
         
@@ -395,6 +395,7 @@ class CardPrintController extends Controller
         $PanDetail->qrcode = $qrcode;
         $PanDetail->sign = $sign;
         $PanDetail->photo = $photo;
+        $PanDetail->photo_show = $photo;
         $PanDetail->save();
 
         
@@ -410,7 +411,7 @@ class CardPrintController extends Controller
         $fontDirs = $defaultConfig['fontDir']; 
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata']; 
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [88, 55],
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [86, 54],
              'fontDir' => array_merge($fontDirs, [
                  __DIR__ . $path,
              ]),
@@ -434,9 +435,30 @@ class CardPrintController extends Controller
         $files_path  =\Storage_path('app'.$pan_data[0]->file_path);
         $bg_files_path  =\Storage_path('app/pan/backgroud_files/');
         $files_name  =substr($pan_data[0]->file_name, 0,16);
+        
         $cardtype = $pan_data[0]->upload_type;
 
-        $html = view('admin.card_print.print_pan',compact('ad_id', 'files_path', 'files_name', 'bg_files_path', 'opt_print_background', 'cardtype', 'pan_data'));
+        // $cardtype = 4;
+
+        $bg_file_front = '';
+        $bg_file_back = '';
+        if($opt_print_background == 1){
+            $bg_file_front = $bg_files_path."f".$cardtype.".jpg";
+            $bg_file_back = $bg_files_path."b".$cardtype.".jpg";
+        }else{
+            $bg_file_front = $bg_files_path."blank.png";
+            $bg_file_back = $bg_files_path."blank.png";
+        }
+        $photo_path = $files_path.$files_name."-".$pan_data[0]->photo_show.".jpg";
+        $qr_path = $files_path.$files_name."-".$pan_data[0]->qrcode.".png";
+        if(trim($pan_data[0]->sign) == ''){
+            $sign_path = $bg_files_path."blank.png";
+        }else{
+            $sign_path = $files_path.$files_name."-".$pan_data[0]->sign;    
+        }
+        
+
+        $html = view('admin.card_print.print_pan',compact('ad_id', 'files_path', 'files_name', 'bg_files_path', 'opt_print_background', 'cardtype', 'pan_data', 'bg_file_front', 'bg_file_back', 'photo_path', 'qr_path', 'sign_path'));
         $mpdf->WriteHTML($html); 
         $mpdf->Output();   
     }
@@ -545,6 +567,15 @@ class CardPrintController extends Controller
         $down_date = '';
         $f_issue_date = 0;
         $issue_date = '';
+        $f_pincode = 0;
+        $pincode = '';
+
+        if(trim($lines[2]) == trim($lines[3])){
+            $f_fathername = 1;
+            $fathername = $lines[4];
+            $a_name = $lines[3];
+            $add_line_start = 4;
+        }
         foreach ($lines as $key => $value) {
             $text = trim($value);
             if ($f_enrolmentno==0){
@@ -556,7 +587,7 @@ class CardPrintController extends Controller
                 }    
             }
             if ($f_fathername==0){
-                if (stripos($text,'/O:')>0) {
+                if (stripos($text,'/O')>0) {
                     $f_fathername = 1;
                     $fathername = $text;
                     $a_name = $lines[$lineno-1];
@@ -565,6 +596,17 @@ class CardPrintController extends Controller
                     continue;
                 }
             }
+
+            if ($f_pincode==0){
+                if($this->check_pincode($text) == 1){
+                    $f_pincode = 1;
+                    $pincode = substr($text, strlen($text)-6);
+                    $lineno = $lineno + 1;
+                    continue;    
+                }    
+            }
+            
+
             if ($f_mobileno==0){
                 if($this->check_mobile_no($text) == 1){
                     $f_mobileno = 1;
@@ -611,34 +653,10 @@ class CardPrintController extends Controller
                     continue;
                 }    
             }
-
-
             $lineno = $lineno + 1;
         }
 
-
-
-        
-        // $lineno = 0;
-        // $mobile_no = '';
-        // while ($lineno <= 15) {
-        //     if($this->check_mobile_no(trim($lines[$lineno])) == 1){
-        //         $mobile_no = $lines[$lineno];
-        //         $lineno = 15;    
-        //     }
-        //     $lineno = $lineno + 1;
-        // }
-
-        // $lineno = 0;
-        // $aadhar_no = '';
-        // while ($lineno <= 16) {
-        //     if($this->check_aadhar_no(trim($lines[$lineno])) == 1){
-        //         $aadhar_no = str_replace(' ', '', trim($lines[$lineno]));
-        //         $lineno = 16;    
-        //     }
-        //     $lineno = $lineno + 1;
-        // }
-        
+        $this->process_aadhar_card_info($vpath, $name, $add_line_start);
 
         $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet_card_print`('$aadhar_no', $appuser->id, 2) as `result`;")); 
         if ($transaction_status[0]->result!='success'){
@@ -661,7 +679,7 @@ class CardPrintController extends Controller
         $AadharDetail->name_e = $a_name;
         // $AadharDetail->name_l = $a_name;
         $AadharDetail->mobile_no = $mobile_no;
-        // $AadharDetail->pin_code = $mobile_no;
+        $AadharDetail->pin_code = $pincode;
         // $AadharDetail->DOB = $mobile_no;
         // $AadharDetail->gender_e = $mobile_no;
         // $AadharDetail->gender_l = $mobile_no;
@@ -701,13 +719,38 @@ class CardPrintController extends Controller
             $add_line_start = $add_line_start + 1;
         }
         
-        $AadharDetail->save();
+        $AadharDetail->photo_o = '-8.jpg';
+        $AadharDetail->photo_show = '-8.jpg';
 
-        $this->process_aadhar_card_info($vpath, $name);
+        $AadharDetail->save();
 
         $response=['status'=>1,'msg'=>'Upload Successfully'];
             return response()->json($response);        
 
+    }
+
+    public function check_pincode($text) 
+    {
+        $ischeck = 1;
+        if (strlen($text) >= 9)
+        {
+            $text = substr($text, strlen($text)-9);
+            $text = str_replace('-', '', $text);
+            $text = str_replace(' ', '', $text);
+            if(strlen($text)==6){
+                for ($i=0; $i <6 ; $i++) { 
+                    if (ord(substr($text, $i,1))<48 || ord(substr($text, $i,1))>57){
+                        $ischeck = 0;
+                    }
+                }
+            }else{
+                $ischeck = 0;    
+            }
+            
+        }else{
+            $ischeck = 0;
+        }
+        return $ischeck;
     }
 
     public function check_down_issue_date($text) 
@@ -839,7 +882,7 @@ class CardPrintController extends Controller
         return $isaadhar;
     }
 
-    public function process_aadhar_card_info($vpath, $name)
+    public function process_aadhar_card_info($vpath, $name, $add_line_start)
     {
         $destinationPath = storage_path('app'.$vpath);
         $pdfbox = base_path('pdfbox-app.jar');
@@ -847,7 +890,11 @@ class CardPrintController extends Controller
         
         exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 113 180 255 230 ".$pdf);
 
-        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 140 460 233 ".$pdf);
+        if ($add_line_start == 3){
+            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 135 450 233 ".$pdf);
+        }else{
+            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 140 460 233 ".$pdf);
+        }
 
         $manager = new ImageManager();
 
@@ -866,16 +913,7 @@ class CardPrintController extends Controller
         $image->brightness(-15);
         $hexcolor = $image->pickColor(2, 2, 'hex');
         $image->limitColors(255, $hexcolor);
-        $image->save($destinationPath.'2_2.png');    
-
-        // exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 33 110 48 233 ".$pdf);
-
-        // exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 48 110 255 233 ".$pdf);
-
-        // exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."3_ -dpi 300 -cropbox 255 110 292 233 ".$pdf);
-
-        // exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."4_ -dpi 300 -cropbox 303 110 562 233 ".$pdf);
-        
+        $image->save($destinationPath.'2_2.png');
 
     }    
 
@@ -943,7 +981,7 @@ class CardPrintController extends Controller
             $downdate = 'Download Date: '.$aadharData[0]->download_date;
             $issuedate = 'Issue Date: '.$aadharData[0]->issue_date;
         }
-        $photopath = $files_path.$files_name."_photo.jpg";
+        $photopath = $files_path.$files_name.$aadharData[0]->photo_show;
         if($opt_print_mobile==1){
             if(trim($aadharData[0]->mobile_no)!=''){
                 $mobileno = "Mobile No.: ".$aadharData[0]->mobile_no;    
@@ -952,8 +990,10 @@ class CardPrintController extends Controller
 
         $aadharno = $aadharData[0]->aadhar_no;
         $aadharno = substr($aadharno, 0,4).' '.substr($aadharno, 4,4).' '.substr($aadharno, 8,4);
+        $vid = $aadharData[0]->VID;
 
-        $html = view('admin.card_print.print_adhar',compact('ad_id', 'files_path', 'files_name', 'bg_files_path', 'opt_print_background', 'opt_print_mobile', 'opt_print_dates', 'opt_print_tagline', 'aadharData', 'topfront', 'downdate', 'photopath', 'mobileno', 'issuedate', 'tagfront', 'topback', 'bottomback', 'aadharno'));
+        $cardtype = 1;
+        $html = view('admin.card_print.print_adhar',compact('ad_id', 'files_path', 'files_name', 'bg_files_path', 'opt_print_background', 'opt_print_mobile', 'opt_print_dates', 'opt_print_tagline', 'aadharData', 'topfront', 'downdate', 'photopath', 'mobileno', 'issuedate', 'tagfront', 'topback', 'bottomback', 'aadharno', 'vid', 'cardtype'));
         $mpdf->WriteHTML($html); 
         $mpdf->Output();   
     } 
