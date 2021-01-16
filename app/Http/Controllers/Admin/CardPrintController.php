@@ -527,14 +527,17 @@ class CardPrintController extends Controller
         exec("java -jar ".$pdfbox." ExtractText ".$pdf);
         exec("java -jar ".$pdfbox." ExtractImages ".$pdf);
 
-        
-
-
+        $balaadhar = 0;
+        $photofile = '-8.jpg';
+        if(file_exists($destinationPath.$name.$photofile)!=1){
+            $photofile = '-9.jpg';
+            $balaadhar = 1;
+        }
         // create an image manager instance with favored driver
         $manager = new ImageManager();
 
         // to finally create image instances
-        $image = $manager->make($destinationPath.$name.'-8.jpg');
+        $image = $manager->make($destinationPath.$name.$photofile);
         $image->brightness(25);
         $image->contrast(30);
         $image->save($destinationPath.$name.'_photo.jpg');    
@@ -656,7 +659,7 @@ class CardPrintController extends Controller
             $lineno = $lineno + 1;
         }
 
-        $this->process_aadhar_card_info($vpath, $name, $add_line_start);
+        $this->process_aadhar_card_info($vpath, $name, $add_line_start, $balaadhar);
 
         $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet_card_print`('$aadhar_no', $appuser->id, 2) as `result`;")); 
         if ($transaction_status[0]->result!='success'){
@@ -719,8 +722,9 @@ class CardPrintController extends Controller
             $add_line_start = $add_line_start + 1;
         }
         
-        $AadharDetail->photo_o = '-8.jpg';
-        $AadharDetail->photo_show = '-8.jpg';
+
+        $AadharDetail->photo_o = $photofile;
+        $AadharDetail->photo_show = $photofile;
 
         $AadharDetail->save();
 
@@ -882,7 +886,7 @@ class CardPrintController extends Controller
         return $isaadhar;
     }
 
-    public function process_aadhar_card_info($vpath, $name, $add_line_start)
+    public function process_aadhar_card_info($vpath, $name, $add_line_start, $balaadhar)
     {
         $destinationPath = storage_path('app'.$vpath);
         $pdfbox = base_path('pdfbox-app.jar');
@@ -890,11 +894,16 @@ class CardPrintController extends Controller
         
         exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 113 180 255 230 ".$pdf);
 
-        if ($add_line_start == 3){
-            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 135 450 233 ".$pdf);
+        if($balaadhar == 1){
+            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 142 452 237 ".$pdf);
         }else{
-            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 140 460 233 ".$pdf);
+            if ($add_line_start == 3){
+                exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 135 450 233 ".$pdf);
+            }else{
+                exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 140 460 233 ".$pdf);
+            }    
         }
+        
 
         $manager = new ImageManager();
 
