@@ -89,6 +89,7 @@
                                 <input type="hidden" id="r_id{{$PanDetail->id}}" value="{{$PanDetail->id}}">
                                 <td>
                                     <a id="download_btn{{$PanDetail->id}}" onclick="Pandownloaded('{{$PanDetail->id}}')" class="btn btn-xs btn-success" target="blank" ><i class="fa fa-download"></i></a>
+                                    <a id="btn_customize_image" class="btn btn-xs btn-info" target="blank" onclick="callPopupLarge(this,'{{ route('admin.card.adhaar.crop.image',[$PanDetail->id,2]) }}')" style="color: #fff"></i>Customize Image</a>
                                 </td>
                             </tr> 
                             @endforeach

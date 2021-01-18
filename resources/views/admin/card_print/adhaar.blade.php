@@ -100,7 +100,8 @@
                                 </td>
                                 <input type="hidden" id="r_id{{$AadharDetail->id}}" value="{{$AadharDetail->id}}">
                                 <td>
-                                    <a id="download_btn{{$AadharDetail->id}}" onclick="downloaded('{{$AadharDetail->id}}')" class="btn btn-xs btn-success" target="blank" ><i class="fa fa-download"></i></a>
+                                    <a id="download_btn{{$AadharDetail->id}}" onclick="downloaded('{{$AadharDetail->id}}')" class="btn btn-xs btn-success" target="blank" style="color: #fff"><i class="fa fa-download"></i></a>
+                                    <a id="btn_customize_image" class="btn btn-xs btn-info" target="blank" onclick="callPopupLarge(this,'{{ route('admin.card.adhaar.crop.image',[$AadharDetail->id,1]) }}')" style="color: #fff"></i>Customize Image</a>
                                 </td>
                             </tr> 
                             @endforeach
@@ -128,9 +129,7 @@ function downloaded(r_id) {
       
     $('#download_btn'+r_id).attr("href",'{{route('admin.card.print.adhaar.download','')}}'+'&id='+$('#r_id'+r_id).val()+'&background='+$('#background'+r_id).val()+'&download_date='+$('#download_date'+r_id).val()+'&tag_line='+$('#tag_line'+r_id).val()+'&mobile_no='+$('#mobile_no'+r_id).val());
     
-}
-   
- 
+} 
 </script>
 @endpush
 

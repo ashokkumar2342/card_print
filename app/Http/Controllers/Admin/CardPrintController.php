@@ -7,6 +7,8 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Response;
 use App\Model\AadharDetail;
 use App\Model\FeedbackUser;
 use App\Model\PanDetail;
@@ -945,57 +947,7 @@ class CardPrintController extends Controller
 
     }    
 
-    public function action_apply_process_photo($card_id, $card_type, $original_photo, $result_photo, $brightness_v, $contrast_v)
-    {
-        $this->action_process_photo($original_photo, $result_photo, $brightness_v, $contrast_v);
-
-        if($card_type == 1){
-            $update_photo_show = DB::select(DB::raw("Update `aadhar_details` set `photo_show` = '-rp.jpg' where `id` = $card_id;"));
-        }else{
-            $update_photo_show = DB::select(DB::raw("Update `pan_details` set `photo_show` = 'rp' where `id` = $card_id;"));
-        }
-        
-        return "Successfully";
-    }
-
-    public function action_process_photo($original_photo, $result_photo, $brightness_v, $contrast_v)
-    {
-        $sourcePath = storage_path('app'.$original_photo);
-        $destinationPath = storage_path('app'.$result_photo);
-        
-
-        $manager = new ImageManager();
-
-        // to finally create image instances
-        $image = $manager->make($sourcePath);
-        if($brightness_v!=0){
-            $image->brightness($brightness_v);    
-        }
-        if($contrast_v!=0){
-            $image->contrast($contrast_v);    
-        }
-        
-        if(file_exists($destinationPath)){
-            unlink($destinationPath);
-        }
-        $image->save($destinationPath);
-        return "ok";
-    }
-
-    public function action_on_show_process_photo($card_id, $card_type)
-    {
-        if($card_type == 1){
-            $update_photo_show = DB::select(DB::raw("Update `aadhar_details` set `photo_show` = `photo_o` where `id` = $card_id;"));
-
-            $get_files_paths = DB::select(DB::raw("select concat(`file_path`,  substring(`file_name`,1,14), `photo_o`) as `original_p`, concat(`file_path`,  substring(`file_name`,1,14), '-rp.jpg') as `result_p` from `aadhar_details` where `id` = $card_id;"));    
-        }else{
-            $update_photo_show = DB::select(DB::raw("Update `pan_details` set `photo_show` = `photo` where `id` = $card_id;"));
-
-            $get_files_paths = DB::select(DB::raw("select concat(`file_path`,  substring(`file_name`,1,16), '-', `photo`, '.jpg') as `original_p`, concat(`file_path`,  substring(`file_name`,1,16), '-rp.jpg') as `result_p` from `pan_details` where `id` = $card_id;"));
-        }
-        
-        return $get_files_paths;
-    }
+    
 
 
 
@@ -1308,5 +1260,123 @@ class CardPrintController extends Controller
     return '';
     }
     
+    public function action_on_show_process_photo($card_id, $card_type)
+    { 
+        if($card_type == 1){
+            $update_photo_show = DB::select(DB::raw("Update `aadhar_details` set `photo_show` = `photo_o` where `id` = $card_id;"));
 
+            $get_files_paths = DB::select(DB::raw("select concat(`file_path`,  substring(`file_name`,1,14), `photo_o`) as `original_p`, concat(`file_path`,  substring(`file_name`,1,14), '-rp.jpg') as `result_p` from `aadhar_details` where `id` = $card_id;"));    
+        }else{
+            $update_photo_show = DB::select(DB::raw("Update `pan_details` set `photo_show` = `photo` where `id` = $card_id;"));
+
+            $get_files_paths = DB::select(DB::raw("select concat(`file_path`,  substring(`file_name`,1,16), '-', `photo`, '.jpg') as `original_p`, concat(`file_path`,  substring(`file_name`,1,16), '-rp.jpg') as `result_p` from `pan_details` where `id` = $card_id;"));
+        }
+        
+         
+        return view('admin.card_print.crop_image',compact('get_files_paths','card_id','card_type'));
+    } 
+    public function customizeOriginal_p($image)
+    { 
+      $im=Crypt::decrypt($image);  
+      $storagePath = storage_path($im); 
+      $mimeType = mime_content_type($storagePath); 
+      if( ! \File::exists($storagePath)){
+
+        return view('error.home');
+      }
+      $headers = array(
+        'Content-Type' => $mimeType,
+        'Content-Disposition' => 'inline; '
+      );            
+      return Response::make(file_get_contents($storagePath), 200, $headers);           
+      
+    }
+    public function customizeResult_p($image)
+    { 
+      $im=Crypt::decrypt($image);  
+      $storagePath = storage_path($im); 
+      $mimeType = mime_content_type($storagePath); 
+      if( ! \File::exists($storagePath)){
+
+        return view('error.home');
+      }
+      $headers = array(
+        'Content-Type' => $mimeType,
+        'Content-Disposition' => 'inline; '
+      );            
+      return Response::make(file_get_contents($storagePath), 200, $headers);           
+      
+    }
+    public function action_process_photo(Request $request,$original_photo,$result_photo)
+    {   
+        $brightness_v=$request->brightness;
+        $contrast_v=$request->contras;
+        $original_photo=Crypt::decrypt($original_photo);
+        $result_photo=Crypt::decrypt($result_photo);
+        $sourcePath = storage_path($original_photo);
+        $destinationPath = storage_path($result_photo);
+        
+
+        $manager = new ImageManager();
+
+        // to finally create image instances
+        $image = $manager->make($sourcePath);
+        if($brightness_v!=0){
+            $image->brightness($brightness_v);    
+        }
+        if($contrast_v!=0){
+            $image->contrast($contrast_v);    
+        }
+        
+        if(file_exists($destinationPath)){
+            unlink($destinationPath);
+        }
+        $image->save($destinationPath);
+        
+    }
+    public function apply_action_call_function($original_photo,$result_photo,$brightness_v,$contrast_v)
+    {   
+         
+       
+        $sourcePath = storage_path($original_photo);
+        $destinationPath = storage_path($result_photo);
+        
+
+        $manager = new ImageManager();
+
+        // to finally create image instances
+        $image = $manager->make($sourcePath);
+        if($brightness_v!=0){
+            $image->brightness($brightness_v);    
+        }
+        if($contrast_v!=0){
+            $image->contrast($contrast_v);    
+        }
+        
+        if(file_exists($destinationPath)){
+            unlink($destinationPath);
+        }
+        $image->save($destinationPath);
+        
+    }
+    public function action_apply_process_photo(Request $request, $original_photo, $result_photo)
+    {   
+        
+        $card_id=$request->card_id;
+        $card_type=$request->card_type;
+        $brightness_v=$request->brightness;
+        $contrast_v=$request->contras;
+        $original_photo=Crypt::decrypt($original_photo);
+        $result_photo=Crypt::decrypt($result_photo);
+        $this->apply_action_call_function($original_photo, $result_photo, $brightness_v, $contrast_v);
+
+        if($card_type == 1){
+            $update_photo_show = DB::select(DB::raw("Update `aadhar_details` set `photo_show` = '-rp.jpg' where `id` = $card_id;"));
+        }else{
+            $update_photo_show = DB::select(DB::raw("Update `pan_details` set `photo_show` = 'rp' where `id` = $card_id;"));
+        }
+        
+        $response=['status'=>1,'msg'=>'Apply Successfully'];
+            return response()->json($response);
+    }
 }

@@ -39,6 +39,10 @@
   <link rel="stylesheet" href="{{ asset('admin_asset/plugins/select2/css/select2.min.css')}}">
   <link rel="stylesheet" href="{{ asset('admin_asset/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{ asset('admin_asset/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css')}}">
+  <!-- bootstrap slider -->
+  <link rel="stylesheet" href="{{ asset('admin_asset/plugins/ion-rangeslider/css/ion.rangeSlider.min.css')}}">
+  <link rel="stylesheet" href="{{ asset('admin_asset/plugins/bootstrap-slider/css/bootstrap-slider.min.css')}}"> 
+   
   
   
 
@@ -166,6 +170,8 @@
 
 <script src="{{ asset('admin_asset/plugins/select2/js/select2.full.min.js') }}"></script>
 <script src="{{ asset('admin_asset/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js') }}"></script>
+<script src="{{ asset('admin_asset/plugins/ion-rangeslider/js/ion.rangeSlider.min.js') }}"></script>
+<script src="{{ asset('admin_asset/plugins/bootstrap-slider/bootstrap-slider.min.js') }}"></script> 
 
 
 

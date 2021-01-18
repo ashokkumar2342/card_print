@@ -82,6 +82,16 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::get('adhaar-download','CardPrintController@adhaarStoreDownload')->name('admin.card.print.adhaar.download');
 		Route::get('adhaar-print-purchase','CardPrintController@adhaarPrintPurchase')->name('admin.card.adhaar.print.purchase');
 		Route::post('adhaar-print-purchase-store','CardPrintController@adhaarPrintPurchaseStore')->name('admin.card.adhaar.print.purchase.store');
+
+		Route::get('adhaar-crop-image/{id}/{type}','CardPrintController@action_on_show_process_photo')->name('admin.card.adhaar.crop.image');
+
+		Route::get('customize-original_p/{path}','CardPrintController@customizeOriginal_p')->name('admin.card.customize.original_p');
+
+		Route::get('customize-result_p/{path}','CardPrintController@customizeResult_p')->name('admin.card.customize.result_p');
+
+		Route::get('customize-action_process_photo/{ori}/{r_p}','CardPrintController@action_process_photo')->name('admin.card.customize.action_process_photo');
+		Route::get('customize-action_apply_process_photo/{ori}/{r_p}','CardPrintController@action_apply_process_photo')->name('admin.card.customize.action_apply_process_photo');
+		 
 	//------Pan-Card-Print-------------	
 		Route::get('pancard','CardPrintController@pancard')->name('admin.card.print.pancard');
 		Route::post('pancard-store','CardPrintController@pancardStore')->name('admin.card.print.pancard.store');
