@@ -90,7 +90,10 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::get('customize-result_p/{path}','CardPrintController@customizeResult_p')->name('admin.card.customize.result_p');
 
 		Route::get('customize-action_process_photo/{ori}/{r_p}','CardPrintController@action_process_photo')->name('admin.card.customize.action_process_photo');
+
 		Route::get('customize-action_apply_process_photo/{ori}/{r_p}','CardPrintController@action_apply_process_photo')->name('admin.card.customize.action_apply_process_photo');
+
+		Route::get('customize-refresh-image/{ori}/{r_p}','CardPrintController@customizeRefreshImage')->name('admin.card.customize.refresh.image');
 		 
 	//------Pan-Card-Print-------------	
 		Route::get('pancard','CardPrintController@pancard')->name('admin.card.print.pancard');

@@ -1274,6 +1274,21 @@ class CardPrintController extends Controller
         
          
         return view('admin.card_print.crop_image',compact('get_files_paths','card_id','card_type'));
+    }
+    public function customizeRefreshImage($card_id, $card_type)
+    { 
+        if($card_type == 1){
+            $update_photo_show = DB::select(DB::raw("Update `aadhar_details` set `photo_show` = `photo_o` where `id` = $card_id;"));
+
+            $get_files_paths = DB::select(DB::raw("select concat(`file_path`,  substring(`file_name`,1,14), `photo_o`) as `original_p`, concat(`file_path`,  substring(`file_name`,1,14), '-rp.jpg') as `result_p` from `aadhar_details` where `id` = $card_id;"));    
+        }else{
+            $update_photo_show = DB::select(DB::raw("Update `pan_details` set `photo_show` = `photo` where `id` = $card_id;"));
+
+            $get_files_paths = DB::select(DB::raw("select concat(`file_path`,  substring(`file_name`,1,16), '-', `photo`, '.jpg') as `original_p`, concat(`file_path`,  substring(`file_name`,1,16), '-rp.jpg') as `result_p` from `pan_details` where `id` = $card_id;"));
+        }
+        
+         
+        return view('admin.card_print.refresh_image',compact('get_files_paths','card_id','card_type'));
     } 
     public function customizeOriginal_p($image)
     { 

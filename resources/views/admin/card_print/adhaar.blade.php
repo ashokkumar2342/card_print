@@ -42,7 +42,7 @@
         </div> 
         <div class="card card-info"> 
             <div class="card-body">
-                <form action="{{ route('admin.card.print.adhaar.store') }}" method="post" enctype="multipart/form-data" class="add_form" content-refresh="Aadhaar_table" no-reset="true">
+                <form action="{{ route('admin.card.print.adhaar.store') }}" method="post" enctype="multipart/form-data" class="add_form" content-refresh="Aadhaar_table">
                     {{csrf_field()}}
                     <div class="row">
                         <div class="col-lg-6">
