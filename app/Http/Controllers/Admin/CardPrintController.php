@@ -285,14 +285,6 @@ class CardPrintController extends Controller
         exec("java -jar ".$pdfbox." ExtractImages ".$outpdf);
 
         
-        // create an image manager instance with favored driver
-        $manager = new ImageManager();
-
-        // to finally create image instances
-        // $image = $manager->make($destinationPath.$name.'-1-2.jpg');
-        // $image->brightness(25);
-        // $image->contrast(30);
-        // $image->save($destinationPath.$name.'-1_photo.jpg');    
         
         $totalfiles = glob($destinationPath . '*');
         $countFile = 0;
@@ -371,7 +363,14 @@ class CardPrintController extends Controller
             $photo = '5';
         }
         
+        // create an image manager instance with favored driver
+        $manager = new ImageManager();
 
+        // to finally create image instances
+        $image = $manager->make($destinationPath.$name.'-1-'.$photo.'.jpg');
+        $image->brightness(10);
+        $image->contrast(10);
+        $image->save($destinationPath.$name.'-1-rp.jpg');
         
         $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet_card_print`('$pan_no', $appuser->id, 3) as `result`;")); 
         if ($transaction_status[0]->result!='success'){
@@ -406,6 +405,26 @@ class CardPrintController extends Controller
     public function pancardDownload(Request $request)
     {
         
+        // $vpath = '/adhaar/1/panchkula/';
+        // $name = 'ward01';
+        // $destinationPath = storage_path('app'.$vpath);
+        // $pdfbox = base_path('pdfbox-app.jar');
+        // $pdf = $destinationPath.$name.'.pdf';
+
+        // $txtfile = $destinationPath.$name.'.txt';
+        // if(file_exists($txtfile)){
+        //     unlink($txtfile);
+        // }
+        // // exec("java -jar ".$pdfbox." ExtractText -encoding UTF-16 -ignoreBeads -rotationMagic ".$pdf);
+        // exec("java -jar ".$pdfbox." PDFSplit ".$pdf);
+        // exec("java -jar ".$pdfbox." ExtractText ".$pdf);
+        // return "ok";
+        
+        // $text = "िदलीप";
+        // return $this->process_line_text($text);
+        
+
+
         $path=Storage_path('fonts/');
         $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir']; 
@@ -438,7 +457,7 @@ class CardPrintController extends Controller
         
         $cardtype = $pan_data[0]->upload_type;
 
-        // $cardtype = 4;
+        // $cardtype = 1;
 
         $bg_file_front = '';
         $bg_file_back = '';
@@ -457,8 +476,8 @@ class CardPrintController extends Controller
             $sign_path = $files_path.$files_name."-".$pan_data[0]->sign;    
         }
         
-
-        $html = view('admin.card_print.print_pan',compact('ad_id', 'files_path', 'files_name', 'bg_files_path', 'opt_print_background', 'cardtype', 'pan_data', 'bg_file_front', 'bg_file_back', 'photo_path', 'qr_path', 'sign_path'));
+        $cardname = $pan_data[0]->name_e;
+        $html = view('admin.card_print.print_pan',compact('ad_id', 'files_path', 'files_name', 'bg_files_path', 'opt_print_background', 'cardtype', 'pan_data', 'bg_file_front', 'bg_file_back', 'photo_path', 'qr_path', 'sign_path', 'cardname'));
         $mpdf->WriteHTML($html); 
         $mpdf->Output();   
     }
@@ -538,9 +557,9 @@ class CardPrintController extends Controller
 
         // to finally create image instances
         $image = $manager->make($destinationPath.$name.$photofile);
-        $image->brightness(25);
-        $image->contrast(30);
-        $image->save($destinationPath.$name.'_photo.jpg');    
+        $image->brightness(10);
+        $image->contrast(10);
+        $image->save($destinationPath.$name.'-rp.jpg');    
         
 
 
@@ -926,6 +945,61 @@ class CardPrintController extends Controller
 
     }    
 
+    public function action_apply_process_photo($card_id, $card_type, $original_photo, $result_photo, $brightness_v, $contrast_v)
+    {
+        $this->action_process_photo($original_photo, $result_photo, $brightness_v, $contrast_v);
+
+        if($card_type == 1){
+            $update_photo_show = DB::select(DB::raw("Update `aadhar_details` set `photo_show` = '-rp.jpg' where `id` = $card_id;"));
+        }else{
+            $update_photo_show = DB::select(DB::raw("Update `pan_details` set `photo_show` = 'rp' where `id` = $card_id;"));
+        }
+        
+        return "Successfully";
+    }
+
+    public function action_process_photo($original_photo, $result_photo, $brightness_v, $contrast_v)
+    {
+        $sourcePath = storage_path('app'.$original_photo);
+        $destinationPath = storage_path('app'.$result_photo);
+        
+
+        $manager = new ImageManager();
+
+        // to finally create image instances
+        $image = $manager->make($sourcePath);
+        if($brightness_v!=0){
+            $image->brightness($brightness_v);    
+        }
+        if($contrast_v!=0){
+            $image->contrast($contrast_v);    
+        }
+        
+        if(file_exists($destinationPath)){
+            unlink($destinationPath);
+        }
+        $image->save($destinationPath);
+        return "ok";
+    }
+
+    public function action_on_show_process_photo($card_id, $card_type)
+    {
+        if($card_type == 1){
+            $update_photo_show = DB::select(DB::raw("Update `aadhar_details` set `photo_show` = `photo_o` where `id` = $card_id;"));
+
+            $get_files_paths = DB::select(DB::raw("select concat(`file_path`,  substring(`file_name`,1,14), `photo_o`) as `original_p`, concat(`file_path`,  substring(`file_name`,1,14), '-rp.jpg') as `result_p` from `aadhar_details` where `id` = $card_id;"));    
+        }else{
+            $update_photo_show = DB::select(DB::raw("Update `pan_details` set `photo_show` = `photo` where `id` = $card_id;"));
+
+            $get_files_paths = DB::select(DB::raw("select concat(`file_path`,  substring(`file_name`,1,16), '-', `photo`, '.jpg') as `original_p`, concat(`file_path`,  substring(`file_name`,1,16), '-rp.jpg') as `result_p` from `pan_details` where `id` = $card_id;"));
+        }
+        
+        return $get_files_paths;
+    }
+
+
+
+
     public function adhaarStoreDownload(Request $request)
     {
         
@@ -1051,6 +1125,8 @@ class CardPrintController extends Controller
         $FeedbackUser=FeedbackUser::where('user_id',$appuser->id)->first();
         return view('admin.card_print.feedback_form',compact('FeedbackUser','type')); 
     }
+
+
     public function adhaarPrintFeedbackStore(Request $request)
     {
         $rules=[ 
@@ -1074,6 +1150,162 @@ class CardPrintController extends Controller
         $FeedbackUser->save();
         $response=['status'=>1,'msg'=>'Send Successfully'];
             return response()->json($response);
+    }
+
+    public function process_line_text($text) {
+        // $text = "प􀀘ु ष/ MALE";
+        $text = trim($text);
+        if($text == ''){
+            return '';
+        }
+        $encodetext = json_encode($text);
+        $encodetext = substr($encodetext, 1, strlen($encodetext)-2);
+        
+        //Replace for spacial character like / etc
+        $encodetext = str_replace("\/", '/', $encodetext);
+
+        // Replace Spacial Character
+        //Not valid character
+        $encodetext = str_replace("\udbc0", '', $encodetext);
+        //Replace for kram
+        $encodetext = str_replace("\udc06", '\u0915\u094d\u0930', $encodetext);
+        // repalce for 'Aadha na in janam'
+        $encodetext = str_replace("\udc0b", '\u0928\u094d', $encodetext);
+        $encodetext = str_replace("\udc0c", '\u0928\u094d', $encodetext);
+        $encodetext = str_replace("\udc0f", '\u0928\u094d', $encodetext);
+        // replace for thithi
+        $encodetext = str_replace("\udc11", '\u093f', $encodetext);
+        //Replace for purush
+        $encodetext = str_replace("\udc13", '\u0930\u0941', $encodetext);
+        //replace for atamaj
+        $encodetext = str_replace("\udc16", '\u0924\u094d', $encodetext);
+        //replace for prem
+        $encodetext = str_replace("\udc17", '\u092a\u094d\u0930', $encodetext);
+        
+        $encodetext = str_replace("\udc1a", '\u094d\u0930', $encodetext);
+
+
+
+        $hindi_line = '';
+        $hindi_word = '';
+        $eol = 0;
+        while($eol == 0){
+            if(strlen($encodetext)<6){
+                $hindi_line = $hindi_line.$this->process_hindi_text($hindi_word).$encodetext;
+                $hindi_word = '';
+                $encodetext = '';
+            }else{
+                if(substr($encodetext, 0, 2) == "\u"){
+                    $hindi_word = $hindi_word.substr($encodetext, 0, 6);    
+                    $encodetext = substr($encodetext, 6);
+                }else{
+                    $hindi_line = $hindi_line.$this->process_hindi_text($hindi_word);
+                    $hindi_word = '';
+                    $hindi_line = $hindi_line.substr($encodetext, 0, 1);
+                    $encodetext = substr($encodetext, 1);
+                }
+            }
+            
+            if(strlen($encodetext)==0){
+                $eol = 1;
+            }
+        }
+        $hindi_line = $hindi_line.$this->process_hindi_text($hindi_word);
+        return $hindi_line;
+    }
+
+
+    public function process_hindi_text($text) 
+    {
+        // $outtext = json_encode($text);
+        // $outtext = substr($outtext, 1, strlen($outtext)-2);
+        $outtext = $text;
+        $chr_array = str_split($outtext, 6);
+        $outstring = '';
+        $pos = 0;
+        $maxchr = sizeof(array_keys($chr_array));
+        while ($pos<$maxchr){
+            $value = $chr_array[$pos];
+            $num = hexdec(substr($value, 2));
+            if ($num==0x093f){
+                if(($pos+1)<$maxchr){
+                    $value = $chr_array[$pos+1];
+                    $num = hexdec(substr($value, 2));
+                    if($num == 0x092a){
+                        $temp = $chr_array[$pos+1];
+                        $chr_array[$pos+1] = $chr_array[$pos];
+                        $chr_array[$pos] = $temp;
+                        $pos = $pos + 1;
+                        if(($pos+1)<$maxchr){
+                            $value = $chr_array[$pos+1];
+                            $num = hexdec(substr($value, 2));
+                            if($num == 0x094d){
+                                $temp = $chr_array[$pos+1];
+                                $chr_array[$pos+1] = $chr_array[$pos];
+                                $chr_array[$pos] = $temp;
+                                $pos = $pos + 1;
+                                if(($pos+1)<$maxchr){
+                                    $value = $chr_array[$pos+1];
+                                    $num = hexdec(substr($value, 2));
+                                    if($num == 0x0930){
+                                        $temp = $chr_array[$pos+1];
+                                        $chr_array[$pos+1] = $chr_array[$pos];
+                                        $chr_array[$pos] = $temp;
+                                        $pos = $pos + 1;
+                                    }
+                                }
+                            }
+                        }
+                    }else{
+                        $temp = $chr_array[$pos+1];
+                        $chr_array[$pos+1] = $chr_array[$pos];
+                        $chr_array[$pos] = $temp;
+                        $pos = $pos + 1;    
+                    }
+                }
+            }else{
+                if ($num>=0x093e && $num <=0x094d){
+                    if($pos == 0){
+                        if(($pos+1) < $maxchr){
+                            $temp = $chr_array[$pos+1];
+                            $chr_array[$pos+1] = $chr_array[$pos];
+                            $chr_array[$pos] = $temp;
+                            continue;    
+                        }
+                    }else{
+                        $value = $chr_array[$pos-1];
+                        $num = hexdec(substr($value, 2));
+                        if (($num>=0x0900 && $num <=0x0914) || ($num>=0x093e && $num <=0x094d)){
+                            if(($pos+1) < $maxchr){
+                                $temp = $chr_array[$pos+1];
+                                $chr_array[$pos+1] = $chr_array[$pos];
+                                $chr_array[$pos] = $temp;
+                                continue;
+                            }
+                        }
+                    }
+                    
+                }    
+            }
+            $pos = $pos + 1;
+        }
+        foreach ($chr_array as $key => $value) {
+            
+            $outstring = $outstring.$this->utf8(hexdec(substr($value, 2)));
+  
+        }
+        return $outstring;
+        
+        // return $this->utf8(0x0908).$this->utf8(0x0936).$this->utf8(0x093e).$this->utf8(0x0902).$this->utf8(0x0924);
+        // return json_decode("0x0908");
+    }
+
+    public function utf8($num){
+        if($num<=0x7F)       return chr($num);
+        if($num<=0x7FF)      return chr(($num>>6)+192).chr(($num&63)+128);
+        if($num<=0xFFFF)     return chr(($num>>12)+224).chr((($num>>6)&63)+128).chr(($num&63)+128);
+        if($num<=0x1FFFFF)   return chr(($num>>18)+240).chr((($num>>12)&63)+128).chr((($num>>6)&63)+128).chr(($num&63)+128);
+    return '';
     }
     
 

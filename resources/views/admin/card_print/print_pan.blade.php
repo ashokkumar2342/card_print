@@ -59,12 +59,13 @@ table, tr, td{
 							</tr>
 							<tr>
 								<td style="padding-top: 14px;padding-left: 12px">
-									<h6>{{ $pan_data[0]->name_e }}</h6>
+									<h6>{{ $cardname }}&nbsp;</h6>
+									{{-- <h6>{{ $pan_data[0]->name_e }}</h6> --}}
 								</td>
 							</tr>
 							<tr>
 								<td style="padding-top: 14px;padding-left: 12px">
-									<h6>{{ $pan_data[0]->father_name_e }}</h6>
+									<h6>{{ $pan_data[0]->father_name_e }}&nbsp;</h6>
 								</td>
 							</tr>
 							<tr>
@@ -72,7 +73,7 @@ table, tr, td{
 									<table style="width: 100%;">
 										<tr>
 											<td style="width: 50%; padding-top: 21px; padding-left: 12px">
-												<h6>{{ $pan_data[0]->dob }}</h6>
+												<h6>{{ $pan_data[0]->dob }}&nbsp;</h6>
 											</td>
 											<td style="width: 50%; padding-top: 6px;text-align: right;">
 												<img src="{{ $sign_path }}" alt="" width = "86px" height="20px">
