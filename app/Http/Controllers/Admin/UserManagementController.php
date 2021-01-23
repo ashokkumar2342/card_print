@@ -26,7 +26,7 @@ class UserManagementController extends Controller
       // }else{
       //   $districts = District::where('d_id',$user->district_id)->orderBy('Name_E', 'ASC')->get();
       // }
-    	$UserRoles=UserRole::orderBy('id','ASC')->where('id','>',$user->role_id)->get(); 
+    	$UserRoles=UserRole::orderBy('id','ASC')->where('id','>',$user->role_id)->where('id','!=',3)->get(); 
         return view('admin.UserManagement.index',compact('UserRoles', 'districts'));
     }
     public function store(Request $request)
@@ -206,7 +206,12 @@ class UserManagementController extends Controller
     public function resetPassword()
     { 
       $user=Auth::guard('admin')->user();
-      $users =  User::where('created_by',$user->id)->get(); 
+      if ($user->id<=2){
+        $users =  User::where('created_by','<=',2)->get(); 
+      }else{
+        $users =  User::where('created_by',$user->id)->get();   
+      }
+      
       return view('admin.myaccount.reset_password',compact('users'));
     }
     public function resetPasswordStore(Request $request)

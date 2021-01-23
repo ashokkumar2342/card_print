@@ -406,7 +406,8 @@ class CardPrintController extends Controller
     }
     public function pancardDownload(Request $request)
     {
-        
+        // return $request->format_style;    
+
         // $vpath = '/adhaar/1/panchkula/';
         // $name = 'ward01';
         // $destinationPath = storage_path('app'.$vpath);
@@ -896,9 +897,11 @@ class CardPrintController extends Controller
         $isaadhar = 1;
         if (strlen($text) == 12)
         {
-            for ($i=0; $i <10 ; $i++) { 
+            for ($i=0; $i <12 ; $i++) { 
                 if (ord(substr($text, $i,1))<48 || ord(substr($text, $i,1))>57){
-                    $isaadhar = 0;
+                    if (strtoupper(substr($text, $i,1)) !='X'){
+                        $isaadhar = 0;
+                    }
                 }
             }
         }else{
