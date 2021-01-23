@@ -8,7 +8,7 @@
       @includeIf('admin.include.hot_menu_top')      
     </ul> 
     <marquee width="100%" direction="left" height="100%" onmouseover="this.stop()" onmouseout="this.start()" style="background-color: #ab183d;color: yellow;font-size: 20px">
-     <b>अब आप आधार और पैन कार्ड भी प्रिंट कर सकते हैं| 20-01-2021 तक डेमो फ्री हैं|</b> 
+     <b>अब आप आधार कार्ड (AADHAAR CARD) और पैन कार्ड (PAN CARD) भी प्रिंट कर सकते हैं|</b> 
     </marquee> 
     <ul class="navbar-nav ml-auto">       
       <li class="nav-item">
