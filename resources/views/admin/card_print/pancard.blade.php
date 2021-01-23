@@ -76,6 +76,7 @@
                             <th>Pan No.</th> 
                             <th>Name</th> 
                             <th>Background</th> 
+                            <th>Format Style</th>
                             <th>Action</th>
                         </thead>
                         <tbody>
@@ -85,6 +86,33 @@
                                 <td>{{$PanDetail->name_e}}</td>
                                 <td> 
                                     <input type="checkbox" class="form-control custom" name="background" value="0" id="background{{$PanDetail->id}}" onclick="$(this).val(this.checked ? 1 : 0)"> 
+                                </td>
+                                <td class="text-nowrap"> 
+                                    <div class="form-group clearfix">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="radio" class="formatstyle" id="formatstyle1_{{$PanDetail->id}}" name="formatstyle" checked onclick="$('#format_style').val(1)">
+                                            <label for="formatstyle1_{{$PanDetail->id}}">Style 1
+                                            </label>
+                                          </div>
+                                          <div class="icheck-primary d-inline">
+                                            <input type="radio" class="formatstyle" id="formatstyle2_{{$PanDetail->id}}" name="formatstyle" onclick="$('#format_style').val(2)">
+                                            <label for="formatstyle2_{{$PanDetail->id}}">Style 2
+                                            </label>
+                                          </div>
+                                          <div class="icheck-primary d-inline">
+                                            <input type="radio" class="formatstyle" id="formatstyle3_{{$PanDetail->id}}" name="formatstyle" onclick="$('#format_style').val(3)">
+                                            <label for="formatstyle3_{{$PanDetail->id}}">
+                                              Style 3
+                                            </label>
+                                          </div>
+                                          <div class="icheck-primary d-inline">
+                                            <input type="radio" class="formatstyle" id="formatstyle4_{{$PanDetail->id}}" name="formatstyle" onclick="$('#format_style').val(4)">
+                                            <label for="formatstyle4_{{$PanDetail->id}}">
+                                              Style 4
+                                            </label>
+                                          </div>
+                                          <input type="hidden" name="format_style" id="format_style" value="1">
+                                    </div>
                                 </td> 
                                 <input type="hidden" id="r_id{{$PanDetail->id}}" value="{{$PanDetail->id}}">
                                 <td>
@@ -115,7 +143,7 @@ $(function () {
 @endphp
 function Pandownloaded(r_id) {  
       
-     $('#download_btn'+r_id).attr("href",'{{route('admin.card.print.pancard.download','')}}'+'&id='+$('#r_id'+r_id).val()+'&background='+$('#background'+r_id).val());
+     $('#download_btn'+r_id).attr("href",'{{route('admin.card.print.pancard.download','')}}'+'&id='+$('#r_id'+r_id).val()+'&background='+$('#background'+r_id).val()+'&format_style='+$('#format_style').val());
     
 }
    

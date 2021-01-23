@@ -110,4 +110,11 @@ Route::group(['middleware' => 'admin'], function() {
 		    
 		
 	});
+	Route::prefix('product')->group(function () {
+		Route::get('item-category', 'ProductController@itemCategory')->name('admin.product.item.category');
+		Route::post('item-category-store/{id?}', 'ProductController@itemCategoryStore')->name('admin.product.item.category.store');
+		Route::get('item-category-edit/{id?}', 'ProductController@itemCategoryEdit')->name('admin.product.item.category.edit');
+
+		Route::get('add-item', 'ProductController@addItem')->name('admin.product.add.item');
+	});
 });	   

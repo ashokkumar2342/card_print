@@ -20,7 +20,7 @@
                             <label class="control-label mb-10">Users</label>
                             <div class="input-group">
                                 <div class="input-group-addon"><i class="icon-lock"></i></div>
-                                <select name="user_id" class="form-control">
+                                <select name="user_id" class="form-control select2">
                                     <option selected disabled>Select User</option>
                                     @foreach ($users as $user)
                                     <option value="{{ $user->id }}">{{ $user->user_name }}--{{ $user->email }}</option> 
