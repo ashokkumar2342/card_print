@@ -100,20 +100,22 @@
                 <table class="table table-striped table-bordered" id="Item_Category">
                     <thead>
                         <tr>
-                            <th>Category Name (English)</th>
-                            <th>Category Name (Hindi)</th>
-                            <th>Category Code</th>
+                            <th>Category Name</th>
+                            <th>Item Name (English)</th>
+                            <th>Item Name (Hindi)</th>
+                            <th>Item Code</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($ItemCategorys as $ItemCategory)
+                        @foreach ($ItemLists as $ItemList)
                         <tr>
-                            <td>{{$ItemCategory->category_name_e}}</td>
-                            <td>{{$ItemCategory->category_name_l}}</td>
-                            <td>{{$ItemCategory->category_code}}</td> 
+                            <td>{{$ItemList->Category->category_name_e or ''}}</td>
+                            <td>{{$ItemList->item_name_e}}</td>
+                            <td>{{$ItemList->item_name_l}}</td>
+                            <td>{{$ItemList->item_code}}</td> 
                             <td>
-                                <a class="btn btn-info btn-xs" onclick="callPopupLarge(this,'{{ route('admin.product.item.category.edit',Crypt::encrypt($ItemCategory->id)) }}')"><i class="fa fa-edit"></i></a>
+                                <a class="btn btn-info btn-xs" onclick="callPopupLarge(this,'{{ route('admin.product.item.category.edit',Crypt::encrypt($ItemList->id)) }}')"><i class="fa fa-edit"></i></a>
                             </td>
                         </tr> 
                         @endforeach

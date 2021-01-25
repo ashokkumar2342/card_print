@@ -58,8 +58,9 @@ class ProductController extends Controller
     public function addItem($value='')
     {   
         $user=Auth::guard('admin')->user();
+        $ItemLists=ItemList::where('user_id',$user->id)->get();
         $ItemCategorys=ItemCategory::where('user_id',$user->id)->get();
-        return view('admin.product.itemlist.index',compact('ItemCategorys'));
+        return view('admin.product.itemlist.index',compact('ItemLists','ItemCategorys'));
     }
     public function addItemStore(Request $request ,$id=null)
     {     

@@ -15,7 +15,7 @@
 
         <a class="btn btn-lg" title="Sign Out" href="{{ route('admin.logout.get') }}"
                         >
-          <i class="fa fa-sign-out"></i>
+          <i class="fa fa-sign-out"><b>Logout</b></i>
         </a>
         <form id="logout-form" action="{{ route('admin.logout.get') }}" method="POST" style="display: none;">
            {{ csrf_field() }}

@@ -9,8 +9,8 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a id="district_update_btn" onclick="callPopupLarge(this,'{{ route('admin.district.update') }}')" hidden="hidden">Dis</a></li>
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard v1</li>
+              {{-- <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard v1</li> --}}
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -90,11 +90,12 @@
         <!-- Dashboard only for Admin Work Report-->
         @if ($user->role_id==1) 
         <div class="card">
-          <div class="card-header bg-success">
+          <div class="card-header bg-gray">
             <h3 class="card-title">Districtwise Progress</h3>
-          </div> 
+          </div>
+          <div class="table-responsive"> 
               <table class="table">
-                <thead>
+                <thead class="bg-gray">
                   <tr>
                     <th style="border-bottom: 2px solid #e92259;">District</th>
                     <th style="border-bottom: 2px solid #e92259;">Total User</th>
@@ -137,7 +138,8 @@
                   </tr> 
                   @endforeach
                 </tbody>
-              </table> 
+              </table>
+            </div> 
             </div>
            
         @endif
