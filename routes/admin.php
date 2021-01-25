@@ -116,5 +116,12 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::get('item-category-edit/{id?}', 'ProductController@itemCategoryEdit')->name('admin.product.item.category.edit');
 
 		Route::get('add-item', 'ProductController@addItem')->name('admin.product.add.item');
+		Route::post('add-item-store/{id?}', 'ProductController@addItemStore')->name('admin.product.add.item.store');
+
+
+		Route::get('add-item-image', 'ProductController@addItemImage')->name('admin.product.add.item.image');
+		Route::post('add-item-image-store', 'ProductController@addItemImageStore')->name('admin.product.add.item.image.store');
+		Route::get('add-item-image-show/{id}', 'ProductController@addItemImageShow')->name('admin.product.add.item.image.show');
+		Route::get('add-item-image-delete/{id}', 'ProductController@addItemImageDelete')->name('admin.product.add.item.image.delete');
 	});
 });	   
