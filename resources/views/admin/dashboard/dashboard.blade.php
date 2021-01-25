@@ -103,8 +103,8 @@
                     <th style="border-bottom: 2px solid #e92259;">Card Printed</th>
                     <th style="border-bottom: 2px solid #e92259;">Recharge Value</th>
                     <th style="border-bottom: 2px solid #e92259;">Recharge Count</th>
-                    <th style="border-bottom: 2px solid #e92259;">Today Activated Users Recharge Value</th>
-                    <th style="border-bottom: 2px solid #e92259;">Today Activated Users Recharge Count</th>
+                    <th style="border-bottom: 2px solid #e92259;">AADHAR Card</th>
+                    <th style="border-bottom: 2px solid #e92259;">PAN Card</th>
                     
                   </tr>
                 </thead>
@@ -130,8 +130,8 @@
                     <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->print_card }}</td>
                     <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->recharge }}</td>
                     <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->t_req_recharge }}</td>
-                    <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->t_act_recharge }}</td>
-                    <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->t_act__req_recharge }}</td>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->t_aadhar_card }}</td>
+                    <td style="border-bottom: 2px solid #e92259;">{{ $work_detail->t_pan_card }}</td>
                     
                     
                   </tr> 

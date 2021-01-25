@@ -27,7 +27,15 @@ class DashboardController extends Controller
 (select ifnull(sum(`rp`.`package_price`),0) from `recharge_request` `rr` inner join `recharge_package` `rp` on `rp`.`id` = `rr`.`package_id` inner join `users` `u` on `rr`.`user_id` = `u`.`id` where `rr`.`status` = 1 and `rr`.`owner_user_id` <=2 and `rr`.`transaction_date` = '$t_date' and `u`.`district_id` = `d_id`) as `recharge`,
 (select ifnull(count(`rp`.`package_price`),0) from `recharge_request` `rr` inner join `recharge_package` `rp` on `rp`.`id` = `rr`.`package_id` inner join `users` `u` on `rr`.`user_id` = `u`.`id` where `rr`.`status` = 1 and `rr`.`owner_user_id` <=2 and `rr`.`transaction_date` = '$t_date' and `u`.`district_id` = `d_id`) as `t_req_recharge`,
 (select ifnull(sum(`rp`.`package_price`),0) from `recharge_request` `rr` inner join `recharge_package` `rp` on `rp`.`id` = `rr`.`package_id` inner join `users` `u` on `rr`.`user_id` = `u`.`id` where `rr`.`status` = 1 and `rr`.`owner_user_id` <=2 and `rr`.`transaction_date` = '$t_date' and `u`.`created_on` = '$t_date' and `u`.`district_id` = `d_id`) as `t_act_recharge`,
-(select ifnull(count(`rp`.`package_price`),0) from `recharge_request` `rr` inner join `recharge_package` `rp` on `rp`.`id` = `rr`.`package_id` inner join `users` `u` on `rr`.`user_id` = `u`.`id` where `rr`.`status` = 1 and `rr`.`owner_user_id` <=2 and `rr`.`transaction_date` = '$t_date' and `u`.`created_on` = '$t_date' and `u`.`district_id` = `d_id`) as `t_act__req_recharge`
+(select ifnull(count(`rp`.`package_price`),0) from `recharge_request` `rr` inner join `recharge_package` `rp` on `rp`.`id` = `rr`.`package_id` inner join `users` `u` on `rr`.`user_id` = `u`.`id` where `rr`.`status` = 1 and `rr`.`owner_user_id` <=2 and `rr`.`transaction_date` = '$t_date' and `u`.`created_on` = '$t_date' and `u`.`district_id` = `d_id`) as `t_act__req_recharge`,
+(select count(`cpr`.`id`) 
+from `card_print_record` `cpr` 
+inner join `users` `us` on `us`.`id` = `cpr`.`user_id`
+where `cpr`.`ondate` = '$t_date' and `cpr`.`card_type` = 2 and `us`.`district_id` = `d_id`) as `t_aadhar_card`,
+(select count(`cpr`.`id`) 
+from `card_print_record` `cpr` 
+inner join `users` `us` on `us`.`id` = `cpr`.`user_id`
+where `cpr`.`ondate` = '$t_date' and `cpr`.`card_type` = 3 and `us`.`district_id` = `d_id`) as `t_pan_card`
 from `districts`
 Order By trim(`Name_E`);"));
         
@@ -40,8 +48,10 @@ Order By trim(`Name_E`);"));
             $totals[4] = $totals[4] + $work_detail->print_card;
             $totals[5] = $totals[5] + $work_detail->recharge;
             $totals[6] = $totals[6] + $work_detail->t_req_recharge;
-            $totals[7] = $totals[7] + $work_detail->t_act_recharge;
-            $totals[8] = $totals[8] + $work_detail->t_act__req_recharge;
+            // $totals[7] = $totals[7] + $work_detail->t_act_recharge;
+            // $totals[8] = $totals[8] + $work_detail->t_act__req_recharge;
+            $totals[7] = $totals[7] + $work_detail->t_aadhar_card;
+            $totals[8] = $totals[8] + $work_detail->t_pan_card;
         }
         // dd($totals[0].' / '.$totals[1]);
         return view('admin.dashboard.dashboard',compact('values','user','recharge_packages', 'work_details', 'totals'));
