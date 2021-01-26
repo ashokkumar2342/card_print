@@ -148,11 +148,11 @@
 
         @if ($user->role_id!=1) 
         <div class="card">
-          <div class="card-header bg-success">
+          <div class="card-header bg-gray">
             <h3 class="card-title">Recharge Package <small>Offer</small></h3>
           </div> 
               <table class="table">
-                <thead>
+                <thead class="bg-gray">
                   <tr>
                     <th style="border-bottom: 2px solid #e92259;">Package Name</th>
                     <th style="border-bottom: 2px solid #e92259;">Package Price</th>
