@@ -458,9 +458,9 @@ class CardPrintController extends Controller
         $bg_files_path  =\Storage_path('app/pan/backgroud_files/');
         $files_name  =substr($pan_data[0]->file_name, 0,16);
         
-        $cardtype = $pan_data[0]->upload_type;
+        // $cardtype = $pan_data[0]->upload_type;
 
-        // $cardtype = 1;
+        $cardtype = $request->format_style;
 
         $bg_file_front = '';
         $bg_file_back = '';
