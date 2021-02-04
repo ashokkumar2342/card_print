@@ -169,5 +169,12 @@ class ProductController extends Controller
         $ItemPhoto->delete();
         return redirect()->back()->with(['message'=>'Delete Successfully','class'=>'success']);
     }
+    public function order()
+    {
+        $user=Auth::guard('admin')->user();
+        $ItemLists=ItemList::where('user_id',$user->id)->get();
+        $ItemPhotos=ItemPhoto::where('user_id',$user->id)->get();
+        return view('admin.product.order.index',compact('ItemPhotos')); 
+    }
     
 }

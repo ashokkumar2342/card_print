@@ -123,5 +123,9 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::post('add-item-image-store', 'ProductController@addItemImageStore')->name('admin.product.add.item.image.store');
 		Route::get('add-item-image-show/{id}', 'ProductController@addItemImageShow')->name('admin.product.add.item.image.show');
 		Route::get('add-item-image-delete/{id}', 'ProductController@addItemImageDelete')->name('admin.product.add.item.image.delete');
+
+
+
+		Route::get('order', 'ProductController@order')->name('admin.product.order');
 	});
 });	   
