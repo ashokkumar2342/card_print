@@ -96,9 +96,9 @@ Route::get('image', function() {
       $destinationPath = storage_path('app/');
 
            // $thumb_img = Image::make($photo->getRealPath())->resize(100, 100);
-   $image = $manager->make($destinationPath.'/ak.jpg');
-   $image->brightness(25);
-   $image->contrast(30);    
+   $image = $manager->make($destinationPath.'/dk.jpg');
+   $image->brightness(40);
+   $image->contrast(25);    
    return $image->response('jpg');
 });
 

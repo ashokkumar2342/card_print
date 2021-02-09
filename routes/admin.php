@@ -128,4 +128,14 @@ Route::group(['middleware' => 'admin'], function() {
 
 		Route::get('order', 'ProductController@order')->name('admin.product.order');
 	});
+	Route::prefix('cart')->group(function () {
+	 	Route::get('product-list', 'ProductController@productList')->name('admin.product.list');
+	 	Route::get('product-image/{id}', 'ProductController@productImage')->name('admin.product.item.image.show');
+	 	Route::get('product-view/{id}', 'ProductController@productView')->name('admin.product.view');
+	 	Route::get('cart-store/{id}', 'ProductController@cartStore')->name('admin.cart.store');
+	 	Route::get('cart-count', 'ProductController@cartCount')->name('admin.cart.count');
+	 	Route::get('cart-view', 'ProductController@cartView')->name('admin.cart.view');
+	 	Route::get('cart-delete/{id}', 'ProductController@cartDelete')->name('admin.cart.delete');
+	 	Route::get('cart-update/{id}/{type}', 'ProductController@cartUpdate')->name('admin.cart.update');
+	});
 });	   

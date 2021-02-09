@@ -12,12 +12,15 @@
      {{-- <b><i class="fa fa-flag text-primary"></i> SPECIAL REPUBLIC DAY OFFER! RECHARGE 1000₹ GET 1100₹ <i class="fa fa-flag text-primary"></i></b> --}} 
     </marquee>
 
-    <ul class="navbar-nav ml-auto">       
+    <ul class="navbar-nav ml-auto"> 
+    <li class="nav-item dropdown" id="cart_view">
+       
+    </li>    
       <li class="nav-item">
 
-        <a class="btn btn-lg" title="Sign Out" href="{{ route('admin.logout.get') }}"
-                        >
-          <i class="fa fa-sign-out"><b>Logout</b></i>
+        <a title="Sign Out" href="{{ route('admin.logout.get') }}" class="nav-link">
+          <i class="fa fa-sign-out"></i>
+           
         </a>
         <form id="logout-form" action="{{ route('admin.logout.get') }}" method="POST" style="display: none;">
            {{ csrf_field() }}

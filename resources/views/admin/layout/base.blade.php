@@ -190,5 +190,12 @@
     
        
     </script> 
+    <script type="text/javascript">
+      viewCart();
+      function viewCart(){
+       callAjax(this,'{{ route('admin.cart.count') }}','cart_view') 
+      }
+      
+    </script>
 </body>
 </html>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Model\Cart;
 use App\Model\ItemCategory;
 use App\Model\ItemList;
 use App\Model\ItemPhoto;
@@ -109,7 +110,7 @@ class ProductController extends Controller
     {   
         $rules=[ 
         'item_name' => 'required',
-        'item_image' => 'required|mimes:jpeg,png,jpg', 
+        'item_image' => 'required', 
         ]; 
         $validator = Validator::make($request->all(),$rules);
         if ($validator->fails()) {
@@ -175,6 +176,96 @@ class ProductController extends Controller
         $ItemLists=ItemList::where('user_id',$user->id)->get();
         $ItemPhotos=ItemPhoto::where('user_id',$user->id)->get();
         return view('admin.product.order.index',compact('ItemPhotos')); 
+    }
+    public function productList()
+    { 
+        $user=Auth::guard('admin')->user();
+        $ItemLists=ItemList::where('status',1)->get(); 
+        return view('admin.product.cart.product_list',compact('ItemLists')); 
+    }
+    public function productImage($id)
+    { 
+         $id=Crypt::decrypt($id);
+         $ItemPhoto =ItemPhoto::where('item_id',$id)->first();
+         $storagePath = storage_path('app'.$ItemPhoto->file_path.'/'.$ItemPhoto->file_name); 
+         $mimeType = mime_content_type($storagePath); 
+         if( ! \File::exists($storagePath)){ 
+           return view('error.home');
+         }
+         $headers = array(
+           'Content-Type' => $mimeType,
+           'Content-Disposition' => 'inline; '
+         );            
+         return Response::make(file_get_contents($storagePath), 200, $headers);   
+    }
+    public function productView($id)
+    {   
+        $id=Crypt::decrypt($id); 
+        $ItemList=ItemList::find($id);
+        $ItemPhotos=ItemPhoto::where('item_id',$id)->get();
+        return view('admin.product.cart.product_view',compact('ItemList','ItemPhotos')); 
+    } 
+    public function cartStore($id)
+    {   
+        $id=Crypt::decrypt($id); 
+        $user =Auth::guard('admin')->user();
+        $ItemList=ItemList::find($id);
+        $carts=Cart::where('item_id',$id)->first();
+        if (is_null($carts)) {
+             $cart=new Cart();
+             $cart->user_id =$user->id;
+             $cart->item_id =$ItemList->id; 
+             $cart->qty = 1;
+             $cart->amt =$ItemList->net_price;
+             $cart->save();   
+        }else{
+            $cart=Cart::where('item_id',$id)->first();
+            $cart->user_id =$user->id;
+            $cart->item_id =$ItemList->id; 
+            $cart->qty = $cart->qty + 1;
+            $cart->amt =$ItemList->net_price;
+            $cart->save();
+        }
+       
+        $response=['status'=>1,'msg'=>'Cart Add Successfully'];
+        return response()->json($response);  
+    }
+    public function cartView()
+    {   
+        $user_id =Auth::guard('admin')->user()->id; 
+        $carts=Cart::where('user_id',$user_id)->get(); 
+        return view('admin.product.cart.cart',compact('carts')); 
+    }
+    public function cartCount()
+    {   
+        $user_id =Auth::guard('admin')->user()->id; 
+        $carts=Cart::where('user_id',$user_id)->get(); 
+        return view('admin.product.cart.count',compact('carts')); 
+    }
+    public function cartDelete($id)
+    {   
+        $id=Crypt::decrypt($id);
+        
+        $cart=Cart::find($id); 
+        if (!is_null($cart)) {
+            $cart->delete(); 
+        }
+        
+        return redirect()->back()->with(['message'=>"Item Remove Successfully",'class'=>'success']); 
+    }
+    public function cartUpdate($id,$type)
+    {   
+        $id=Crypt::decrypt($id);
+        $type=Crypt::decrypt($type);
+        $cart=Cart::find($id);
+        if ($type==1) {
+            $cart->qty = $cart->qty + 1;
+        }else{
+           $cart->qty = $cart->qty - 1; 
+        } 
+        $cart->save();  
+        
+        return redirect()->route('admin.cart.view')->with(['message'=>"Item Update Successfully",'class'=>'success']); 
     }
     
 }
