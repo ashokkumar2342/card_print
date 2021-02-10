@@ -460,7 +460,7 @@
                             </li>
                           </ul>
 
-                          <button type="button" class="btn btn-primary btn-block">Go To Checkout</button>
+                          <a  class="btn btn-primary btn-block" href="{{ route('admin.cart.checkout') }}">Go To Checkout</a>
 
                         </div>
                       </div>

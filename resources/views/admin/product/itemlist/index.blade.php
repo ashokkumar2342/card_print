@@ -45,40 +45,40 @@
                             <input type="text" name="item_code" class="form-control" maxlength="5"> 
                         </div>                               
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
                         <div class="form-group">
                             <label>Gross Price</label>
                             <input type="text" name="gross_price" class="form-control" maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57'> 
                         </div>                               
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
                         <div class="form-group">
                             <label>Net Price</label>
                             <input type="text" name="net_price" class="form-control" maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57'> 
                         </div>                               
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
                         <div class="form-group">
                             <label>Discount Type</label>
                             <select name="discount_type" class="form-control">
-                                 <option value="">discount_type 1</option>
-                                 <option value="">discount_type 2</option> 
+                                 <option value="1">Percentage</option>
+                                 <option value="2">Fix</option> 
                              </select> 
                         </div>                               
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
                         <div class="form-group">
                             <label>Discount Percentage</label>
                             <input type="text" name="discount_percentage" class="form-control" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
                         </div>                               
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
                         <div class="form-group">
                             <label>Discount Fix</label>
                             <input type="text" name="discount_fix" class="form-control" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
                         </div>                               
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
                         <div class="form-group">
                             <label>Stock Quantity</label>
                             <input type="text" name="stock_qty" class="form-control" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
@@ -88,6 +88,12 @@
                         <div class="form-group">
                             <label>Remarks</label>
                             <textarea name="remarks" class="form-control"></textarea>
+                        </div>                               
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="description" class="form-control"></textarea>
                         </div>                               
                     </div>
                 </div>   

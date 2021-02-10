@@ -122,11 +122,8 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::get('add-item-image', 'ProductController@addItemImage')->name('admin.product.add.item.image');
 		Route::post('add-item-image-store', 'ProductController@addItemImageStore')->name('admin.product.add.item.image.store');
 		Route::get('add-item-image-show/{id}', 'ProductController@addItemImageShow')->name('admin.product.add.item.image.show');
-		Route::get('add-item-image-delete/{id}', 'ProductController@addItemImageDelete')->name('admin.product.add.item.image.delete');
-
-
-
-		Route::get('order', 'ProductController@order')->name('admin.product.order');
+		Route::get('add-item-image-delete/{id}', 'ProductController@addItemImageDelete')->name('admin.product.add.item.image.delete'); 
+		
 	});
 	Route::prefix('cart')->group(function () {
 	 	Route::get('product-list', 'ProductController@productList')->name('admin.product.list');
@@ -137,5 +134,7 @@ Route::group(['middleware' => 'admin'], function() {
 	 	Route::get('cart-view', 'ProductController@cartView')->name('admin.cart.view');
 	 	Route::get('cart-delete/{id}', 'ProductController@cartDelete')->name('admin.cart.delete');
 	 	Route::get('cart-update/{id}/{type}', 'ProductController@cartUpdate')->name('admin.cart.update');
+	 	Route::get('checkout', 'ProductController@checkout')->name('admin.cart.checkout');
+	 	Route::post('checkout-store', 'ProductController@checkoutStore')->name('admin.cart.checkout.store');
 	});
 });	   
