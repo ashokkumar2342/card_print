@@ -7,6 +7,7 @@ use App\Model\Cart;
 use App\Model\ItemCategory;
 use App\Model\ItemList;
 use App\Model\ItemPhoto;
+use App\Model\OrderAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -94,6 +95,7 @@ class ProductController extends Controller
         $ItemList->discount_fix = $request->discount_fix;
         $ItemList->stock_qty = $request->stock_qty;
         $ItemList->remarks = $request->remarks;
+        $ItemList->description = $request->description;
         $ItemList->status =1;
         $ItemList->save(); 
         $response=['status'=>1,'msg'=>'Submit Successfully'];
@@ -169,14 +171,7 @@ class ProductController extends Controller
         }
         $ItemPhoto->delete();
         return redirect()->back()->with(['message'=>'Delete Successfully','class'=>'success']);
-    }
-    public function order()
-    {
-        $user=Auth::guard('admin')->user();
-        $ItemLists=ItemList::where('user_id',$user->id)->get();
-        $ItemPhotos=ItemPhoto::where('user_id',$user->id)->get();
-        return view('admin.product.order.index',compact('ItemPhotos')); 
-    }
+    } 
     public function productList()
     { 
         $user=Auth::guard('admin')->user();
@@ -266,6 +261,39 @@ class ProductController extends Controller
         $cart->save();  
         
         return redirect()->route('admin.cart.view')->with(['message'=>"Item Update Successfully",'class'=>'success']); 
+    }
+    public function checkout(Request $request)
+    {
+       return view('admin.product.cart.checkout',compact('carts'));  
+    }
+    public function checkoutStore(Request $request)
+    {    
+        $rules=[ 
+        'mobile_no' => 'required',
+        'address' => 'required', 
+        'city' => 'required', 
+        'state' => 'required', 
+        'pincode' => 'required', 
+        ]; 
+        $validator = Validator::make($request->all(),$rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $response=array();
+            $response["status"]=0;
+            $response["msg"]=$errors[0];
+            return response()->json($response);// response as json
+        }
+        $user=Auth::guard('admin')->user();
+        $OrderAddress= OrderAddress::firstOrNew(['user_id'=>$user->id]);  
+        $OrderAddress->user_id=$user->id;  
+        $OrderAddress->mobile_no=$request->mobile_no;  
+        $OrderAddress->address_line1=$request->address;  
+        $OrderAddress->city=$request->city;  
+        $OrderAddress->state=$request->state;  
+        $OrderAddress->pin_code=$request->pincode;  
+        $OrderAddress->save(); 
+        $response=['status'=>1,'msg'=>'Successfully'];
+            return response()->json($response); 
     }
     
 }
