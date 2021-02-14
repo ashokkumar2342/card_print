@@ -357,7 +357,7 @@
 	                   		<div class="card product_item">
 	                               <div class="body">
 	                                   <div class="cp_img">
-	                                   	<a target="_blank" href="{{ route('admin.product.view',Crypt::encrypt($ItemList->id)) }}">
+	                                   	<a  href="{{ route('admin.product.view',Crypt::encrypt($ItemList->id)) }}">
 	                                       <img src="{{ route('admin.product.item.image.show',Crypt::encrypt($ItemList->id)) }}" alt="Product" class="img-fluid" style="height:190px;width:190px;"></a>
 	                                       {{-- <div class="hover">
 	                                           <a href="javascript:void(0);" class="btn btn-primary btn-sm waves-effect"><i class="zmdi zmdi-plus"></i></a>
@@ -365,7 +365,7 @@
 	                                       </div> --}}
 	                                   </div>
 	                                   <div class="product_details">
-	                                       <h5><a target="_blank" href="{{ route('admin.product.view',Crypt::encrypt($ItemList->id)) }}">{{ $ItemList->item_name_e }}</a></h5>
+	                                       <h5><a  href="{{ route('admin.product.view',Crypt::encrypt($ItemList->id)) }}">{{ $ItemList->item_name_e }}</a></h5>
 	                                       <ul class="product_price list-unstyled">
 	                                           <li class="old_price"><strike>₹{{ $ItemList->gross_price }}</strike></li>
 	                                           <li class="new_price">₹{{ $ItemList->net_price }}</li>

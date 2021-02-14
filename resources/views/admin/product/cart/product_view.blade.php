@@ -372,10 +372,11 @@
 
                       <div class="bg-gray py-2 px-3 mt-4">
                         <h2 class="mb-0">
-                          ₹{{ $ItemList->gross_price }}
+                          ₹{{ $ItemList->net_price }}
                         </h2>
                         <h4 class="mt-0">
-                          <small> ₹{{ $ItemList->net_price }} </small>
+                        	
+                          <small> <strike>₹{{ $ItemList->gross_price }}</strike> </small>
                         </h4>
                       </div>
 
