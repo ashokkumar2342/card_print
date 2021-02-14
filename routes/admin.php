@@ -117,6 +117,7 @@ Route::group(['middleware' => 'admin'], function() {
 
 		Route::get('add-item', 'ProductController@addItem')->name('admin.product.add.item');
 		Route::post('add-item-store/{id?}', 'ProductController@addItemStore')->name('admin.product.add.item.store');
+		Route::get('add-item-edit/{id?}', 'ProductController@addItemEdit')->name('admin.product.add.item.edit');
 
 
 		Route::get('add-item-image', 'ProductController@addItemImage')->name('admin.product.add.item.image');

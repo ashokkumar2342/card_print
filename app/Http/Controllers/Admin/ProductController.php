@@ -101,6 +101,14 @@ class ProductController extends Controller
         $response=['status'=>1,'msg'=>'Submit Successfully'];
             return response()->json($response);
     }
+    public function addItemEdit($id)
+    { 
+        $id=Crypt::decrypt($id);
+        $user=Auth::guard('admin')->user();
+        $ItemCategorys=ItemCategory::where('user_id',$user->id)->get();
+        $ItemList=ItemList::find($id);
+        return view('admin.product.itemlist.edit',compact('ItemCategorys','ItemList'));  
+    }
     public function addItemImage($value='')
     {   
         $user=Auth::guard('admin')->user();

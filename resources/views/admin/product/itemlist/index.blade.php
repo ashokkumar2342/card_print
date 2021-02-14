@@ -110,6 +110,9 @@
                             <th>Item Name (English)</th>
                             <th>Item Name (Hindi)</th>
                             <th>Item Code</th>
+                            <th>Gross Price</th>
+                            <th>Net Price</th>
+                            <th>Discount Type</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -120,8 +123,11 @@
                             <td>{{$ItemList->item_name_e}}</td>
                             <td>{{$ItemList->item_name_l}}</td>
                             <td>{{$ItemList->item_code}}</td> 
+                            <td>{{$ItemList->gross_price}}</td> 
+                            <td>{{$ItemList->net_price}}</td> 
+                            <td>{{$ItemList->discount_type==1?'Percentage':'Fix'}}</td> 
                             <td>
-                                <a class="btn btn-info btn-xs" onclick="callPopupLarge(this,'{{ route('admin.product.item.category.edit',Crypt::encrypt($ItemList->id)) }}')"><i class="fa fa-edit"></i></a>
+                                <a class="btn btn-info btn-xs" onclick="callPopupLarge(this,'{{ route('admin.product.add.item.edit',Crypt::encrypt($ItemList->id)) }}')"><i class="fa fa-edit"></i></a>
                             </td>
                         </tr> 
                         @endforeach
