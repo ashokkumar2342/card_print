@@ -469,7 +469,7 @@ class UserManagementController extends Controller
       ini_set("pcre.backtrack_limit", "5000000");
         $from_date = date('Y-m-d H:i:s',strtotime($from_date));
         $to_date =  date('Y-m-d H:i:s',strtotime($to_date));
-        $RechargePackages=RechargeRequest::whereBetween('transaction_date',[$from_date,$to_date])->where('status',1)->select('package_id')->get();
+        $RechargePackages=RechargeRequest::whereBetween('transaction_date',[$from_date,$to_date])->where('status',1)->where('owner_user_id',0)->select('package_id')->get();
         $total =0;
         foreach ($RechargePackages as $RechargePackages) {
           $total += $RechargePackages->RechargePackage->package_price;
