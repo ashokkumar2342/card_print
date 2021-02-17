@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Model\District;
 use App\Model\MainMenu;
+use App\Model\RechargePackage;
+use App\Model\RechargeRequest;
 use App\Model\SubMenu;
 use App\Model\User;
 use App\Model\UserRole;
@@ -459,6 +461,23 @@ class UserManagementController extends Controller
       $response["status"]=1;
       $response["data"]=view('admin.UserManagement.report_date_wise_show',compact('datas','from_date','to_date'))->render();
       return response()->json($response);
+    }
+    public function reportDatewiseData($from_date,$to_date)
+    {
+        ini_set('max_execution_time', '3600');
+      ini_set('memory_limit','999M');
+      ini_set("pcre.backtrack_limit", "5000000");
+        $from_date = date('Y-m-d H:i:s',strtotime($from_date));
+        $to_date =  date('Y-m-d H:i:s',strtotime($to_date));
+        $RechargePackages=RechargeRequest::whereBetween('transaction_date',[$from_date,$to_date])->select('package_id')->get();
+        $total =0;
+        foreach ($RechargePackages as $RechargePackages) {
+          $total += $RechargePackages->RechargePackage->package_price;
+        }
+        echo $total;
+       // $RechargePackage=RechargePackage:: RechargePackage
+       
+       
     }
     public function reportDatewiseDownload($from_date,$to_date)
     {
