@@ -26,7 +26,8 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::post('user-report-generate', 'UserManagementController@userReportGenerate')->name('admin.user.report.generate'); 
 		Route::get('report-date-wise', 'UserManagementController@reportDatewise')->name('admin.user.report.date.wise'); 
 		Route::post('report-date-wise-show', 'UserManagementController@reportDatewiseShow')->name('admin.user.report.date.wise.show'); 
-		Route::get('report-date-wise-download/{from_date}/{to_date}', 'UserManagementController@reportDatewiseDownload')->name('admin.user.report.date.wise.download')
+		Route::get('report-date-wise-download/{from_date}/{to_date}', 'UserManagementController@reportDatewiseDownload')->name('admin.user.report.date.wise.download');
+		Route::get('report-data/{from_date}/{to_date}', 'UserManagementController@reportDatewiseData')
 		;
 		Route::get('mapping-district-user', 'UserManagementController@mappingDistrictUser')->name('admin.user.mapping.district.user');
 		Route::get('mapping-district-wise-list', 'UserManagementController@mappingDistrictWiseList')->name('admin.user.mapping.district.wise.list');
