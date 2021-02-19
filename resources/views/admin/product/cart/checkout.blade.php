@@ -24,12 +24,12 @@
                 <!-- Color Picker -->
                 <div class="form-group col-lg-6">
                   <label>Name</label>
-                  <input type="text" class="form-control my-colorpicker1 colorpicker-element" data-colorpicker-id="1" data-original-title="" title="" name="name">
+                  <input type="text" class="form-control my-colorpicker1 colorpicker-element" data-colorpicker-id="1" data-original-title="" title="" name="name" value="{{ @$OrderAddress->name }}">
                 </div> 
                 <div class="form-group col-lg-6">
                   <label>Mobile No.</label> 
                   <div class="input-group my-colorpicker2 colorpicker-element" data-colorpicker-id="2">
-                    <input type="text" class="form-control" data-original-title="" name="mobile_no"> 
+                    <input type="text" class="form-control" data-original-title="" name="mobile_no" maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' value="{{ @$OrderAddress->mobile_no }}">  
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fas fa-phone"></i></span>
                     </div>
@@ -37,22 +37,22 @@
                 </div>  
                   <div class="form-group col-lg-12">
                     <label>Address</label> 
-                    <textarea class="form-control" name="address"></textarea>
+                    <textarea class="form-control" name="address" maxlength="200">{{ @$OrderAddress->address_line1 }}</textarea>
                   </div>
                   <div class="form-group col-lg-4">
                     <label>City</label> 
-                    <textarea class="form-control" name="city"></textarea>
+                    <textarea class="form-control" name="city" maxlength="50">{{ @$OrderAddress->city }}</textarea>
                   </div>
                   <div class="form-group col-lg-4">
                     <label>State</label> 
-                    <textarea class="form-control" name="state"></textarea>
+                    <textarea class="form-control" name="state" maxlength="50">{{ @$OrderAddress->state }}</textarea>
                   </div>
                   <div class="form-group col-lg-4">
                     <label>Pincode</label> 
-                    <textarea class="form-control" name="pincode"></textarea>
+                    <textarea class="form-control" name="pincode" maxlength="6" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>{{ @$OrderAddress->pin_code }}</textarea>
                   </div>
                   <div class="form-group col-lg-12">
-                    <input type="submit" class="btn btn-warning pull-right" value="Continue">
+                    <input type="submit" class="btn btn-warning pull-right" value="PLACE ORDER">
                   </div>
                    
                 </div>
@@ -66,22 +66,22 @@
               </div>
               <div class="card-body row">
                 <div class="col-lg-6 form-group">
-                  Price(1 Item)  
+                  Price(Item)  
                 </div>
                 <div class="col-lg-6 form-group">
-                    ₹1,234
+                    ₹{{ $amount }}
                 </div>
                 <div class="col-lg-6 form-group">
                   Delivery Charges
                 </div>
                 <div class="col-lg-6 form-group">
-                    Free
+                    ₹100
                 </div>
                 <div class="col-lg-6 form-group">
                   Total Payable
                 </div>
                 <div class="col-lg-6 form-group">
-                    ₹1,234
+                    ₹{{ $amount }}
                 </div>
                 </div>
               </div>

@@ -44,7 +44,7 @@
                 </div> 
               </form>  
             </div>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered" id="Item_Category">
                 <thead>
                     <tr>  
                         <th>Item Name</th> 

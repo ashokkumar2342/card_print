@@ -135,7 +135,7 @@ Route::group(['middleware' => 'admin'], function() {
 	 	Route::get('cart-view', 'ProductController@cartView')->name('admin.cart.view');
 	 	Route::get('cart-delete/{id}', 'ProductController@cartDelete')->name('admin.cart.delete');
 	 	Route::get('cart-update/{id}/{type}', 'ProductController@cartUpdate')->name('admin.cart.update');
-	 	Route::get('checkout', 'ProductController@checkout')->name('admin.cart.checkout');
+	 	Route::get('checkout/{amount}', 'ProductController@checkout')->name('admin.cart.checkout');
 	 	Route::post('checkout-store', 'ProductController@checkoutStore')->name('admin.cart.checkout.store');
 	});
 });	   

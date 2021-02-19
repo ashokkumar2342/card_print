@@ -374,7 +374,7 @@
                                    <a href="#!">
                                      <div class="mask">
                                        <img class="img-fluid w-100"
-                                         src="{{ route('admin.product.item.image.show',Crypt::encrypt($cart->items->id)) }}" style="width: 170px;height: 200px">
+                                         src="{{ route('admin.product.item.image.show',Crypt::encrypt(@$cart->items->id)) }}" style="width: 170px;height: 200px">
                                        <div class="mask rgba-black-slight"></div>
                                      </div>
                                    </a>
@@ -460,7 +460,7 @@
                             </li>
                           </ul>
 
-                          <a  class="btn btn-primary btn-block" href="{{ route('admin.cart.checkout') }}">Go To Checkout</a>
+                          <a  class="btn btn-primary btn-block" href="{{ route('admin.cart.checkout',Crypt::encrypt($amount)) }}">Go To Checkout</a>
 
                         </div>
                       </div>

@@ -270,9 +270,12 @@ class ProductController extends Controller
         
         return redirect()->route('admin.cart.view')->with(['message'=>"Item Update Successfully",'class'=>'success']); 
     }
-    public function checkout(Request $request)
-    {
-       return view('admin.product.cart.checkout',compact('carts'));  
+    public function checkout(Request $request,$amount)
+    {   
+        $user=Auth::guard('admin')->user(); 
+        $amount=Crypt::decrypt($amount);
+        $OrderAddress= OrderAddress::where('user_id',$user->id)->first(); 
+        return view('admin.product.cart.checkout',compact('amount','OrderAddress'));  
     }
     public function checkoutStore(Request $request)
     {    
