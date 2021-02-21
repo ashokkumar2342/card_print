@@ -80,7 +80,10 @@
 <!-- /.login-box -->
 
 <!-- jQuery --> 
-<script src="{{ asset('admin_asset/plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('admin_asset/plugins/jQuery/jquery.min.js') }}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="{{ asset('admin_asset/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+
 
 <!-- Bootstrap 4 -->
 <script src="{{ asset('admin_asset/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
