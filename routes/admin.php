@@ -115,10 +115,13 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::get('item-category', 'ProductController@itemCategory')->name('admin.product.item.category');
 		Route::post('item-category-store/{id?}', 'ProductController@itemCategoryStore')->name('admin.product.item.category.store');
 		Route::get('item-category-edit/{id?}', 'ProductController@itemCategoryEdit')->name('admin.product.item.category.edit');
+		Route::get('item-category-status/{id}', 'ProductController@itemCategoryStatus')->name('admin.product.item.category.status');
+		Route::get('item-category-delete/{id}', 'ProductController@itemCategoryDelete')->name('admin.product.item.category.delete');
 
 		Route::get('add-item', 'ProductController@addItem')->name('admin.product.add.item');
 		Route::post('add-item-store/{id?}', 'ProductController@addItemStore')->name('admin.product.add.item.store');
 		Route::get('add-item-edit/{id?}', 'ProductController@addItemEdit')->name('admin.product.add.item.edit');
+		Route::get('add-item-status/{id}', 'ProductController@addItemStatus')->name('admin.product.add.item.status');
 
 
 		Route::get('add-item-image', 'ProductController@addItemImage')->name('admin.product.add.item.image');

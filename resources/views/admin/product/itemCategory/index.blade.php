@@ -52,12 +52,21 @@
                     </thead>
                     <tbody>
                         @foreach ($ItemCategorys as $ItemCategory)
+                        @php
+                            if($ItemCategory->status==1){
+                              $color='success';  
+                            }else{
+                              $color='default';  
+                            }
+                        @endphp
                         <tr>
                             <td>{{$ItemCategory->category_name_e}}</td>
                             <td>{{$ItemCategory->category_name_l}}</td>
                             <td>{{$ItemCategory->category_code}}</td> 
                             <td>
                                 <a class="btn btn-info btn-xs" onclick="callPopupLarge(this,'{{ route('admin.product.item.category.edit',Crypt::encrypt($ItemCategory->id)) }}')"><i class="fa fa-edit"></i></a>
+                                <a href="{{ route('admin.product.item.category.delete',Crypt::encrypt($ItemCategory->id)) }}" class="btn btn-danger btn-xs" title=""><i class="fa fa-trash"></i></a>
+                                <a href="{{ route('admin.product.item.category.status',Crypt::encrypt($ItemCategory->id)) }}" class="btn btn-{{ $color }} btn-xs" title="">Active</a>
                             </td>
                         </tr> 
                         @endforeach

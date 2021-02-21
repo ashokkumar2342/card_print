@@ -118,6 +118,13 @@
                     </thead>
                     <tbody>
                         @foreach ($ItemLists as $ItemList)
+                        @php
+                            if($ItemList->status==1){
+                              $color='success';  
+                            }else{
+                              $color='default';  
+                            }
+                        @endphp
                         <tr>
                             <td>{{$ItemList->Category->category_name_e or ''}}</td>
                             <td>{{$ItemList->item_name_e}}</td>
@@ -128,6 +135,7 @@
                             <td>{{$ItemList->discount_type==1?'Percentage':'Fix'}}</td> 
                             <td>
                                 <a class="btn btn-info btn-xs" onclick="callPopupLarge(this,'{{ route('admin.product.add.item.edit',Crypt::encrypt($ItemList->id)) }}')"><i class="fa fa-edit"></i></a>
+                                <a href="{{ route('admin.product.add.item.status',Crypt::encrypt($ItemList->id)) }}" class="btn btn-{{ $color }} btn-xs" title="">Active</a>
                             </td>
                         </tr> 
                         @endforeach

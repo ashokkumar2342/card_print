@@ -57,11 +57,34 @@ class ProductController extends Controller
         $ItemCategory=ItemCategory::find(Crypt::decrypt($id));
         return view('admin.product.itemCategory.edit',compact('ItemCategory')); 
     }
+    public function itemCategoryStatus($id)
+    {
+        $id=Crypt::decrypt($id); 
+        $ItemCategory=ItemCategory::find($id);
+        if ($ItemCategory->status==1) {
+            $ItemCategory->status=0;    
+            
+        }else{
+            $ItemCategory->status=1;
+        }
+        $ItemCategory->save();
+        return redirect()->back()->with(['message'=>'Status Change Successfully','class'=>'success']); 
+
+    }
+    public function itemCategoryDelete($id)
+    {
+        $id=Crypt::decrypt($id); 
+        $ItemCategory=ItemCategory::find($id);
+       
+        $ItemCategory->delete();
+        return redirect()->back()->with(['message'=>'Delete Successfully','class'=>'success']); 
+
+    }
     public function addItem($value='')
     {   
         $user=Auth::guard('admin')->user();
         $ItemLists=ItemList::where('user_id',$user->id)->get();
-        $ItemCategorys=ItemCategory::where('user_id',$user->id)->get();
+        $ItemCategorys=ItemCategory::where('user_id',$user->id)->where('status',1)->get();
         return view('admin.product.itemlist.index',compact('ItemLists','ItemCategorys'));
     }
     public function addItemStore(Request $request ,$id=null)
@@ -108,6 +131,20 @@ class ProductController extends Controller
         $ItemCategorys=ItemCategory::where('user_id',$user->id)->get();
         $ItemList=ItemList::find($id);
         return view('admin.product.itemlist.edit',compact('ItemCategorys','ItemList'));  
+    }
+    public function addItemStatus($id)
+    {
+        $id=Crypt::decrypt($id); 
+        $ItemList=ItemList::find($id);
+        if ($ItemList->status==1) {
+            $ItemList->status=0;    
+            
+        }else{
+            $ItemList->status=1;
+        }
+        $ItemList->save();
+        return redirect()->back()->with(['message'=>'Status Change Successfully','class'=>'success']); 
+
     }
     public function addItemImage($value='')
     {   
