@@ -346,5 +346,11 @@ class ProductController extends Controller
         $response=['status'=>1,'msg'=>'Successfully'];
             return response()->json($response); 
     }
+
+
+    public function orderList($value='')
+    {
+        return view('admin.product.order.list',compact('amount','OrderAddress'));    
+    }
     
 }

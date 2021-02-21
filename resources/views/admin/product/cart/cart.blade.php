@@ -460,7 +460,7 @@
                             </li>
                           </ul>
 
-                          <a  class="btn btn-primary btn-block" href="{{ route('admin.cart.checkout',Crypt::encrypt($amount)) }}">Go To Checkout</a>
+                          <a  class="btn btn-primary btn-block" href="{{ route('admin.cart.checkout') }}">Go To Checkout</a>
 
                         </div>
                       </div>
