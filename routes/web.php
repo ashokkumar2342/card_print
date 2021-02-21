@@ -15,10 +15,7 @@ Route::get('/func', function () {
     return MyFuncs::full_name("John","Doe");
 });
  
-Route::get('/', function () {
-    return redirect()->route('admin.login');
- 
-});
+Route::get('/', 'Admin\Auth\LoginController@showLoginForm')->name('admin.login');
 Route::get('try-demo', 'TryDemoController@index')->name('try.demo');
 Route::post('try-demo', 'TryDemoController@store')->name('try.demo.store');
 Route::get('barcode', 'BarcodeController@barcodeShow');
@@ -96,7 +93,31 @@ Route::get('image', function() {
       $destinationPath = storage_path('app/');
 
            // $thumb_img = Image::make($photo->getRealPath())->resize(100, 100);
-   $image = $manager->make($destinationPath.'/dk.jpg');
+   $image = $manager->make($destinationPath.'/2_1.jpg');
+   $image->brightness(40);
+   $image->contrast(25);    
+   return $image->response('jpg');
+});
+Route::get('image', function() { 
+  $destinationPath = storage_path('app/');
+  $pdfbox = base_path('pdfbox-app.jar');
+  $pdf = $destinationPath.'secure.pdf';
+  exec("java -jar ".$pdfbox." Decrypt -password ASHO1991 ".$pdf);
+  exec("java -jar ".$pdfbox." ExtractText ".$pdf);
+  
+  // exec("java -jar pdfbox-app.jar ExtractImages ak.pdf");
+  exec("java -jar pdfbox-app.jar ExtractText ak.pdf");
+  // exec("java -jar pdfbox-app.jar PDFToImage -imageType png -dpi 300 -cropbox 0 0 290 260 ak.pdf");
+  // exec("java -jar pdfbox-app.jar PDFToImage -imageType png -dpi 300 -cropbox 290 260 0 0 secure3.pdf");
+
+   // create an image manager instance with favored driver
+   $manager = new Intervention\Image\ImageManager();
+
+   // to finally create image instances
+      $destinationPath = storage_path('app/');
+
+           // $thumb_img = Image::make($photo->getRealPath())->resize(100, 100);
+   $image = $manager->make($destinationPath.'/2_1.jpg');
    $image->brightness(40);
    $image->contrast(25);    
    return $image->response('jpg');

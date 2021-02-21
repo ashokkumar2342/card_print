@@ -99,9 +99,8 @@ $('#refresh').click(function(){
      }
   });
 });
-</script>
+</script> 
 <script data-ad-client="ca-pub-6986129570235357" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-</body>
 
 
 </html>
