@@ -52,7 +52,7 @@
         <p class="text-danger">{{ $errors->first('password') }}</p>
         <div class="captcha">
          <span>{!! captcha_img('flat') !!}</span>
-         <button type="button" class="btn btn-warning" id="refresh"><i class="fas fa-1x fa-sync-alt" ></i></button>
+         <button type="button" class="btn btn-warning" onclick="refresh()"><i class="fas fa-1x fa-sync-alt" ></i></button>
        </div>
        <div class="input-group mb-3" style="margin-top: 15px">
           <input id="captcha" type="text" class="form-control" placeholder="Enter Captcha" name="captcha"> 
@@ -90,15 +90,16 @@
 <script src="{{ asset('admin_asset/dist/js/toastr.min.js') }}"></script>
 @include('admin.include.message')
 <script type="text/javascript">
-$('#refresh').click(function(){
-  $.ajax({
+  function refresh(){
+    $.ajax({
      type:'GET',
      url:'{{ route('admin.refresh.captcha') }}',
      success:function(data){
         $(".captcha span").html(data);
      }
   });
-});
+  }
+ 
 </script> 
 <script data-ad-client="ca-pub-6986129570235357" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
