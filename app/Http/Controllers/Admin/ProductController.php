@@ -301,18 +301,21 @@ class ProductController extends Controller
         if ($type==1) {
             $cart->qty = $cart->qty + 1;
         }else{
-           $cart->qty = $cart->qty - 1; 
+            if ($cart->qty > 1) {
+                $cart->qty = $cart->qty - 1; 
+            }
+           
         } 
         $cart->save();  
         
         return redirect()->route('admin.cart.view')->with(['message'=>"Item Update Successfully",'class'=>'success']); 
     }
-    public function checkout(Request $request,$amount)
-    {   
-        $user=Auth::guard('admin')->user(); 
-        $amount=Crypt::decrypt($amount);
-        $OrderAddress= OrderAddress::where('user_id',$user->id)->first(); 
-        return view('admin.product.cart.checkout',compact('amount','OrderAddress'));  
+
+    public function checkout(Request $request)
+    {
+       $user_id =Auth::guard('admin')->user()->id;  
+       $carts=Cart::where('user_id',$user_id)->get();
+       return view('admin.product.cart.checkout',compact('carts'));  
     }
     public function checkoutStore(Request $request)
     {    

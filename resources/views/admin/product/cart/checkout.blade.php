@@ -24,12 +24,12 @@
                 <!-- Color Picker -->
                 <div class="form-group col-lg-6">
                   <label>Name</label>
-                  <input type="text" class="form-control my-colorpicker1 colorpicker-element" data-colorpicker-id="1" data-original-title="" title="" name="name" value="{{ @$OrderAddress->name }}">
+                  <input type="text" class="form-control my-colorpicker1 colorpicker-element" data-colorpicker-id="1" data-original-title="" title="" name="name">
                 </div> 
                 <div class="form-group col-lg-6">
                   <label>Mobile No.</label> 
                   <div class="input-group my-colorpicker2 colorpicker-element" data-colorpicker-id="2">
-                    <input type="text" class="form-control" data-original-title="" name="mobile_no" maxlength="10" onkeypress='return event.charCode >= 48 && event.charCode <= 57' value="{{ @$OrderAddress->mobile_no }}">  
+                    <input type="text" class="form-control" data-original-title="" name="mobile_no"> 
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fas fa-phone"></i></span>
                     </div>
@@ -37,22 +37,22 @@
                 </div>  
                   <div class="form-group col-lg-12">
                     <label>Address</label> 
-                    <textarea class="form-control" name="address" maxlength="200">{{ @$OrderAddress->address_line1 }}</textarea>
+                    <textarea class="form-control" name="address"></textarea>
                   </div>
                   <div class="form-group col-lg-4">
                     <label>City</label> 
-                    <textarea class="form-control" name="city" maxlength="50">{{ @$OrderAddress->city }}</textarea>
+                    <textarea class="form-control" name="city"></textarea>
                   </div>
                   <div class="form-group col-lg-4">
                     <label>State</label> 
-                    <textarea class="form-control" name="state" maxlength="50">{{ @$OrderAddress->state }}</textarea>
+                    <textarea class="form-control" name="state"></textarea>
                   </div>
                   <div class="form-group col-lg-4">
                     <label>Pincode</label> 
-                    <textarea class="form-control" name="pincode" maxlength="6" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>{{ @$OrderAddress->pin_code }}</textarea>
+                    <textarea class="form-control" name="pincode"></textarea>
                   </div>
                   <div class="form-group col-lg-12">
-                    <input type="submit" class="btn btn-warning pull-right" value="PLACE ORDER">
+                    <input type="submit" class="btn btn-primary pull-right" value="Place Order">
                   </div>
                    
                 </div>
@@ -66,22 +66,30 @@
               </div>
               <div class="card-body row">
                 <div class="col-lg-6 form-group">
-                  Price(Item)  
+                  Cart({{ count($carts) }} Items)  
                 </div>
                 <div class="col-lg-6 form-group">
-                    ₹{{ $amount }}
+                  @php
+                      $amount =0;
+                  @endphp
+                  @foreach ($carts as $cart)
+                  @php
+                      $amount += $cart->amt * $cart->qty; 
+                  @endphp
+                  @endforeach
+                    ₹{{ $amount  }}
                 </div>
                 <div class="col-lg-6 form-group">
-                  Delivery Charges
+                  Shipping Charges
                 </div>
                 <div class="col-lg-6 form-group">
                     ₹100
                 </div>
                 <div class="col-lg-6 form-group">
-                  Total Payable
+                  <strong>Total Payable</strong>
                 </div>
                 <div class="col-lg-6 form-group">
-                    ₹{{ $amount }}
+                    <span><strong>₹{{ $amount + 100 }}</strong></span>
                 </div>
                 </div>
               </div>
