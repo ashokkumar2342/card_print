@@ -180,8 +180,12 @@ class CardPrintController extends Controller
         $partno_name_e = $part_detail[0]->Part_No.'-'.$part_detail[0]->Name_e;
 
         
-
-        $filename = $acno.'/'.$partno.'/'.$vsrno.'.jpg';
+        if($voterData[0]->list_no==2){
+            $filename = 'voter-2/'.$acno.'/'.$partno.'/'.$vsrno.'.jpg';
+        }else{
+            $filename = $acno.'/'.$partno.'/'.$vsrno.'.jpg';    
+        }
+        // $filename = $acno.'/'.$partno.'/'.$vsrno.'.jpg';
         $image = 'https://voter-image.s3.ap-south-1.amazonaws.com/'.$filename;
         $cdate = date("d-m-Y");
         
