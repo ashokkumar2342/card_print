@@ -77,7 +77,12 @@ class CardPrintController extends Controller
         $acno = $voterData[0]->ac_no;
         $partno = $voterData[0]->part_no;
         $vsrno = $voterData[0]->srno; 
-        $filename = $acno.'/'.$partno.'/'.$vsrno.'.jpg';
+        if($voterData[0]->list_no==2){
+            $filename = 'voter-2/'.$acno.'/'.$partno.'/'.$vsrno.'.jpg';
+        }else{
+            $filename = $acno.'/'.$partno.'/'.$vsrno.'.jpg';    
+        }
+        
         $image = 'https://voter-image.s3.ap-south-1.amazonaws.com/'.$filename;
         $response= array();                       
         $response['status']= 1;                       
@@ -536,16 +541,16 @@ class CardPrintController extends Controller
         $destinationPath = storage_path('app'.$vpath);
         $pdfbox = base_path('pdfbox-app.jar');
         $pdf = $destinationPath.$name.'.pdf';
-        $outpdf = $destinationPath.$name.'_o.pdf';
-        exec("java -jar ".$pdfbox." Decrypt -password ".$request->password." ".$pdf." ".$outpdf);
-        if(file_exists($outpdf)!=1){
-            $response=array();
-            $response["status"]=0;
-            $response["msg"]='Please Enter Correct Password';
-            return response()->json($response);
-        }
+        // $outpdf = $destinationPath.$name.'_o.pdf';
+        // exec("java -jar ".$pdfbox." Decrypt -password ".$request->password." ".$pdf." ".$outpdf);
+        // if(file_exists($outpdf)!=1){
+        //     $response=array();
+        //     $response["status"]=0;
+        //     $response["msg"]='Please Enter Correct Password';
+        //     return response()->json($response);
+        // }
         
-        exec("java -jar ".$pdfbox." Decrypt -password ".$request->password." ".$pdf);
+        // exec("java -jar ".$pdfbox." Decrypt -password ".$request->password." ".$pdf);
         exec("java -jar ".$pdfbox." ExtractText ".$pdf);
         exec("java -jar ".$pdfbox." ExtractImages ".$pdf);
 
@@ -921,7 +926,7 @@ class CardPrintController extends Controller
         if($balaadhar == 1){
             exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 142 452 237 ".$pdf);
         }else{
-            if ($add_line_start == 3){
+            if ($add_line_start <= 4){
                 exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 135 450 233 ".$pdf);
             }else{
                 exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 140 460 233 ".$pdf);
