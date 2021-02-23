@@ -109,7 +109,7 @@ function callJqueryDefault(divId){
 					 "bFilter": false,
 					dom: 'Bfrtip',
 						buttons: [
-						 'excel',
+							'copy', 'csv', 'excel', 'pdf', 'print'
 						]
 				});
 				}

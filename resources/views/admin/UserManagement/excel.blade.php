@@ -1,10 +1,15 @@
 @extends('admin.layout.base')
+@push('links')
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css">    
+@endpush
 @section('body')
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h3>Users Report</h3>
+                <h3>Users Report Excel</h3>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right"> 
@@ -13,7 +18,7 @@
         </div> 
         <div class="card card-info"> 
             <div class="card-body">
-                <form action="{{ route('admin.user.report.generate') }}" method="post" target="blank" >
+                <form action="{{ route('admin.user.report.excel.download') }}" method="post" target="blank" success-content-id="user_report_excel" class="add_form" data-table-without-pagination="user_report_excel_datatable" no-reset="true">
                 {{ csrf_field() }}
                 <div class="row">
                     <div class="col-lg-6">
@@ -87,17 +92,30 @@
                                 </div>                                
                             </div> 
                         </div>  
-                    </div>
+                    </div> 
                 </div> 
-            </div>         
-
-                <div class="box-footer text-center" style="margin-top: 30px">
-                    <button type="submit" class="btn btn-primary form-control">Report Generate</button>
+                <div class="col-lg-12 form-group">
+                    <button type="submit" class="btn btn-primary form-control" onclick="$('#report_type').val(2)">Download Excel</button>    
                 </div> 
-              </form>  <!-- /.card-body -->
             </div> 
+        </form>
+        <div id="user_report_excel">
+               
+        </div>   
+        </div> 
         </div>
-    </div>
-    </section>
-    @endsection 
+    </div> 
+</section>
+@endsection
+@push('scripts') 
+<script type="text/javascript" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.flash.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js">
+@endpush
+
 

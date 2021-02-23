@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Model\District;
 use App\Model\MainMenu;
@@ -16,8 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Facades\Excel;  
+use Illuminate\Support\Facades\Validator;  
 
 class UserManagementController extends Controller
 {
@@ -248,6 +246,67 @@ class UserManagementController extends Controller
       $userRoles =  DB::select(DB::raw("select * from `user_roles` where `id` > (Select `role_id` from `users` where `id` = $user->id) order by `id`;")); 
       return view('admin.UserManagement.user_report',compact('userRoles'));
     }
+    public function userReportExcel()
+    { 
+      $user=Auth::guard('admin')->user();
+      $users =  User::where('created_by',$user->id)->get(); 
+      $userRoles =  DB::select(DB::raw("select * from `user_roles` where `id` > (Select `role_id` from `users` where `id` = $user->id) order by `id`;")); 
+      return view('admin.UserManagement.excel',compact('userRoles'));
+    }
+    public function userReportExcelDownload(Request $request)
+    { 
+      $user_id=1;
+      $user_status = $request->status;
+      $status_cond = '';
+      if($user_status == 1){
+        $status_cond = " and `us`.`status` = 1";
+      }elseif($user_status == 2){
+        $status_cond = " and `us`.`status` = 2";
+      }    
+      $condition = '';
+      if ($user_id <= 2){
+        $condition = " and `us`.`created_by` <= 2";
+      }else{
+        $condition = " and `us`.`created_by` = ".$user_id;
+      }
+      $card_cond = $request->cond_card_print;
+      $card_count = $request->card;
+      if(empty($request->card)){
+        $card_count = 0;
+      }
+      $cond_card = '';
+      if($card_cond == 1){
+        $cond_card = " and (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) >= $card_count";
+      }
+      if($card_cond == 2){
+        $cond_card = " and (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) <= $card_count";
+      }
+      $balance_cond = $request->cond_bal_amount;
+      $balance_amt = $request->amount;
+      if(empty($request->amount)){
+        $balance_amt = 0;
+      }
+
+      $cond_balance = '';
+      if($balance_cond == 1){
+        $cond_balance = " and `ba`.`amt` >= $balance_amt";
+      }
+      if($balance_cond == 2){
+        $cond_balance = " and `ba`.`amt` <= $balance_amt";
+      }
+      $myquery = "select `us`.`id`, `us`.`user_name`, `us`.`email`, `us`.`mobile`, `us`.`role_id`, `us`.`status`, `ba`.`amt`,
+        (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) as `tcardprint` 
+        from `users` `us`
+        inner join `balanceamt` `ba` on `ba`.`userid` = `us`.`id`
+        where `us`.`role_id` = 4
+        $condition $status_cond $cond_card $cond_balance order by `us`.`user_name`;";
+
+      $Operators =  DB::select(DB::raw($myquery));
+      $response=array();
+      $response["status"]=1;
+      $response["data"]=view('admin.UserManagement.excel_download',compact('Operators'))->render();
+      return response()->json($response);
+    }
     
     public function userReportGenerate(Request $request)
     {
@@ -336,17 +395,12 @@ class UserManagementController extends Controller
       }elseif($user_role_type==3){
         $html = $html.$this->userReportOperator($user_id, $role_type, $status_cond, $cond_card, $cond_balance, $margin);
       }
-      if ($request->report_type==2) { 
-          return Excel::download(new UsersExport, 'users.xlsx');
-         
-      }else{
-        
+      
       $mpdf->WriteHTML($html); 
 
       $html = "</tbody></table></body></html>";
       $mpdf->WriteHTML($html);      
       $mpdf->Output(); 
-      }
        
     }
 
