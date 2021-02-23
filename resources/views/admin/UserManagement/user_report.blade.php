@@ -88,14 +88,17 @@
                             </div> 
                         </div>  
                     </div>
+                    <input type="hidden" name="report_type" id="report_type" value="0">
+                </div>
+                <div class="col-lg-6 form-group">
+                    <button type="submit" class="btn btn-primary form-control" onclick="$('#report_type').val(1)">Download PDF</button>    
+                </div>
+                <div class="col-lg-6 form-group">
+                    <button type="submit" class="btn btn-primary form-control" onclick="$('#report_type').val(2)">Download Excel</button>    
                 </div> 
-            </div>         
-
-                <div class="box-footer text-center" style="margin-top: 30px">
-                    <button type="submit" class="btn btn-primary form-control">Report Generate</button>
-                </div> 
-              </form>  <!-- /.card-body -->
             </div> 
+        </form>   
+        </div> 
         </div>
     </div>
     </section>

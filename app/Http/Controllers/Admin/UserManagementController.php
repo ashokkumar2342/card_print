@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Model\District;
 use App\Model\MainMenu;
@@ -15,7 +16,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;  
+use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;  
 
 class UserManagementController extends Controller
 {
@@ -334,12 +336,17 @@ class UserManagementController extends Controller
       }elseif($user_role_type==3){
         $html = $html.$this->userReportOperator($user_id, $role_type, $status_cond, $cond_card, $cond_balance, $margin);
       }
-      
+      if ($request->report_type==2) { 
+          return Excel::download(new UsersExport, 'users.xlsx');
+         
+      }else{
+        
       $mpdf->WriteHTML($html); 
 
       $html = "</tbody></table></body></html>";
       $mpdf->WriteHTML($html);      
       $mpdf->Output(); 
+      }
        
     }
 
