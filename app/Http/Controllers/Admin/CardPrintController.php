@@ -95,29 +95,48 @@ class CardPrintController extends Controller
 
         
         // Storage::disk('s3')->setVisibility('1/1/2.jpg', 'public');
-        // return $image;
+         //return $request;
 
         $path=Storage_path('fonts/');
         $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir']; 
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-        $fontData = $defaultFontConfig['fontdata']; 
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [55, 88],
-             'fontDir' => array_merge($fontDirs, [
-                 __DIR__ . $path,
-             ]),
-             'fontdata' => $fontData + [
-                 'frutiger' => [
-                     'R' => 'FreeSans.ttf',
-                     'I' => 'FreeSansOblique.ttf',
-                 ]
-             ],
-             'default_font' => 'freesans',
-             'pagenumPrefix' => '',
-            'pagenumSuffix' => '',
-            'nbpgPrefix' => ' कुल ',
-            'nbpgSuffix' => ' पृष्ठों का पृष्ठ'
-         ]);
+        $fontData = $defaultFontConfig['fontdata'];
+        if ($request->format==0) {
+            $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [55, 88],
+                 'fontDir' => array_merge($fontDirs, [
+                     __DIR__ . $path,
+                 ]),
+                 'fontdata' => $fontData + [
+                     'frutiger' => [
+                         'R' => 'FreeSans.ttf',
+                         'I' => 'FreeSansOblique.ttf',
+                     ]
+                 ],
+                 'default_font' => 'freesans',
+                 'pagenumPrefix' => '',
+                'pagenumSuffix' => '',
+                'nbpgPrefix' => ' कुल ',
+                'nbpgSuffix' => ' पृष्ठों का पृष्ठ'
+             ]); 
+         }else{
+            $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [100, 60],
+                 'fontDir' => array_merge($fontDirs, [
+                     __DIR__ . $path,
+                 ]),
+                 'fontdata' => $fontData + [
+                     'frutiger' => [
+                         'R' => 'FreeSans.ttf',
+                         'I' => 'FreeSansOblique.ttf',
+                     ]
+                 ],
+                 'default_font' => 'freesans',
+                 'pagenumPrefix' => '',
+                'pagenumSuffix' => '',
+                'nbpgPrefix' => ' कुल ',
+                'nbpgSuffix' => ' पृष्ठों का पृष्ठ'
+             ]);
+         } 
          
 
 
@@ -223,7 +242,12 @@ class CardPrintController extends Controller
         // $height = 117;
 
         $epicbackground = $request->pre_printed_card;
-        $html = view('admin.card_print.print',compact('vcardno', 'image', 'width', 'height', 'name_l', 'name_e', 'rln_l', 'rln_e', 'rname_l', 'rname_e', 'gender_l', 'gender_e', 'age_dob', 'add_l', 'add_e', 'acno_name_l', 'acno_name_e', 'partno_name_l', 'partno_name_e', 'cdate', 'bimage', 'bcheight', 'bcsize', 'signimg','bimage1','bimage2','epicbackground'));
+        if ($request->format==0) {
+            $html = view('admin.card_print.print',compact('vcardno', 'image', 'width', 'height', 'name_l', 'name_e', 'rln_l', 'rln_e', 'rname_l', 'rname_e', 'gender_l', 'gender_e', 'age_dob', 'add_l', 'add_e', 'acno_name_l', 'acno_name_e', 'partno_name_l', 'partno_name_e', 'cdate', 'bimage', 'bcheight', 'bcsize', 'signimg','bimage1','bimage2','epicbackground'));
+            
+        }else{
+            $html = view('admin.card_print.print_2',compact('vcardno', 'image', 'width', 'height', 'name_l', 'name_e', 'rln_l', 'rln_e', 'rname_l', 'rname_e', 'gender_l', 'gender_e', 'age_dob', 'add_l', 'add_e', 'acno_name_l', 'acno_name_e', 'partno_name_l', 'partno_name_e', 'cdate', 'bimage', 'bcheight', 'bcsize', 'signimg','bimage1','bimage2','epicbackground'));
+        }
         $mpdf->WriteHTML($html); 
         $mpdf->Output();
     }

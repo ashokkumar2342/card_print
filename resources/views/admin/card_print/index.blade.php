@@ -14,7 +14,7 @@
         </div> 
         <div class="card card-info"> 
             <div class="card-body">
-                <form action="{{ route('admin.card.print.show') }}" method="post" class="add_form" success-content-id="voter_card_show">
+                <form action="{{ route('admin.card.print.show') }}" method="post" class="add_form" success-content-id="voter_card_show" no-reset="true">
                 {{ csrf_field() }} 
                 <div class="row">
                     <div class="col-lg-12 form-group">
