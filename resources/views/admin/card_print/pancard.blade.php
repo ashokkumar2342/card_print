@@ -111,6 +111,12 @@
                                               Style 4
                                             </label>
                                           </div>
+                                          <div class="icheck-primary d-inline">
+                                            <input type="radio" class="formatstyle" id="formatstyle5_{{$PanDetail->id}}" name="formatstyle" onclick="$('#format_style').val(5)">
+                                            <label for="formatstyle5_{{$PanDetail->id}}">
+                                              Style 5
+                                            </label>
+                                          </div>
                                           <input type="hidden" name="format_style" id="format_style" value="1">
                                     </div>
                                 </td> 

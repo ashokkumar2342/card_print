@@ -239,6 +239,56 @@ table, tr, td{
 					</td>
 				</tr>
 			</table>
+		@elseif ($cardtype==5)
+			<table width = "323px">
+				<tr>
+					<td width = "75%">
+						<table style="width: 100%;">
+							<tr>
+								<td style="width: 100%;">
+									<table style="width: 100%;">
+										<tr>
+											<td style="width: 40%; padding-top: 45px; padding-left: 18px">
+												<img src="{{ $qr_path }}" alt="" width = "55px" height="55px">
+											</td>
+											<td style="width: 60%; padding-top: 87px; text-align: right; padding-right: 40px">
+												<h5>{{ $pan_data[0]->pan_no }}</h5>
+											</td>
+										</tr>
+									</table>	
+								</td>
+							</tr>
+							<tr>
+								<td style="padding-top: 17px;padding-left: 15px">
+									<h6>{{ $pan_data[0]->name_e }}</h6>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding-top: 17px;padding-left: 15px">
+									<h6>{{ $pan_data[0]->father_name_e }}</h6>
+								</td>
+							</tr>
+							<tr>
+								<td style="width: 100%;">
+									<table style="width: 100%;">
+										<tr>
+											<td style="width: 50%; padding-top: 18px; padding-left: 15px">
+												<h6>{{ $pan_data[0]->dob }}</h6>
+											</td>
+											<td style="width: 50%; padding-top: 3px;padding-left: 40px">
+												<img src="{{ $sign_path }}" alt="" width = "70px" height="18px">
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td width="25%" style="padding-top: 135px;padding-left:8px">
+						<img src="{{ $photo_path }}" alt="" width = "55px" height="55px" style="border: 1px  solid black;">
+					</td>
+				</tr>
+			</table>
 		@endif
 		
 	</div>
