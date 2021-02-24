@@ -360,19 +360,27 @@ class CardPrintController extends Controller
             }
         }else{
             $pan_no = trim($lines[0]);
-            $name_e = trim($lines[1]);
-            $text = trim($lines[2]);
-            $dob = '';
-            $fathername = '';
-            $cardtype = 0;
-            if($this->check_dob_fahtername($text) == 0){
-                $fathername = trim($lines[2]);
-                $dob = trim($lines[3]);
-                $cardtype = 1;
+            if(substr(trim($lines[1]), 0,3) == "U- " ){
+                $name_e = trim($lines[2]);
+                $dob = trim($lines[4]);;
+                $fathername = trim($lines[3]);;
+                $cardtype = 5;
             }else{
-                $dob = trim($lines[2]);
-                $cardtype = 2;
-            }    
+                $name_e = trim($lines[1]);
+                $text = trim($lines[2]);
+                $dob = '';
+                $fathername = '';
+                $cardtype = 0;
+                if($this->check_dob_fahtername($text) == 0){
+                    $fathername = trim($lines[2]);
+                    $dob = trim($lines[3]);
+                    $cardtype = 1;
+                }else{
+                    $dob = trim($lines[2]);
+                    $cardtype = 2;
+                }    
+            }
+                
         }
 
         $qrcode = '';
@@ -389,9 +397,16 @@ class CardPrintController extends Controller
                 $sign = '3.png';
             }
         }elseif($countFile==10){
-            $qrcode = '3';
-            $sign = '';
-            $photo = '4';
+            if($cardtype==5){
+                $qrcode = '3';
+                $sign = '4.png';
+                $photo = '2';
+            }else{
+                $qrcode = '3';
+                $sign = '';
+                $photo = '4';    
+            }
+            
         }elseif($countFile==11){
             $qrcode = '4';
             $sign = '3.jpg';
@@ -494,6 +509,7 @@ class CardPrintController extends Controller
         // $cardtype = $pan_data[0]->upload_type;
 
         $cardtype = $request->format_style;
+        // $cardtype = 5;
 
         $bg_file_front = '';
         $bg_file_back = '';
