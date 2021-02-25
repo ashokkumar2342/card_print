@@ -54,11 +54,11 @@
           <label for="radioSuccess1">Format 1
           </label>
         </div>
-        <div class="icheck-success d-inline">
+        {{-- <div class="icheck-success d-inline">
           <input type="radio" name="format" id="radioSuccess2" class="form-control form-group" value="1">
           <label for="radioSuccess2">Format 2
           </label>
-        </div>
+        </div> --}}
       </div>
     </div>
   </div> 
