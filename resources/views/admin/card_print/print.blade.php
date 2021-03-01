@@ -81,7 +81,7 @@ div.second{
 		</tr> --}}
 		<tr>
 			<td width="20%"></td>
-			<td  class="test" width="60%"><img src="{{ $image }}" alt="" width = "108px" height = "140px"></td>
+			<td  class="test" width="60%"><img src="{{ $image }}" alt="" width = "108px" height = "135px"></td>
 			<td width="12%"></td>
 		</tr>
 	</table>
@@ -124,9 +124,15 @@ div.second{
 		</tr>
 	</table>
 	<table>
-		<tr>
-			<td style="width: 300px;font-size: 15px;font-weight: bold;padding-top:6px">{{ $rln_e }}'s Name : {{ $rname_e }}</td>
-		</tr>
+		@if (strlen($rname_e)>=17)
+			<tr>
+				<td style="width: 300px;font-size: 12px;font-weight: bold;padding-top:6px">{{ $rln_e }}'s Name : {{ $rname_e }}</td>
+			</tr>
+		@else
+			<tr>
+				<td style="width: 300px;font-size: 15px;font-weight: bold;padding-top:6px">{{ $rln_e }}'s Name : {{ $rname_e }}</td>
+			</tr>
+		@endif
 	</table>
 	</div>
 	{{-- <pagebreak> --}}
