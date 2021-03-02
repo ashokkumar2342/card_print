@@ -559,9 +559,9 @@ class CardPrintController extends Controller
         }
         $appuser = Auth::guard('admin')->user();
 
-        // $vpath = '/adhaar/1/20210114075511/';
-        // $name = '20210114075511';
-        // return $this->process_aadhar_card_info($vpath, $name);
+        $vpath = '/adhaar/1/20210302061402/';
+        $name = '20210302061402';
+        return $this->process_aadhar_card_info($vpath, $name, 2);
                 
         $transaction_status = DB::select(DB::raw("Select `check_wallet_balance_print`($appuser->id, 2) as `result`;")); 
         if ($transaction_status[0]->result!='ok'){
@@ -585,36 +585,20 @@ class CardPrintController extends Controller
         $destinationPath = storage_path('app'.$vpath);
         $pdfbox = base_path('pdfbox-app.jar');
         $pdf = $destinationPath.$name.'.pdf';
-        // $outpdf = $destinationPath.$name.'_o.pdf';
-        // exec("java -jar ".$pdfbox." Decrypt -password ".$request->password." ".$pdf." ".$outpdf);
-        // if(file_exists($outpdf)!=1){
-        //     $response=array();
-        //     $response["status"]=0;
-        //     $response["msg"]='Please Enter Correct Password';
-        //     return response()->json($response);
-        // }
+        $outpdf = $destinationPath.$name.'_o.pdf';
+        exec("java -jar ".$pdfbox." Decrypt -password ".$request->password." ".$pdf." ".$outpdf);
+        if(file_exists($outpdf)!=1){
+            $response=array();
+            $response["status"]=0;
+            $response["msg"]='Please Enter Correct Password';
+            return response()->json($response);
+        }
         
-        // exec("java -jar ".$pdfbox." Decrypt -password ".$request->password." ".$pdf);
+        exec("java -jar ".$pdfbox." Decrypt -password ".$request->password." ".$pdf);
         exec("java -jar ".$pdfbox." ExtractText ".$pdf);
         exec("java -jar ".$pdfbox." ExtractImages ".$pdf);
 
-        $balaadhar = 0;
-        $photofile = '-8.jpg';
-        if(file_exists($destinationPath.$name.$photofile)!=1){
-            $photofile = '-9.jpg';
-            $balaadhar = 1;
-        }
-        // create an image manager instance with favored driver
-        $manager = new ImageManager();
-
-        // to finally create image instances
-        $image = $manager->make($destinationPath.$name.$photofile);
-        $image->brightness(10);
-        $image->contrast(10);
-        $image->save($destinationPath.$name.'-rp.jpg');    
         
-
-
         $filename = \Storage_path('app'.$vpath.$name.'.txt');
         $fp = fopen($filename, "r");
 
@@ -730,7 +714,42 @@ class CardPrintController extends Controller
             $lineno = $lineno + 1;
         }
 
-        $this->process_aadhar_card_info($vpath, $name, $add_line_start, $balaadhar);
+
+        $aadthar_type = 1;
+        $tmpfile = '';
+        if ($add_line_start==5){
+            $photofile = '-8.jpg';    
+            if(file_exists($destinationPath.$name.$photofile)==1){
+                $aadthar_type = 1;
+            }else{
+                $photofile = '-9.jpg';
+                $tmpfile = '-10.png';
+                if(file_exists($destinationPath.$name.$tmpfile)==1){
+                    $aadthar_type = 2;    
+                } 
+            }
+        }else{
+            $photofile = '-8.jpg';
+            $aadthar_type = 1;
+        }
+
+        // $balaadhar = 0;
+        // $photofile = '-8.jpg';
+        // if(file_exists($destinationPath.$name.$photofile)!=1){
+        //     $photofile = '-9.jpg';
+        //     $balaadhar = 1;
+        // }
+
+        // create an image manager instance with favored driver
+        $manager = new ImageManager();
+
+        // to finally create image instances
+        $image = $manager->make($destinationPath.$name.$photofile);
+        $image->brightness(10);
+        $image->contrast(10);
+        $image->save($destinationPath.$name.'-rp.jpg');    
+
+        $this->process_aadhar_card_info($vpath, $name, $aadthar_type);
 
         $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet_card_print`('$aadhar_no', $appuser->id, 2) as `result`;")); 
         if ($transaction_status[0]->result!='success'){
@@ -959,23 +978,46 @@ class CardPrintController extends Controller
         return $isaadhar;
     }
 
-    public function process_aadhar_card_info($vpath, $name, $add_line_start, $balaadhar)
+    public function process_aadhar_card_info($vpath, $name, $aadhartype)
     {
         $destinationPath = storage_path('app'.$vpath);
         $pdfbox = base_path('pdfbox-app.jar');
         $pdf = $destinationPath.$name.'.pdf';
         
-        exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 113 180 255 230 ".$pdf);
 
-        if($balaadhar == 1){
-            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 142 452 237 ".$pdf);
+        if($aadhartype==1){
+            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 110 160 240 230 ".$pdf);
+            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 142 452 233 ".$pdf);
+        }elseif($aadhartype==2){
+            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 90 230 210 290 ".$pdf);
+            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 280 200 425 290 ".$pdf);
         }else{
-            if ($add_line_start <= 4){
-                exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 135 450 233 ".$pdf);
-            }else{
-                exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 140 460 233 ".$pdf);
-            }    
-        }
+            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 90 230 210 290 ".$pdf);
+            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 280 200 425 290 ".$pdf);
+        }   
+        // exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 90 230 210 290 ".$pdf);
+
+        // if($balaadhar == 1){
+        //     exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 142 452 237 ".$pdf);
+        // }else{
+        //     if ($add_line_start <= 4){
+        //         exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 135 450 233 ".$pdf);
+        //     }else{
+        //         exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 140 460 233 ".$pdf);
+        //     }    
+        // }
+
+        
+
+        // if($balaadhar == 1){
+        //     exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 142 452 237 ".$pdf);
+        // }else{
+        //     if ($add_line_start <= 4){
+        //         exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 303 135 450 233 ".$pdf);
+        //     }else{
+        //         exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 280 200 425 290 ".$pdf);
+        //     }    
+        // }
         
 
         $manager = new ImageManager();
@@ -985,9 +1027,6 @@ class CardPrintController extends Controller
         $image->brightness(-15);
         $hexcolor = $image->pickColor(2, 2, 'hex');
         $image->limitColors(255, $hexcolor);
-        // $image->greyscale();
-        // $image->contrast(-30);
-        // $image->sharpen(50);
         $image->save($destinationPath.'1_2.png');
 
 

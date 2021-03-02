@@ -294,8 +294,8 @@ class UserManagementController extends Controller
       if($balance_cond == 2){
         $cond_balance = " and `ba`.`amt` <= $balance_amt";
       }
-      $myquery = "select `us`.`id`, `us`.`user_name`, `us`.`email`, `us`.`mobile`, `us`.`role_id`, `us`.`status`,`us`.`created_on`, `ba`.`amt`,
-        (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) as `tcardprint` 
+      $myquery = "select `us`.`id`, `us`.`user_name`, `us`.`email`, `us`.`mobile`, `us`.`role_id`, `us`.`status`, `ba`.`amt`,
+        (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) as `tcardprint`, DATE_FORMAT(`us`.`lastlogin_on`, '%d-%m-%y') as `l_login` 
         from `users` `us`
         inner join `balanceamt` `ba` on `ba`.`userid` = `us`.`id`
         where `us`.`role_id` = 4
@@ -413,7 +413,7 @@ class UserManagementController extends Controller
         $condition = " and `us`.`created_by` = ".$user_id;
       }
       $myquery = "select `us`.`id`, `us`.`user_name`, `us`.`email`, `us`.`mobile`, `us`.`role_id`, `us`.`status`, `ba`.`amt`,
-        (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) as `tcardprint` 
+        (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) as `tcardprint`, DATE_FORMAT(`us`.`lastlogin_on`, '%d-%m-%y') as `l_login` 
         from `users` `us`
         inner join `balanceamt` `ba` on `ba`.`userid` = `us`.`id`
         where `us`.`role_id` = 2
@@ -443,7 +443,7 @@ class UserManagementController extends Controller
         $condition = " and `us`.`created_by` = ".$user_id;
       }
       $myquery = "select `us`.`id`, `us`.`user_name`, `us`.`email`, `us`.`mobile`, `us`.`role_id`, `us`.`status`, `ba`.`amt`,
-        (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) as `tcardprint` 
+        (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) as `tcardprint`, DATE_FORMAT(`us`.`lastlogin_on`, '%d-%m-%y') as `l_login` 
         from `users` `us`
         inner join `balanceamt` `ba` on `ba`.`userid` = `us`.`id`
         where `us`.`role_id` = 3
@@ -471,7 +471,7 @@ class UserManagementController extends Controller
         $condition = " and `us`.`created_by` = ".$user_id;
       }
       $myquery = "select `us`.`id`, `us`.`user_name`, `us`.`email`, `us`.`mobile`, `us`.`role_id`, `us`.`status`, `ba`.`amt`,
-        (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) as `tcardprint` 
+        (select count(*) from `cashbook` where `user_id` = `us`.`id` and `transaction_type` = 0) as `tcardprint`, DATE_FORMAT(`us`.`lastlogin_on`, '%d-%m-%y') as `l_login` 
         from `users` `us`
         inner join `balanceamt` `ba` on `ba`.`userid` = `us`.`id`
         where `us`.`role_id` = 4

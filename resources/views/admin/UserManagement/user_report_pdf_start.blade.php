@@ -18,6 +18,7 @@
 				<th>Status</th>
 				<th>Balance</th>
 				<th>Card Printed</th>
+				<th>Login Date</th>
 			</tr>
 		</thead>
 		<tbody>

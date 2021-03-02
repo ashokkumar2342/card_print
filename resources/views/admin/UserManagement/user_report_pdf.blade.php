@@ -16,5 +16,6 @@
 					<td>{{ $status }}</td>
 					<td>{{ $users->amt }}</td>
 					<td>{{ $users->tcardprint or ''}}</td>
+					<td>{{ $users->l_login or ''}}</td>
 				</tr> 
 		
