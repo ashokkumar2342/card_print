@@ -559,9 +559,9 @@ class CardPrintController extends Controller
         }
         $appuser = Auth::guard('admin')->user();
 
-        $vpath = '/adhaar/1/20210302061402/';
-        $name = '20210302061402';
-        return $this->process_aadhar_card_info($vpath, $name, 2);
+        // $vpath = '/adhaar/1/20210302061402/';
+        // $name = '20210302061402';
+        // return $this->process_aadhar_card_info($vpath, $name, 2);
                 
         $transaction_status = DB::select(DB::raw("Select `check_wallet_balance_print`($appuser->id, 2) as `result`;")); 
         if ($transaction_status[0]->result!='ok'){
