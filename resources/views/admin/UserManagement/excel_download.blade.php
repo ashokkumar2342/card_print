@@ -7,6 +7,7 @@
 				<th>Mobile</th>
 				<th>Balance</th>
 				<th>Card Printed</th> 
+				<th>Create Date</th> 
 			</tr>
 		</thead>
 		<tbody>
@@ -17,6 +18,7 @@
 				<td>{{ $Operator->mobile }}</td>
 				<td>{{ $Operator->amt }}</td>
 				<td>{{ $Operator->tcardprint }}</td> 
+				<td>{{$Operator->created_on? date('d-m-Y',strtotime($Operator->created_on)):'' }}</td> 
 			</tr> 
 			@endforeach 
 				 
