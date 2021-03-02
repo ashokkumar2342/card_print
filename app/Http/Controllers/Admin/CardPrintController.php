@@ -717,16 +717,18 @@ class CardPrintController extends Controller
 
         $aadthar_type = 1;
         $tmpfile = '';
-        if ($add_line_start==5){
-            $photofile = '-8.jpg';    
-            if(file_exists($destinationPath.$name.$photofile)==1){
-                $aadthar_type = 1;
-            }else{
+        if ($add_line_start==4){    
+            $photofile = '-8.jpg';
+            if(file_exists($destinationPath.$name.$photofile)!=1){
                 $photofile = '-9.jpg';
                 $tmpfile = '-10.png';
-                if(file_exists($destinationPath.$name.$tmpfile)==1){
-                    $aadthar_type = 2;    
-                } 
+                if(file_exists($destinationPath.$name.$tmpfile)!=1){
+                    // $aadthar_type = 2;    
+                }else{
+                    $aadthar_type = 2;
+                }
+            }else{
+                $aadthar_type = 1;
             }
         }else{
             $photofile = '-8.jpg';
@@ -741,6 +743,13 @@ class CardPrintController extends Controller
         // }
 
         // create an image manager instance with favored driver
+        
+
+        // $response=array();
+        // $response["status"]=0;
+        // $response["msg"]=$photofile;
+        // return response()->json($response);
+
         $manager = new ImageManager();
 
         // to finally create image instances
