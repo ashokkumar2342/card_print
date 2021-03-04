@@ -335,14 +335,7 @@ class ProductController extends Controller
             return response()->json($response);// response as json
         }
         $user=Auth::guard('admin')->user();
-        $OrderAddress= OrderAddress::firstOrNew(['user_id'=>$user->id]);  
-        $OrderAddress->user_id=$user->id;  
-        $OrderAddress->mobile_no=$request->mobile_no;  
-        $OrderAddress->address_line1=$request->address;  
-        $OrderAddress->city=$request->city;  
-        $OrderAddress->state=$request->state;  
-        $OrderAddress->pin_code=$request->pincode;  
-        $OrderAddress->save(); 
+        $pan_data = DB::select(DB::raw("call up_process_cart_order('$user->id','$request->address','$request->address','$request->address','$request->city','$request->state','$request->pincode','$request->mobile_no')")); 
         $response=['status'=>1,'msg'=>'Successfully'];
             return response()->json($response); 
     }

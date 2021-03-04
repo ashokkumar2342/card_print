@@ -559,9 +559,9 @@ class CardPrintController extends Controller
         }
         $appuser = Auth::guard('admin')->user();
 
-        // $vpath = '/adhaar/1/20210302061402/';
-        // $name = '20210302061402';
-        // return $this->process_aadhar_card_info($vpath, $name, 2);
+        // $vpath = '/adhaar/1/20210303032755/';
+        // $name = '20210303032755';
+        // return $this->process_aadhar_card_info($vpath, $name, 3);
                 
         $transaction_status = DB::select(DB::raw("Select `check_wallet_balance_print`($appuser->id, 2) as `result`;")); 
         if ($transaction_status[0]->result!='ok'){
@@ -594,12 +594,12 @@ class CardPrintController extends Controller
             return response()->json($response);
         }
         
-        exec("java -jar ".$pdfbox." Decrypt -password ".$request->password." ".$pdf);
-        exec("java -jar ".$pdfbox." ExtractText ".$pdf);
-        exec("java -jar ".$pdfbox." ExtractImages ".$pdf);
+        // exec("java -jar ".$pdfbox." Decrypt -password ".$request->password." ".$pdf);
+        exec("java -jar ".$pdfbox." ExtractText ".$outpdf);
+        exec("java -jar ".$pdfbox." ExtractImages ".$outpdf);
 
         
-        $filename = \Storage_path('app'.$vpath.$name.'.txt');
+        $filename = \Storage_path('app'.$vpath.$name.'_o.txt');
         $fp = fopen($filename, "r");
 
         $content = fread($fp, filesize($filename));
@@ -715,24 +715,34 @@ class CardPrintController extends Controller
         }
 
 
-        $aadthar_type = 1;
+        
         $tmpfile = '';
         if ($add_line_start==4){    
-            $photofile = '-8.jpg';
+            $photofile = '_o-8.jpg';
             if(file_exists($destinationPath.$name.$photofile)!=1){
-                $photofile = '-9.jpg';
-                $tmpfile = '-10.png';
+                $photofile = '_o-9.jpg';
+                $tmpfile = '_o-10.png';
                 if(file_exists($destinationPath.$name.$tmpfile)!=1){
-                    // $aadthar_type = 2;    
+                    $response=array();
+                    $response["status"]=0;
+                    $response["msg"]='Format not found';
+                    return response()->json($response);    
                 }else{
-                    $aadthar_type = 2;
+                    list($width, $height, $type, $attr) = getimagesize($destinationPath.$name.'_o-10.png');
+                    if($width==$height){
+                        $aadthar_type = 2;    
+                    }else{
+                        $aadthar_type = 3;
+                    }
                 }
             }else{
                 $aadthar_type = 1;
             }
         }else{
-            $photofile = '-8.jpg';
-            $aadthar_type = 1;
+            $response=array();
+            $response["status"]=0;
+            $response["msg"]='Format not found';
+            return response()->json($response);
         }
 
         // $balaadhar = 0;
@@ -825,10 +835,13 @@ class CardPrintController extends Controller
         $AadharDetail->photo_o = $photofile;
         $AadharDetail->photo_show = $photofile;
 
+        $AadharDetail->card_format = $aadthar_type;
+
         $AadharDetail->save();
 
         $response=['status'=>1,'msg'=>'Upload Successfully'];
-            return response()->json($response);        
+        return response()->json($response);        
+
 
     }
 
@@ -991,7 +1004,7 @@ class CardPrintController extends Controller
     {
         $destinationPath = storage_path('app'.$vpath);
         $pdfbox = base_path('pdfbox-app.jar');
-        $pdf = $destinationPath.$name.'.pdf';
+        $pdf = $destinationPath.$name.'_o.pdf';
         
 
         if($aadhartype==1){
@@ -1000,6 +1013,9 @@ class CardPrintController extends Controller
         }elseif($aadhartype==2){
             exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 90 230 210 290 ".$pdf);
             exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 280 200 425 290 ".$pdf);
+        }elseif($aadhartype==3){
+            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 112 170 240 230 ".$pdf);
+            exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 305 142 452 237 ".$pdf);
         }else{
             exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."1_ -dpi 300 -cropbox 90 230 210 290 ".$pdf);
             exec("java -jar ".$pdfbox." PDFToImage -imageType png -outputPrefix ".$destinationPath."2_ -dpi 300 -cropbox 280 200 425 290 ".$pdf);

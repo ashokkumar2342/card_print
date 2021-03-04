@@ -124,7 +124,7 @@
 									<img src="{{ $files_path."2_2.png" }}" alt="" width = "230px" height="130px">			
 								</td>
 								<td width = "97px" style="padding-top: 20px;">
-									<img src="{{ $files_path.$files_name."-1.png" }}" alt="" width = "97px" height="97px">			
+									<img src="{{ $files_path.$files_name."_o-1.png" }}" alt="" width = "97px" height="97px">			
 								</td>
 							</tr>
 						</table>
