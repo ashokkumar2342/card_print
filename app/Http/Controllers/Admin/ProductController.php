@@ -323,7 +323,7 @@ class ProductController extends Controller
     {    
         $rules=[ 
         'mobile_no' => 'required',
-        'address' => 'required', 
+        'address_line_1' => 'required', 
         'city' => 'required', 
         'state' => 'required', 
         'pincode' => 'required', 
