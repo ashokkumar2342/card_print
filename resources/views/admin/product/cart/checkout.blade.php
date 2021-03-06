@@ -24,32 +24,40 @@
                 <!-- Color Picker -->
                 <div class="form-group col-lg-6">
                   <label>Name</label>
-                  <input type="text" class="form-control my-colorpicker1 colorpicker-element" data-colorpicker-id="1" data-original-title="" title="" name="name">
+                  <input type="text" class="form-control my-colorpicker1 colorpicker-element" data-colorpicker-id="1" data-original-title="" title="" name="name" value="{{ $user->user_name }}">
                 </div> 
                 <div class="form-group col-lg-6">
                   <label>Mobile No.</label> 
                   <div class="input-group my-colorpicker2 colorpicker-element" data-colorpicker-id="2">
-                    <input type="text" class="form-control" data-original-title="" name="mobile_no"> 
+                    <input type="text" class="form-control" data-original-title="" name="mobile_no" value="{{ $user->mobile }}"> 
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fas fa-phone"></i></span>
                     </div>
                   </div> 
                 </div>  
                   <div class="form-group col-lg-12">
-                    <label>Address</label> 
-                    <textarea class="form-control" name="address"></textarea>
+                    <label>Address Line 1</label> 
+                    <textarea class="form-control" name="address_line_1" style="height: 40px"></textarea>
+                  </div>
+                  <div class="form-group col-lg-12">
+                    <label>Address Line 2</label> 
+                    <textarea class="form-control" name="address_line_2" style="height: 40px"></textarea>
+                  </div>
+                  <div class="form-group col-lg-12">
+                    <label>Address Line 3</label> 
+                    <textarea class="form-control" name="address_line_3" style="height: 40px"></textarea>
                   </div>
                   <div class="form-group col-lg-4">
                     <label>City</label> 
-                    <textarea class="form-control" name="city"></textarea>
+                    <input type="text" class="form-control" name="city" maxlength="200" value="{{ $District->Name_E  }}">
                   </div>
                   <div class="form-group col-lg-4">
                     <label>State</label> 
-                    <textarea class="form-control" name="state"></textarea>
+                    <input type="text" class="form-control" name="state" maxlength="200" value="Hariyana">
                   </div>
                   <div class="form-group col-lg-4">
-                    <label>Pincode</label> 
-                    <textarea class="form-control" name="pincode"></textarea>
+                    <label>Pin-code</label> 
+                    <input type="text" class="form-control" name="pincode" maxlength="6">
                   </div>
                   <div class="form-group col-lg-12">
                     <input type="submit" class="btn btn-primary pull-right" value="Place Order">

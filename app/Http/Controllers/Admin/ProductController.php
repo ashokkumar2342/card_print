@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Model\Cart;
+use App\Model\District;
 use App\Model\ItemCategory;
 use App\Model\ItemList;
 use App\Model\ItemPhoto;
@@ -273,13 +274,13 @@ class ProductController extends Controller
     public function cartView()
     {   
         $user_id =Auth::guard('admin')->user()->id; 
-        $carts=Cart::where('user_id',$user_id)->get(); 
+        $carts=Cart::where('user_id',$user_id)->where('status',null)->get(); 
         return view('admin.product.cart.cart',compact('carts')); 
     }
     public function cartCount()
     {   
         $user_id =Auth::guard('admin')->user()->id; 
-        $carts=Cart::where('user_id',$user_id)->get(); 
+        $carts=Cart::where('user_id',$user_id)->where('status',null)->get(); 
         return view('admin.product.cart.count',compact('carts')); 
     }
     public function cartDelete($id)
@@ -313,9 +314,10 @@ class ProductController extends Controller
 
     public function checkout(Request $request)
     {
-       $user_id =Auth::guard('admin')->user()->id;  
-       $carts=Cart::where('user_id',$user_id)->get();
-       return view('admin.product.cart.checkout',compact('carts'));  
+       $user =Auth::guard('admin')->user();
+       $District=District::where('d_id',$user->district_id)->first();  
+       $carts=Cart::where('user_id',$user->id)->where('status',null)->get();
+       return view('admin.product.cart.checkout',compact('carts','user','District'));  
     }
     public function checkoutStore(Request $request)
     {    
