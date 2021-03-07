@@ -9,6 +9,8 @@ use App\Model\ItemCategory;
 use App\Model\ItemList;
 use App\Model\ItemPhoto;
 use App\Model\OrderAddress;
+use App\Model\OrderDetail;
+use App\Model\OrderList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -344,8 +346,16 @@ class ProductController extends Controller
 
 
     public function orderList($value='')
+    {   
+        $user=Auth::guard('admin')->user();
+        $OrderLists=OrderList::where('user_id',$user->id)->get();
+        return view('admin.product.order.list',compact('OrderLists'));    
+    }
+    public function orderDetails($value='')
     {
-        return view('admin.product.order.list',compact('amount','OrderAddress'));    
+        $user=Auth::guard('admin')->user();
+        $OrderLists=OrderDetail::where('user_id',$user->id)->get();
+        return view('admin.product.order.list',compact('OrderLists'));
     }
     
 }

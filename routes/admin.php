@@ -147,5 +147,9 @@ Route::group(['middleware' => 'admin'], function() {
 	Route::prefix('order')->group(function () {
 	 	Route::get('list', 'ProductController@orderList')->name('admin.order.list');
 	 	
+	});
+	Route::prefix('order-details')->group(function () {
+	 	Route::get('order-details', 'ProductController@orderDetails')->name('admin.order.order.details');
+	 	
 	}); 	
 });	   
