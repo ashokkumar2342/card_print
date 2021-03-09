@@ -47,22 +47,35 @@ div.first{
 div.second{
 	page:second;
 }
+.header {
+                 line-height: 80%;
+                 margin:left;
+            }
 
 </style>
 <body>
 	<div class="first">
-		<table>
-			<tr>
-				<th></th> 
-			</tr>
+		<table style="border-collapse: collapse; width: 100%;" border="0">
+		<tbody>
+		<tr>
+		<td style="width: 100%;text-align:center;font-size: 13px;"><b>भारत निर्वाचन आयोग</b></td>
+		</tr>
+		</tbody>
 		</table> 
-		<table style="margin-top: 20px;width: 100%" >
+		<table style="border-collapse: collapse; width: 100%;" border="0">
+		<tbody>
+		<tr>
+		<td style="width: 100%;text-align:center;font-size: 13px"><b style="border-top: 2px solid black;">ELECTION COMMISSION OF INDIA</b></td>
+		</tr>
+		</tbody>
+		</table> 
+		<table style="margin-top:15px;width: 100%" >
 			<tbody>
 				<tr>
-					<td style="width: 50%;padding-left: 10px;font-size:15" colspan="2"><b>TRU1255579</b></td>
+					<td height = "5px" style="width: 50%;padding-left: 10px;font-size:14" colspan="2"><b>TRU1255579</b></td>
 				</tr>
 				<tr>
-					<td style="width: 35%;" rowspan="7"><img src="{{ $image }}" alt="" width = "130px" height = "155px"></td>
+					<td style="width: 35%;" rowspan="7"><img src="{{ $image }}" alt="" width = "110px" height = "135px"></td>
 					<td style="width: 65%;font-size: 12px">नाम : <b>संगीता</b> </td>
 				</tr>
 				<tr>
@@ -100,7 +113,7 @@ div.second{
 		</table>
 		<table style="margin-top: 70px;padding-left: 70px">
 			<tr> 
-				<td><img src="{{ $signimg }}" alt="" height="20px"></td>
+				<td><img src="{{ $signimg }}" alt="" height="27px" width="110px"></td>
 			</tr>
 		</table>
 		<table style="padding-left: 50px">

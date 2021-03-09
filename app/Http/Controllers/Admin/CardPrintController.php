@@ -216,6 +216,13 @@ class CardPrintController extends Controller
             $bimage1  =\Storage_path('app/image/blank.png');
             $bimage2  =\Storage_path('app/image/blank.png'); 
         }
+        if ($request->format==1) {
+            $bimage1  =\Storage_path('app/image/front_1.jpg');
+            $bimage2  =\Storage_path('app/image/back_1.jpg'); 
+        }else {
+            $bimage1  =\Storage_path('app/image/blank.png');
+            $bimage2  =\Storage_path('app/image/blank.png'); 
+        }
 
         list($width, $height, $type, $attr) = getimagesize($image);
         
