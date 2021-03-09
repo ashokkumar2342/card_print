@@ -16,25 +16,22 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Order No.</th>
-                            <th>Order Date Time</th>
-                            <th>Amount</th>
-                            <th>Shipment Charges</th>
-                            <th>Expected Delivery Date</th>
-                            <th>Status</th>
+                            <th>Item</th>
+                            <th>Price</th>
+                            <th>Qty</th>
+                            <th>Amount</th> 
                             <th>Remarks</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($OrderLists as $OrderList) 
+                        @foreach ($OrderDetails as $OrderDetail) 
                         <tr>
-                            <td>1</td>
-                            <td>{{ date('d-m-Y h:i:s',strtotime($OrderList->order_date_time)) }}</td>
-                            <td>{{ $OrderList->amt }}</td>
-                            <td>{{ $OrderList->shipment_charges }}</td>
-                            <td>{{ $OrderList->expected_delivery_date }}</td>
-                            <td>{{ $OrderList->status }}</td>
-                            <td>{{ $OrderList->remarks }}</td>
+                             
+                            <td>{{ $OrderDetail->Items->item_name_e or ''}}</td>
+                            <td>{{ $OrderDetail->Items->net_price or '' }}</td>
+                            <td>{{ $OrderDetail->qty }}</td>
+                            <td>{{ $OrderDetail->amt*$OrderDetail->qty }}</td> 
+                            <td>{{ $OrderDetail->remarks }}</td>
                         </tr>
                         @endforeach
                     </tbody>

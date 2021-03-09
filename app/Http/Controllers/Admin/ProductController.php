@@ -354,8 +354,8 @@ class ProductController extends Controller
     public function orderDetails($value='')
     {
         $user=Auth::guard('admin')->user();
-        $OrderLists=OrderDetail::where('user_id',$user->id)->get();
-        return view('admin.product.order.list',compact('OrderLists'));
+        $OrderDetails=OrderDetail::where('user_id',$user->id)->get();
+        return view('admin.product.orderdetails.list',compact('OrderDetails'));
     }
     
 }

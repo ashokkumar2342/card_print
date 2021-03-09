@@ -11,5 +11,10 @@ class OrderDetail extends Model
     protected $fillable=['id','user_id'];
     public $timestamps = false;
 
+    public function Items()
+    {
+    	return $this->hasOne('App\Model\ItemList','id','item_id');
+    }
+
      
 }

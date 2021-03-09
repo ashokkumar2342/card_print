@@ -457,8 +457,10 @@
                               <span><strong>₹{{ $amount + 100 }}</strong></span>
                             </li>
                           </ul>
-
+                          @if ($amount!=0)
+                             
                           <a  class="btn btn-primary btn-block" href="{{ route('admin.cart.checkout') }}">Go To Checkout</a>
+                          @endif
 
                         </div>
                       </div>
