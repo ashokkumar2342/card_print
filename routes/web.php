@@ -100,13 +100,13 @@ Route::get('image', function() {
 });
 Route::get('image', function() { 
   $destinationPath = storage_path('app/');
-  $pdfbox = base_path('pdfbox-app.jar');
-  $pdf = $destinationPath.'secure.pdf';
-  exec("java -jar ".$pdfbox." Decrypt -password ASHO1991 ".$pdf);
-  exec("java -jar ".$pdfbox." ExtractText ".$pdf);
+  // $pdfbox = base_path('pdfbox-app.jar');
+  // $pdf = $destinationPath.'secure.pdf';
+  // exec("java -jar ".$pdfbox." Decrypt -password ASHO1991 ".$pdf);
+  // exec("java -jar ".$pdfbox." ExtractText ".$pdf);
   
   // exec("java -jar pdfbox-app.jar ExtractImages ak.pdf");
-  exec("java -jar pdfbox-app.jar ExtractText ak.pdf");
+  // exec("java -jar pdfbox-app.jar ExtractText ak.pdf");
   // exec("java -jar pdfbox-app.jar PDFToImage -imageType png -dpi 300 -cropbox 0 0 290 260 ak.pdf");
   // exec("java -jar pdfbox-app.jar PDFToImage -imageType png -dpi 300 -cropbox 290 260 0 0 secure3.pdf");
 
@@ -117,9 +117,9 @@ Route::get('image', function() {
       $destinationPath = storage_path('app/');
 
            // $thumb_img = Image::make($photo->getRealPath())->resize(100, 100);
-   $image = $manager->make($destinationPath.'/2_1.jpg');
-   $image->brightness(40);
-   $image->contrast(25);    
+   $image = $manager->make($destinationPath.'/2_1.png');
+   // $image->brightness(40);
+   // $image->contrast(40);    
    return $image->response('jpg');
 });
 

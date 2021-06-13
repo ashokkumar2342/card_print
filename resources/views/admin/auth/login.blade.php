@@ -20,14 +20,14 @@
   {{-- <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> --}}
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
-<body class="hold-transition login-page" style="background-color:  #63676b">
+<body class="hold-transition login-page" style="background-image: url(' {{ asset('img/bg.jpg') }}')">
 <div class="login-box">
   <div class="login-logo">
    {{-- <b style="color: red;font-size: 30px">Voter Card Print</b> --}}
   </div>
   <!-- /.login-logo -->
   <div class="card">
-    <div class="card-body login-card-body" style="background-color: #111010">
+    <div class="card-body login-card-body" style="background-color: #a4bcff">
       <p class="login-box-msg"></p>
 
       <form action="{{ route('admin.login') }}" method="post" class="add_form">

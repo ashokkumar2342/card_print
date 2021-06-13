@@ -1,5 +1,5 @@
  
-  <nav class="main-header navbar navbar-expand navbar-info navbar-light">
+  <nav class="main-header navbar navbar-expand navbar-info navbar-dark" style="background-color: #dc3545">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
       <li class="nav-item">
@@ -7,8 +7,8 @@
       </li>
       @includeIf('admin.include.hot_menu_top')      
     </ul> 
-    <marquee width="100%" direction="left" height="100%" onmouseover="this.stop()" onmouseout="this.start()" style="background-color: #ab183d;color: yellow;font-size: 20px">
-     <b>अब आप आधार कार्ड (AADHAAR CARD) और पैन कार्ड (PAN CARD) भी प्रिंट कर सकते हैं|</b>
+    {{-- <marquee width="100%" direction="left" height="100%" onmouseover="this.stop()" onmouseout="this.start()" style="background-color: #ab183d;color: yellow;font-size: 20px"> --}}
+     {{-- <b>अब आप आधार कार्ड (AADHAAR CARD) और पैन कार्ड (PAN CARD) भी प्रिंट कर सकते हैं|</b> --}}
      {{-- <b><i class="fa fa-flag text-primary"></i> SPECIAL REPUBLIC DAY OFFER! RECHARGE 1000₹ GET 1100₹ <i class="fa fa-flag text-primary"></i></b> --}} 
     </marquee>
 

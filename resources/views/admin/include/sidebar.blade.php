@@ -1,4 +1,4 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #65051d">
     <a href="{{ route('admin.dashboard') }}" class="brand-link"> 
         <span class="brand-text font-weight-light" style="margin-left: 47px"><b>Dashboard</b></span>
     </a>
