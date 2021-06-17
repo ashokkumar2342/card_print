@@ -49,6 +49,7 @@ div.second{
 }
 
 </style>
+@if($card_format==0)
 <body>
 	<div class="first"> 
 	<table>
@@ -181,4 +182,78 @@ div.second{
     margin-bottom: auto;font-size: 7px"><b>&nbsp;</b></div> --}}
 </div>
 </body>
+@else
+
+<body>
+	<div class="first">
+		<table style="border-collapse: collapse; width: 100%;" border="0">
+		<tbody>
+			<tr>
+				<td style="width: 100%;text-align:center;font-size: 13px;"><b>भारत निर्वाचन आयोग</b></td>
+			</tr>
+			<tr>
+				<td style="width: 100%;text-align:center;font-size: 13px"><b style="border-top: 2px solid black;">ELECTION COMMISSION OF INDIA</b></td>
+			</tr>
+		</tbody>
+		</table> 
+		
+		<table style="margin-top:5px;width: 100%" >
+		<tbody>
+			<tr>
+				<td style="width: 100%;padding-left: 10px;font-size:14"><b>{{$vcardno}}</b></td>
+			</tr>
+			<tr>
+				<td>
+					<table style="border-collapse: collapse; width: 100%;vertical-align: top;" border="0">
+						<tr>
+							<td style="width: 35%;"><img src="{{ $image }}" alt="" width = "110px" height = "135px"></td>
+							<td style="width: 65%;font-size: 12px">
+								<table style="border-collapse: collapse; width: 100%;" border="0">
+									<tr><td style="width: 100%;font-size: 12px;padding-top: 0px;">नाम : <b>{{$name_l}}</b></td></tr>
+									<tr><td style="font-size: 12px;padding-top: 9px;">{{$rln_l}} का नाम : <b>{{$rname_l}}</b></td></tr>
+									<tr><td style="font-size: 12px;padding-top: 9px;">{{$rln_e}}'s Name : <b>{{$rname_e}}</b></td></tr>
+									<tr><td style="font-size: 12px;padding-top: 9px;">लिंग</span>/Gender :<b>{{$gender_l}} / {{$gender_e}}</b></td></tr>
+									<tr><td style="font-size: 12px;padding-top: 9px;">जन्म तिथि / DOB : <b>{{$age_dob}}</b></td></tr>
+									<tr><td style="font-size: 12px;padding-top: 9px;">आयु / Age : <b>{{$age_dob}}</b></td></tr>
+									
+								</table>	
+							</td>
+						</tr>
+					</table>
+				</td>
+				
+			</tr>
+			
+		</tbody>
+		</table>
+	</div>
+	 
+	<div class="second">
+	 	<table>
+			<tr> 
+				<td>पता: {{ $add_l }}</td> 
+			</tr>
+		</table>
+		<table>
+			<tr> 
+				<td>Address : {{ $add_e }}</td>
+			</tr>
+		</table>
+		<table style="padding-left: 50px">
+			<tr> 
+				<td><img src="{{ $signimg }}" alt="" height="27px" width="110px"></td>
+			</tr>
+		</table>
+		<table style="padding-left: 50px">
+			<tr> 
+				<td>निर्वाचक रजिस्ट्रीकरण अधिकारी<br>
+					Electoral Registration Officer<bt> 
+					Download Date : {{ $cdate }}
+            	</td>
+			</tr>
+		</table> 
+	</div>
+</body>
+
+@endif
 </html>
