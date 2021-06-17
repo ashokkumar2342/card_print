@@ -102,41 +102,30 @@ class CardPrintController extends Controller
         $fontDirs = $defaultConfig['fontDir']; 
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
+        
         if ($request->format==0) {
-            $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [55, 88],
-                 'fontDir' => array_merge($fontDirs, [
-                     __DIR__ . $path,
-                 ]),
-                 'fontdata' => $fontData + [
-                     'frutiger' => [
-                         'R' => 'FreeSans.ttf',
-                         'I' => 'FreeSansOblique.ttf',
-                     ]
-                 ],
-                 'default_font' => 'freesans',
-                 'pagenumPrefix' => '',
-                'pagenumSuffix' => '',
-                'nbpgPrefix' => ' कुल ',
-                'nbpgSuffix' => ' पृष्ठों का पृष्ठ'
-             ]); 
-         }else{
-            $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [100, 60],
-                 'fontDir' => array_merge($fontDirs, [
-                     __DIR__ . $path,
-                 ]),
-                 'fontdata' => $fontData + [
-                     'frutiger' => [
-                         'R' => 'FreeSans.ttf',
-                         'I' => 'FreeSansOblique.ttf',
-                     ]
-                 ],
-                 'default_font' => 'freesans',
-                 'pagenumPrefix' => '',
-                'pagenumSuffix' => '',
-                'nbpgPrefix' => ' कुल ',
-                'nbpgSuffix' => ' पृष्ठों का पृष्ठ'
-             ]);
-         } 
+            $card_width = 55;
+            $card_height = 88;
+        }else{
+            $card_width = 88;
+            $card_height = 55;
+        }
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [$card_width, $card_height],
+             'fontDir' => array_merge($fontDirs, [
+                 __DIR__ . $path,
+             ]),
+             'fontdata' => $fontData + [
+                 'frutiger' => [
+                     'R' => 'FreeSans.ttf',
+                     'I' => 'FreeSansOblique.ttf',
+                 ]
+             ],
+             'default_font' => 'freesans',
+             'pagenumPrefix' => '',
+            'pagenumSuffix' => '',
+            'nbpgPrefix' => ' कुल ',
+            'nbpgSuffix' => ' पृष्ठों का पृष्ठ'
+         ]);
          
 
 
@@ -210,19 +199,18 @@ class CardPrintController extends Controller
         
         $bimage  =\Storage_path('app/image/blank.png');
         if ($request->pre_printed_card==1) {
-            $bimage1  =\Storage_path('app/image/front.jpg');
-            $bimage2  =\Storage_path('app/image/back.jpg'); 
+            if ($request->format==1){
+                $bimage1  =\Storage_path('app/image/front_1.jpg');
+                $bimage2  =\Storage_path('app/image/back_1.jpg'); 
+            }else{
+                $bimage1  =\Storage_path('app/image/front.jpg');
+                $bimage2  =\Storage_path('app/image/back.jpg'); 
+            }
         }else {
             $bimage1  =\Storage_path('app/image/blank.png');
             $bimage2  =\Storage_path('app/image/blank.png'); 
         }
-        if ($request->format==1) {
-            $bimage1  =\Storage_path('app/image/front_1.jpg');
-            $bimage2  =\Storage_path('app/image/back_1.jpg'); 
-        }else {
-            $bimage1  =\Storage_path('app/image/blank.png');
-            $bimage2  =\Storage_path('app/image/blank.png'); 
-        }
+        
 
         list($width, $height, $type, $attr) = getimagesize($image);
         
@@ -245,16 +233,15 @@ class CardPrintController extends Controller
 
         $signimg = \Storage_path('app/image/sign/'.$acno.'.png');
 
-        // $width = 88;
-        // $height = 117;
-
+        
         $epicbackground = $request->pre_printed_card;
-        if ($request->format==0) {
-            $html = view('admin.card_print.print',compact('vcardno', 'image', 'width', 'height', 'name_l', 'name_e', 'rln_l', 'rln_e', 'rname_l', 'rname_e', 'gender_l', 'gender_e', 'age_dob', 'add_l', 'add_e', 'acno_name_l', 'acno_name_e', 'partno_name_l', 'partno_name_e', 'cdate', 'bimage', 'bcheight', 'bcsize', 'signimg','bimage1','bimage2','epicbackground'));
+        $card_format = $request->format;
+        // if ($request->format==0) {
+            $html = view('admin.card_print.print',compact('vcardno', 'image', 'width', 'height', 'name_l', 'name_e', 'rln_l', 'rln_e', 'rname_l', 'rname_e', 'gender_l', 'gender_e', 'age_dob', 'add_l', 'add_e', 'acno_name_l', 'acno_name_e', 'partno_name_l', 'partno_name_e', 'cdate', 'bimage', 'bcheight', 'bcsize', 'signimg','bimage1','bimage2','epicbackground','card_format'));
             
-        }else{
-            $html = view('admin.card_print.print_2',compact('vcardno', 'image', 'width', 'height', 'name_l', 'name_e', 'rln_l', 'rln_e', 'rname_l', 'rname_e', 'gender_l', 'gender_e', 'age_dob', 'add_l', 'add_e', 'acno_name_l', 'acno_name_e', 'partno_name_l', 'partno_name_e', 'cdate', 'bimage', 'bcheight', 'bcsize', 'signimg','bimage1','bimage2','epicbackground'));
-        }
+        // }else{
+        //     $html = view('admin.card_print.print_2',compact('vcardno', 'image', 'width', 'height', 'name_l', 'name_e', 'rln_l', 'rln_e', 'rname_l', 'rname_e', 'gender_l', 'gender_e', 'age_dob', 'add_l', 'add_e', 'acno_name_l', 'acno_name_e', 'partno_name_l', 'partno_name_e', 'cdate', 'bimage', 'bcheight', 'bcsize', 'signimg','bimage1','bimage2','epicbackground'));
+        // }
         $mpdf->WriteHTML($html); 
         $mpdf->Output();
     }
@@ -269,6 +256,7 @@ class CardPrintController extends Controller
         $PanDetails=PanDetail::where('user_id',$appuser->id)->where('upload_date',date('Y-m-d'))->get();  
         return view('admin.card_print.pancard',compact('PanDetails'));      
     }
+    
     public function pancardStore(Request $request)
     {    
         $rules=[ 
@@ -459,6 +447,8 @@ class CardPrintController extends Controller
             return response()->json($response);        
 
     }
+
+
     public function pancardDownload(Request $request)
     {
         // return $request->format_style;    
@@ -1517,4 +1507,311 @@ class CardPrintController extends Controller
         $response=['status'=>1,'msg'=>'Apply Successfully'];
             return response()->json($response);
     }
+
+
+
+    public function pancardStore_new(Request $request)
+    {    
+        $rules=[ 
+              'pan_card' => 'required',
+        ]; 
+        $validator = Validator::make($request->all(),$rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $response=array();
+            $response["status"]=0;
+            $response["msg"]=$errors[0];
+            return response()->json($response);// response as json
+        }
+        $appuser = Auth::guard('admin')->user();
+
+
+                
+        $transaction_status = DB::select(DB::raw("Select `check_wallet_balance_print`($appuser->id, 3) as `result`;")); 
+        if ($transaction_status[0]->result!='ok'){
+            $response=array();
+            $response["status"]=0;
+            $response["msg"]=$transaction_status[0]->result;
+            return response()->json($response);
+        }
+
+        $name =date('Ymdhis');
+        $vpath = '/familyid/'.$appuser->id.'/'.$name.'/';
+        @mkdir($dirpath, 0755, true); 
+        $pdf_file=$request->pan_card;
+        $imagedata = file_get_contents($pdf_file);
+        $encode = base64_encode($imagedata);
+        $pdf_file=base64_decode($encode);
+        
+        $pdf_file= \Storage::disk('local')->put($vpath.$name.'.pdf', $pdf_file);
+
+
+        $destinationPath = storage_path('app'.$vpath);
+        $pdfbox = base_path('pdfbox-app.jar');
+        $pdf = $destinationPath.$name.'.pdf';
+        $outpdf = $pdf;
+        
+        
+        
+
+        exec("java -jar ".$pdfbox." ExtractText ".$outpdf);
+        //exec("java -jar ".$pdfbox." ExtractImages ".$outpdf);
+
+        $filename = \Storage_path('app'.$vpath.$name.'.txt');
+        $fp = fopen($filename, "r");
+
+        $content = fread($fp, filesize($filename));
+        $lines = explode("\n", $content);
+        fclose($fp);
+
+        //Remove All Hindi Character With #H# Seperator
+        $ctext = "";
+        $eline = '';
+        foreach ($lines as $key => $line) {
+            $eline = '';
+            $line = json_encode($line);
+            $line = substr($line, 1, strlen($line)-4);
+            $line = str_replace("\/", '/', $line);
+            while (strlen($line)>0) {
+                if(substr($line, 0,2) == "\u"){
+                    if($hindistart == 0){
+                        $hindistart = 1;
+                        $eline = $eline.'#H#';
+                    }
+                    $line = substr($line, 6);    
+                }elseif(substr($line, 0,1) != " "){
+                    $hindistart = 0;
+                    $eline = $eline.substr($line, 0, 1);
+                    $line = substr($line, 1);
+                }else{
+                    if($hindistart == 0){
+                        $eline = $eline.' ';
+                    }
+                    $line = substr($line, 1);
+                }
+            }    
+
+            $ctext = $ctext.' '.$eline;
+        }
+
+
+        //Seperate Words and Family Information
+        $ctext = str_replace(":", '', $ctext);
+        $file_words = explode("#H#", $ctext);
+        $lo_array_size = sizeof($file_words);
+
+        $familyid = trim($file_words[1]);
+        $head_name = trim($file_words[3]);
+        $dist_name = trim($file_words[4]);
+        $block_name = trim($file_words[6]);
+        $village_name = trim($file_words[8]);
+        $address = trim(strstr($file_words[9], "Name", true));
+
+        $create_family_head = DB::select(DB::raw("call `up_insert_family_head`($appuser->id, '$familyid', '$head_name', '', '$dist_name', '$block_name', '$village_name', '$address');"));
+        $data_family_id = $create_family_head[0]->familyid;
+
+        $new_name = trim(strstr($file_words[9], "Is Divyang"));
+        $new_name = strtoupper(trim(str_replace("Is Divyang", '', $new_name)));
+        $member_name = '';
+        $count_no = 9;
+        while($lo_array_size >= ($count_no+3)){
+            $member_name = $new_name;
+            $line = strtoupper(trim($file_words[$count_no + 3]));
+            $m_relation = '';
+            $m_age = '';
+            $alpha_found = 0;
+            $digit_found = 0;
+            while($alpha_found == 0){
+                $ord_value = ord($line);
+                if($ord_value >= 65 and $ord_value<= 90){
+                    $alpha_found = 1;
+                }else{
+                    $line = substr($line, 1);
+                    if(strlen($line) <= 1){
+                        $alpha_found = 2;    
+                    }    
+                }
+            }
+            if($alpha_found == 1){
+                while($digit_found == 0){
+                    $ord_value = ord($line);
+                    if($ord_value >= 48 and $ord_value <= 57){
+                        $digit_found = 1;
+                    }else{
+                        $m_relation = $m_relation.substr($line, 0, 1);
+                        $line = substr($line, 1);
+                        if(strlen($line) <= 1){
+                            $digit_found = 2;    
+                        }    
+                    }    
+                }
+            }
+            $m_relation = trim($m_relation);
+            $alpha_found = 0;
+            if($digit_found == 1){
+                while($alpha_found == 0){
+                    $ord_value = ord($line);
+                    if($ord_value == 32){
+                        $alpha_found = 1;
+                    }else{
+                        $m_age = $m_age.substr($line, 0, 1);
+                        $line = substr($line, 1);
+                        if(strlen($line) <= 1){
+                            $alpha_found = 2;    
+                        }    
+                    }    
+                }
+            }
+            $m_age = trim($m_age);
+
+            if(strpos($line, " N ") == false){
+                if(strpos($line, " Y ") == false){
+                    $new_name = "";
+                }else{
+                    $new_name = substr($line, strpos($line, " Y ")+3);
+                }
+            }else{
+                $new_name = substr($line, strpos($line, " N ")+3);
+            }
+
+
+            $insert_family_detail = DB::select(DB::raw("call `up_insert_family_detail`($data_family_id, '$member_name', '$m_age', '$m_relation');"));
+
+            $count_no = $count_no + 3;
+        }
+
+
+
+
+        // dd($ctext);
+
+        // $response=['status'=>1,'msg'=>$ctext];
+        // return response()->json($response);        
+
+        $response=['status'=>1,'msg'=>'Upload Successfully'];
+        return response()->json($response);        
+        
+        
+        $pan_no = '';
+        $name_e = '';
+        $dob = '';
+        $fathername = '';
+        $cardtype = 0;
+        $text = '';
+        if(trim($lines[0])=='Cut'){
+            $pan_no = trim($lines[1]);
+            $name_e = trim($lines[4]);
+            $dob = trim($lines[2]);
+            $text = trim($lines[5]);
+            if(strlen($text)>20){
+                $fathername = trim($lines[7]);
+            }else{
+                $fathername = trim($lines[6]);
+            }
+
+
+            if($countFile==10){
+                $cardtype = 3;
+            }else{
+                $cardtype = 4;
+            }
+        }else{
+            $pan_no = trim($lines[0]);
+            if(substr(trim($lines[1]), 0,3) == "U- " ){
+                $name_e = trim($lines[2]);
+                $dob = trim($lines[4]);;
+                $fathername = trim($lines[3]);;
+                $cardtype = 5;
+            }else{
+                $name_e = trim($lines[1]);
+                $text = trim($lines[2]);
+                $dob = '';
+                $fathername = '';
+                $cardtype = 0;
+                if($this->check_dob_fahtername($text) == 0){
+                    $fathername = trim($lines[2]);
+                    $dob = trim($lines[3]);
+                    $cardtype = 1;
+                }else{
+                    $dob = trim($lines[2]);
+                    $cardtype = 2;
+                }    
+            }
+                
+        }
+
+        $qrcode = '';
+        $sign = '';
+        $photo = '';
+        if($countFile==8){
+            $photo = '2';
+            list($width, $height, $type, $attr) = getimagesize($destinationPath.$name.'-1-3.png');
+            if($width == $height){
+                $qrcode = '3';
+                $sign = '';
+            }else{
+                $qrcode = '4';
+                $sign = '3.png';
+            }
+        }elseif($countFile==10){
+            if($cardtype==5){
+                $qrcode = '3';
+                $sign = '4.png';
+                $photo = '2';
+            }else{
+                $qrcode = '3';
+                $sign = '';
+                $photo = '4';    
+            }
+            
+        }elseif($countFile==11){
+            $qrcode = '4';
+            $sign = '3.jpg';
+            $photo = '5';
+        }
+        
+        // create an image manager instance with favored driver
+        $manager = new ImageManager();
+
+        // to finally create image instances
+        $image = $manager->make($destinationPath.$name.'-1-'.$photo.'.jpg');
+        $image->brightness(10);
+        $image->contrast(10);
+        $image->save($destinationPath.$name.'-1-rp.jpg');
+        
+        $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet_card_print`('$pan_no', $appuser->id, 3) as `result`;")); 
+        if ($transaction_status[0]->result!='success'){
+            $response=array();
+            $response["status"]=0;
+            $response["msg"]=$transaction_status[0]->result;
+            return response()->json($response);
+        }
+
+        $PanDetail = new PanDetail();
+        $PanDetail->user_id = $appuser->id;
+        $PanDetail->file_path = $vpath;
+        $PanDetail->file_name = $name.'-1.pdf';
+        $PanDetail->file_password = $request->password;
+        $PanDetail->upload_date = date('Y-m-d');
+        $PanDetail->pan_no = $pan_no;
+        $PanDetail->name_e = $name_e;
+        $PanDetail->upload_type = $cardtype;
+        $PanDetail->father_name_e = $fathername;
+        $PanDetail->dob = $dob;
+        $PanDetail->qrcode = $qrcode;
+        $PanDetail->sign = $sign;
+        $PanDetail->photo = $photo;
+        $PanDetail->photo_show = $photo;
+        $PanDetail->save();
+
+        
+        $response=['status'=>1,'msg'=>'Upload Successfully'];
+            return response()->json($response);        
+
+    }
+
+
+
+
+
 }
