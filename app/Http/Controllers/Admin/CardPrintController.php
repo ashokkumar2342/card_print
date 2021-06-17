@@ -219,9 +219,6 @@ class CardPrintController extends Controller
         if ($request->format==1) {
             $bimage1  =\Storage_path('app/image/front_1.jpg');
             $bimage2  =\Storage_path('app/image/back_1.jpg'); 
-        }elseif($request->format==0) {
-            $bimage1  =\Storage_path('app/image/front.png');
-            $bimage2  =\Storage_path('app/image/back.png'); 
         }else {
             $bimage1  =\Storage_path('app/image/blank.png');
             $bimage2  =\Storage_path('app/image/blank.png'); 
