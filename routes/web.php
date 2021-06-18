@@ -15,7 +15,9 @@ Route::get('/func', function () {
     return MyFuncs::full_name("John","Doe");
 });
  
-Route::get('/', 'Admin\Auth\LoginController@showLoginForm')->name('admin.login');
+Route::get('/', function() {
+    return view('admin.index');
+});
 Route::get('try-demo', 'TryDemoController@index')->name('try.demo');
 Route::post('try-demo', 'TryDemoController@store')->name('try.demo.store');
 Route::get('barcode', 'BarcodeController@barcodeShow');
