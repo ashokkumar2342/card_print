@@ -110,7 +110,11 @@ Route::group(['middleware' => 'admin'], function() {
 		Route::get('adhaar-print-feedback/{type}','CardPrintController@adhaarPrintFeedback')->name('admin.card.adhaar.print.feedback');
 		Route::post('adhaar-print-feedback-store','CardPrintController@adhaarPrintFeedbackStore')->name('admin.card.adhaar.print.feedback.store');
 
-		    
+	//--Family ID Print
+		Route::get('familyidcard','CardPrintController@familyidcard')->name('admin.card.print.familyidcard');
+		Route::post('familycard-store','CardPrintController@familyidStore')->name('admin.card.print.familyid.store');
+		Route::get('familycard-download','CardPrintController@familycardDownload')->name('admin.card.print.familycard.download');
+		
 		
 	});
 	Route::prefix('product')->group(function () {

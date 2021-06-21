@@ -1509,11 +1509,59 @@ class CardPrintController extends Controller
     }
 
 
+    //----For Family ID Card
+    public function familycardDownload(Request $request)
+    {
+        $path=Storage_path('fonts/');
+        $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir']; 
+        $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata']; 
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [86, 54],
+             'fontDir' => array_merge($fontDirs, [
+                 __DIR__ . $path,
+             ]),
+             'fontdata' => $fontData + [
+                 'frutiger' => [
+                     'R' => 'FreeSans.ttf',
+                     'I' => 'FreeSansOblique.ttf',
+                 ]
+             ],
+             'default_font' => 'freesans'
+         ]);
+         
 
-    public function pancardStore_new(Request $request)
+
+        $family_id = $request->id;
+        $user=Auth::guard('admin')->user();
+
+        $family_head_data = DB::select(DB::raw("select * from family_head where `id` = $family_id;"));
+        $family_detail_data = DB::select(DB::raw("select * from family_detail where `family_head_id` = $family_id;"));
+        
+        $bg_files_path  =\Storage_path('app/familyid/backgroud_files/');
+        
+        $bg_file_front = $bg_files_path."f.jpg";
+        $bg_file_back = $bg_files_path."b.jpg";
+        
+
+        $html = view('admin.card_print.print_family',compact('family_head_data', 'family_detail_data', 'bg_file_front', 'bg_file_back'));
+        $mpdf->WriteHTML($html); 
+        $mpdf->Output();   
+    }
+
+    public function familyidcard()
+    {   
+        $appuser = Auth::guard('admin')->user(); 
+        $upload_date = date('Y-m-d');
+        $FamilyDetails=DB::select(DB::raw("select `id`, `family_id`, `head_name`, `ondate` from `family_head` where `userid` = $appuser->id and `ondate` = '$upload_date' order by `id` desc;"));
+        return view('admin.card_print.familyidcard',compact('FamilyDetails'));      
+    }
+
+
+    public function familyidStore(Request $request)
     {    
         $rules=[ 
-              'pan_card' => 'required',
+              'family_card' => 'required',
         ]; 
         $validator = Validator::make($request->all(),$rules);
         if ($validator->fails()) {
@@ -1538,7 +1586,7 @@ class CardPrintController extends Controller
         $name =date('Ymdhis');
         $vpath = '/familyid/'.$appuser->id.'/'.$name.'/';
         @mkdir($dirpath, 0755, true); 
-        $pdf_file=$request->pan_card;
+        $pdf_file=$request->family_card;
         $imagedata = file_get_contents($pdf_file);
         $encode = base64_encode($imagedata);
         $pdf_file=base64_decode($encode);
@@ -1683,131 +1731,11 @@ class CardPrintController extends Controller
 
 
 
-        // dd($ctext);
-
-        // $response=['status'=>1,'msg'=>$ctext];
-        // return response()->json($response);        
-
         $response=['status'=>1,'msg'=>'Upload Successfully'];
         return response()->json($response);        
         
         
-        $pan_no = '';
-        $name_e = '';
-        $dob = '';
-        $fathername = '';
-        $cardtype = 0;
-        $text = '';
-        if(trim($lines[0])=='Cut'){
-            $pan_no = trim($lines[1]);
-            $name_e = trim($lines[4]);
-            $dob = trim($lines[2]);
-            $text = trim($lines[5]);
-            if(strlen($text)>20){
-                $fathername = trim($lines[7]);
-            }else{
-                $fathername = trim($lines[6]);
-            }
-
-
-            if($countFile==10){
-                $cardtype = 3;
-            }else{
-                $cardtype = 4;
-            }
-        }else{
-            $pan_no = trim($lines[0]);
-            if(substr(trim($lines[1]), 0,3) == "U- " ){
-                $name_e = trim($lines[2]);
-                $dob = trim($lines[4]);;
-                $fathername = trim($lines[3]);;
-                $cardtype = 5;
-            }else{
-                $name_e = trim($lines[1]);
-                $text = trim($lines[2]);
-                $dob = '';
-                $fathername = '';
-                $cardtype = 0;
-                if($this->check_dob_fahtername($text) == 0){
-                    $fathername = trim($lines[2]);
-                    $dob = trim($lines[3]);
-                    $cardtype = 1;
-                }else{
-                    $dob = trim($lines[2]);
-                    $cardtype = 2;
-                }    
-            }
-                
-        }
-
-        $qrcode = '';
-        $sign = '';
-        $photo = '';
-        if($countFile==8){
-            $photo = '2';
-            list($width, $height, $type, $attr) = getimagesize($destinationPath.$name.'-1-3.png');
-            if($width == $height){
-                $qrcode = '3';
-                $sign = '';
-            }else{
-                $qrcode = '4';
-                $sign = '3.png';
-            }
-        }elseif($countFile==10){
-            if($cardtype==5){
-                $qrcode = '3';
-                $sign = '4.png';
-                $photo = '2';
-            }else{
-                $qrcode = '3';
-                $sign = '';
-                $photo = '4';    
-            }
-            
-        }elseif($countFile==11){
-            $qrcode = '4';
-            $sign = '3.jpg';
-            $photo = '5';
-        }
         
-        // create an image manager instance with favored driver
-        $manager = new ImageManager();
-
-        // to finally create image instances
-        $image = $manager->make($destinationPath.$name.'-1-'.$photo.'.jpg');
-        $image->brightness(10);
-        $image->contrast(10);
-        $image->save($destinationPath.$name.'-1-rp.jpg');
-        
-        $transaction_status = DB::select(DB::raw("Select `up_deduct_wallet_card_print`('$pan_no', $appuser->id, 3) as `result`;")); 
-        if ($transaction_status[0]->result!='success'){
-            $response=array();
-            $response["status"]=0;
-            $response["msg"]=$transaction_status[0]->result;
-            return response()->json($response);
-        }
-
-        $PanDetail = new PanDetail();
-        $PanDetail->user_id = $appuser->id;
-        $PanDetail->file_path = $vpath;
-        $PanDetail->file_name = $name.'-1.pdf';
-        $PanDetail->file_password = $request->password;
-        $PanDetail->upload_date = date('Y-m-d');
-        $PanDetail->pan_no = $pan_no;
-        $PanDetail->name_e = $name_e;
-        $PanDetail->upload_type = $cardtype;
-        $PanDetail->father_name_e = $fathername;
-        $PanDetail->dob = $dob;
-        $PanDetail->qrcode = $qrcode;
-        $PanDetail->sign = $sign;
-        $PanDetail->photo = $photo;
-        $PanDetail->photo_show = $photo;
-        $PanDetail->save();
-
-        
-        $response=['status'=>1,'msg'=>'Upload Successfully'];
-            return response()->json($response);        
-
     }
 
 
